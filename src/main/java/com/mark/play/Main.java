@@ -30,13 +30,18 @@ public class Main {
     private final JButton skipButton;
 
     public static void main(String[] args) {
-        thisApp = new Main();
+        if (args.length > 0 || args[0].length() > 0) {
+            thisApp = new Main(args[0]);
+        }
+        else {
+            System.out.println("Provide a file to play as the first command line argument.");
+        }
     }
 
-    public Main() {
+    public Main(String mrl) {
+
         //final String png = "c:\\mp\\crown.png";
         //final String mrl = "c:\\mp\\cloud.wmv";
-        final String mrl = "/tmp/tmp/sample.mpg";
 
         frame = new JFrame("My First Media Player");
         frame.setBounds(100, 100, 600, 400);
