@@ -11,6 +11,7 @@ import uk.co.caprica.vlcj.media.*;
 import uk.co.caprica.vlcj.player.base.*;
 import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
+import uk.co.caprica.vlcj.player.component.MediaPlayerComponent;
 import uk.co.caprica.vlcj.player.embedded.fullscreen.adaptive.AdaptiveFullScreenStrategy;
 
 public class Main {
@@ -18,8 +19,8 @@ public class Main {
 
     private final JFrame frame;
 
-    private final EmbeddedMediaPlayerComponent mediaPlayerComponent;
-    //private final CallbackMediaPlayerComponent mediaPlayerComponent;
+    private EmbeddedMediaPlayerComponent mediaPlayerComponent2;
+    private CallbackMediaPlayerComponent mediaPlayerComponent;
 
 
     private final JButton pauseButton;
@@ -33,8 +34,9 @@ public class Main {
     }
 
     public Main() {
-        final String png = "c:\\mp\\crown.png";
-        final String mrl = "c:\\mp\\cloud.wmv";
+        //final String png = "c:\\mp\\crown.png";
+        //final String mrl = "c:\\mp\\cloud.wmv";
+        final String mrl = "/tmp/tmp/sample.mpg";
 
         frame = new JFrame("My First Media Player");
         frame.setBounds(100, 100, 600, 400);
@@ -58,23 +60,24 @@ public class Main {
                 "--intf=dummy"
         };
 
-        //mediaPlayerComponent = new CallbackMediaPlayerComponent(
-        mediaPlayerComponent = new EmbeddedMediaPlayerComponent(
-                new MediaPlayerFactory(EMBEDDED_MEDIA_PLAYER_ARGS), null,
-                new AdaptiveFullScreenStrategy(frame) {
-                    @Override
-                    protected void onBeforeEnterFullScreen() {
-                        System.out.println("Entering full screen...");
-                        //controlsPane.setVisible(false);
-                    }
+        MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory(EMBEDDED_MEDIA_PLAYER_ARGS);
 
-                    @Override
-                    protected void onAfterExitFullScreen() {
-                        System.out.println("Exiting full screen...");
-                        //controlsPane.setVisible(true);
-                    }
-                }, null, null) {
+        AdaptiveFullScreenStrategy adaptiveFullScreenStrategy = new AdaptiveFullScreenStrategy(frame) {
+            @Override
+            protected void onBeforeEnterFullScreen() {
+                System.out.println("Entering full screen...");
+                //controlsPane.setVisible(false);
+            }
 
+            @Override
+            protected void onAfterExitFullScreen() {
+                System.out.println("Exiting full screen...");
+                //controlsPane.setVisible(true);
+            }
+        };
+
+        mediaPlayerComponent = new CallbackMediaPlayerComponent();
+        mediaPlayerComponent2 = new EmbeddedMediaPlayerComponent(mediaPlayerFactory, null, adaptiveFullScreenStrategy, null, null) {
             @Override
             public void playing(MediaPlayer mediaPlayer) {
                 System.out.println("Playing...");
@@ -228,12 +231,14 @@ public class Main {
 
         frame.setVisible(true);
 
+        /*
         Logo logo = Logo.logo()
                 .file(png)
                 .position(LogoPosition.TOP_RIGHT)
                 .opacity(0.1f)
                 .duration(2000)
                 .enable();
+         */
         //mediaPlayerComponent.mediaPlayer().logo().set(logo);
 
         Marquee marquee = Marquee.marquee()
