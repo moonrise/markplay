@@ -2,6 +2,7 @@ package com.mark.play;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.List;
 
 import javax.swing.*;
@@ -30,11 +31,18 @@ public class Main {
     private final JButton skipButton;
 
     public static void main(String[] args) {
-        if (args.length > 0 || args[0].length() > 0) {
-            thisApp = new Main(args[0]);
+        if (args.length > 0 && args[0].length() > 0) {
+            String givenFile = args[0];
+            if (new File(givenFile).exists()) {
+                System.out.printf("Given file: %s\n", givenFile);
+                thisApp = new Main(givenFile);
+            }
+            else {
+                System.err.printf("Given file: '%s' does not exist.\n", args[0]);
+            }
         }
         else {
-            System.out.println("Provide a file to play as the first command line argument.");
+            System.out.println("Provide a video file to play as the first command line argument.");
         }
     }
 
