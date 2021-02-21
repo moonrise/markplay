@@ -35,7 +35,7 @@ public class Main {
                 thisApp = new Main(givenFile);
             }
             else {
-                System.err.printf("Given file: '%s' does not exist.\n", args[0]);
+                System.err.printf("Given file: '%s' does not exist.\n", givenFile);
             }
         }
         else {

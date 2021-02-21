@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="LegacyFilerReader" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="com.mark.play.LegacyFilerReader" />
+    <module name="markplay" />
+    <option name="PROGRAM_PARAMETERS" value="./testfiles/picks.xml" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.mark.play.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -14,7 +14,7 @@
     </UserData>
     <Resources>
         <CResourceItem>
-            <Path>C:\x3\root\wmv-picks\Exchange_Students_2_Scene_1.wmv</Path>
+            <Path>C:\x3\root\a.wmv</Path>
             <Rating>0</Rating>
             <Checked>true</Checked>
             <Duration>1705.00</Duration>
@@ -82,7 +82,7 @@
             <Comment></Comment>
         </CResourceItem>
         <CResourceItem>
-            <Path>C:\x3\root\wmv-picks\Relax_He_s_My_Stepdad_10_Scene_1.wmv</Path>
+            <Path>C:\x3\root\b.wmv</Path>
             <Rating>0</Rating>
             <Checked>true</Checked>
             <Duration>1202.00</Duration>
@@ -150,7 +150,7 @@
             <Comment></Comment>
         </CResourceItem>
         <CResourceItem>
-            <Path>C:\x3\root\wmv-picks\a.wmv</Path>
+            <Path>C:\x3\root\c.wmv</Path>
             <Rating>0</Rating>
             <Checked>false</Checked>
             <Duration>1705.00</Duration>
