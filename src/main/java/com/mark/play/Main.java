@@ -3,7 +3,6 @@ package com.mark.play;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.List;
 
 import javax.swing.*;
 
@@ -11,8 +10,6 @@ import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.media.*;
 import uk.co.caprica.vlcj.player.base.*;
 import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent;
-import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
-import uk.co.caprica.vlcj.player.component.MediaPlayerComponent;
 import uk.co.caprica.vlcj.player.embedded.fullscreen.adaptive.AdaptiveFullScreenStrategy;
 
 public class Main {
@@ -20,7 +17,7 @@ public class Main {
 
     private final JFrame frame;
 
-    private EmbeddedMediaPlayerComponent mediaPlayerComponent2;
+//    private EmbeddedMediaPlayerComponent mediaPlayerComponent;
     private CallbackMediaPlayerComponent mediaPlayerComponent;
 
 
@@ -89,8 +86,35 @@ public class Main {
             }
         };
 
-        mediaPlayerComponent = new CallbackMediaPlayerComponent();
-        mediaPlayerComponent2 = new EmbeddedMediaPlayerComponent(mediaPlayerFactory, null, adaptiveFullScreenStrategy, null, null) {
+        mediaPlayerComponent = new CallbackMediaPlayerComponent(mediaPlayerFactory, adaptiveFullScreenStrategy, null, true, null, null, null, null);
+        //mediaPlayerComponent = new EmbeddedMediaPlayerComponent(mediaPlayerFactory, null, adaptiveFullScreenStrategy, null, null);
+
+        MediaEventAdapter mediaEventListener = new MediaEventAdapter() {
+            @Override
+            public void mediaParsedChanged(Media media, MediaParsedStatus newStatus) {
+                if (newStatus == MediaParsedStatus.DONE) {
+                    final InfoApi info = media.info();
+                    System.out.printf("media duration: %d\n", info.duration());
+
+                    for (VideoTrackInfo videoTrack : info.videoTracks()) {
+                        System.out.printf("media video track width/height: %d x %d\n", videoTrack.width(), videoTrack.height());
+                        System.out.printf("media video track aspect ratio: %d / %d\n", videoTrack.sampleAspectRatio(), videoTrack.sampleAspectRatioBase());
+                        System.out.printf("media video track codec: %s (%s)\n", videoTrack.codecName(), videoTrack.codecDescription());
+                        //System.out.printf("media video track : %s\n", videoTrack);
+                    }
+
+                    for (AudioTrackInfo audioTrack : info.audioTracks()) {
+                        System.out.printf("media audio track codec: %s (%s)\n", audioTrack.codecName(), audioTrack.codecDescription());
+                        System.out.printf("media audio track bitrate: %d, channels/rate: (%d:%d)\n", audioTrack.bitRate(), audioTrack.channels(), audioTrack.rate());
+                        //System.out.printf("media audio track : %s\n", audioTrack);
+                    }
+                } else {
+                    System.out.printf("media parsed with error: %s\n", newStatus.toString());
+                }
+            }
+        };
+
+        MediaPlayerEventAdapter mediaPlayerEventListener = new MediaPlayerEventAdapter() {
             @Override
             public void playing(MediaPlayer mediaPlayer) {
                 System.out.println("Playing...");
@@ -116,42 +140,15 @@ public class Main {
                     }
                 });
             }
+        };
 
-            @Override
-            public void mediaParsedChanged(Media media, MediaParsedStatus newStatus) {
-                if (newStatus == MediaParsedStatus.DONE) {
-                    final InfoApi info = media.info();
-                    System.out.printf("media duration: %d\n", info.duration());
+        mediaPlayerComponent.mediaPlayer().events().addMediaPlayerEventListener(mediaPlayerEventListener);
+        mediaPlayerComponent.mediaPlayer().events().addMediaEventListener(mediaEventListener);
 
-                    for (VideoTrackInfo videoTrack : info.videoTracks()) {
-                        System.out.printf("media video track width/height: %d x %d\n", videoTrack.width(), videoTrack.height());
-                        System.out.printf("media video track aspect ratio: %d / %d\n", videoTrack.sampleAspectRatio(), videoTrack.sampleAspectRatioBase());
-                        System.out.printf("media video track codec: %s (%s)\n", videoTrack.codecName(), videoTrack.codecDescription());
-                        //System.out.printf("media video track : %s\n", videoTrack);
-                    }
-
-                    for (AudioTrackInfo audioTrack : info.audioTracks()) {
-                        System.out.printf("media audio track codec: %s (%s)\n", audioTrack.codecName(), audioTrack.codecDescription());
-                        System.out.printf("media audio track bitrate: %d, channels/rate: (%d:%d)\n", audioTrack.bitRate(), audioTrack.channels(), audioTrack.rate());
-                        //System.out.printf("media audio track : %s\n", audioTrack);
-                    }
-                } else {
-                    System.out.printf("media parsed with error: %s\n", newStatus.toString());
-                }
-            }
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                mediaPlayerComponent.mediaPlayer().controls().pause();
-            }
-
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-            }
-
+        KeyListener keyListener = new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                //System.out.printf("key code: %d, key char: %c, shift: %s (%s)\n", e.getKeyCode(), e.getKeyChar(), e.isShiftDown(), KeyEvent.getKeyText(e.getKeyCode()));
+                //System.out.printf(".. key code: %d, key char: %c, shift: %s (%s)\n", e.getKeyCode(), e.getKeyChar(), e.isShiftDown(), KeyEvent.getKeyText(e.getKeyCode()));
 
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_LEFT:
@@ -195,6 +192,25 @@ public class Main {
                 }
             }
         };
+
+        MouseListener mouseListener = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                mediaPlayerComponent.mediaPlayer().controls().pause();
+            }
+        };
+
+        MouseWheelListener mouseWheelListener = new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
+            }
+        };
+
+        Component videoSurface =mediaPlayerComponent.videoSurfaceComponent();
+        videoSurface.addKeyListener(keyListener);
+        videoSurface.addMouseListener(mouseListener);
+        videoSurface.addMouseWheelListener(mouseWheelListener);
+
 
         contentPane.add(mediaPlayerComponent, BorderLayout.CENTER);
 
