@@ -21,6 +21,11 @@ public class MyMediaPlayerEventListener extends MediaPlayerEventAdapter {
     }
 
     @Override
+    public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
+//        System.out.printf("time changed: %d\n", newTime);
+    }
+
+    @Override
     public void finished(MediaPlayer mediaPlayer) {
         System.out.println("Finished.");
         mediaPlayer.submit(new Runnable() {

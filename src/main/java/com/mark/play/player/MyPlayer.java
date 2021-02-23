@@ -2,8 +2,13 @@ package com.mark.play.player;
 
 import com.mark.play.IMain;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.base.Logo;
+import uk.co.caprica.vlcj.player.base.LogoPosition;
+import uk.co.caprica.vlcj.player.base.Marquee;
+import uk.co.caprica.vlcj.player.base.MarqueePosition;
 import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.fullscreen.adaptive.AdaptiveFullScreenStrategy;
 
 import javax.swing.*;
@@ -14,7 +19,10 @@ public class MyPlayer {
     private IMain iMain;
     private String mrl;
     private EmbeddedMediaPlayerComponent mediaPlayerComponent2;
-    private static CallbackMediaPlayerComponent mediaPlayerComponent;
+
+    private CallbackMediaPlayerComponent mediaPlayerComponent;
+    private EmbeddedMediaPlayer mediaPlayer;
+    private Component videoSurface;
 
 
     public MyPlayer(IMain iMain, JPanel container, String mrl) {
@@ -25,10 +33,6 @@ public class MyPlayer {
 
         container.add(mediaPlayerComponent, BorderLayout.CENTER);
         container.add(buildControlPanel(), BorderLayout.SOUTH);
-    }
-
-    public CallbackMediaPlayerComponent getPlayerComponent() {
-        return this.mediaPlayerComponent;
     }
 
     private void buildPlayer() {
@@ -58,14 +62,16 @@ public class MyPlayer {
 
         mediaPlayerComponent = new CallbackMediaPlayerComponent(mediaPlayerFactory, adaptiveFullScreenStrategy, null, true, null, null, null, null);
         //mediaPlayerComponent = new EmbeddedMediaPlayerComponent(mediaPlayerFactory, null, adaptiveFullScreenStrategy, null, null);
+        mediaPlayer = mediaPlayerComponent.mediaPlayer();
+        videoSurface = mediaPlayerComponent.videoSurfaceComponent();
 
-        mediaPlayerComponent.mediaPlayer().events().addMediaPlayerEventListener(new MyMediaPlayerEventListener(iMain.getAppFrame(), this.mrl));
-        mediaPlayerComponent.mediaPlayer().events().addMediaEventListener(new MyMediaEventListener());
+        mediaPlayer.events().addMediaPlayerEventListener(new MyMediaPlayerEventListener(iMain.getAppFrame(), this.mrl));
+        mediaPlayer.events().addMediaEventListener(new MyMediaEventListener());
 
         MouseListener mouseListener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                mediaPlayerComponent.mediaPlayer().controls().pause();
+                mediaPlayer.controls().pause();
             }
         };
 
@@ -75,8 +81,7 @@ public class MyPlayer {
             }
         };
 
-        Component videoSurface = mediaPlayerComponent.videoSurfaceComponent();
-        videoSurface.addKeyListener(new MyKeyListener(this.iMain, mediaPlayerComponent.mediaPlayer()));
+        videoSurface.addKeyListener(new MyKeyListener(this.iMain, mediaPlayer));
         videoSurface.addMouseListener(mouseListener);
         videoSurface.addMouseWheelListener(mouseWheelListener);
     }
@@ -92,7 +97,7 @@ public class MyPlayer {
         pauseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mediaPlayerComponent.mediaPlayer().controls().pause();
+                mediaPlayer.controls().pause();
             }
         });
         controlPanel.add(pauseButton);
@@ -101,7 +106,7 @@ public class MyPlayer {
         rewindButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mediaPlayerComponent.mediaPlayer().controls().skipTime(-10000);
+                mediaPlayer.controls().skipTime(-10000);
             }
         });
         controlPanel.add(rewindButton);
@@ -110,11 +115,60 @@ public class MyPlayer {
         skipButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mediaPlayerComponent.mediaPlayer().controls().skipTime(10000);
+                mediaPlayer.controls().skipTime(10000);
             }
         });
         controlPanel.add(skipButton);
 
         return controlPanel;
+    }
+
+    public void release() {
+        mediaPlayerComponent.release();
+    }
+
+    public void setVolume(int volume) {     // percentage of 0-200?
+        mediaPlayer.audio().setVolume(volume);
+    }
+
+    public void setMute() {
+        mediaPlayer.audio().mute();
+    }
+
+    public void setRate(float rate) {
+        mediaPlayer.controls().setRate(rate);
+    }
+
+    public void play(String mrl) {
+        //mediaPlayer.media().prepare(mrl);
+        //mediaPlayer.media().parsing().parse();
+        mediaPlayer.media().play(mrl);
+    }
+
+    public void setFocus() {
+        videoSurface.requestFocus();
+        //videoSurface().requestFocusInWindow();    // this may work better under certain cases?
+    }
+
+    public void setMarquee(String text) {
+        Marquee marquee = Marquee.marquee()
+                .text(text)
+                .size(40)
+                .colour(Color.WHITE)
+                //.timeout(3000)
+                .position(MarqueePosition.BOTTOM_RIGHT)
+                .opacity(0.8f)
+                .enable();
+        mediaPlayer.marquee().set(marquee);
+    }
+
+    public void setLogo(String imageFilePath) {
+        Logo logo = Logo.logo()
+                .file(imageFilePath)
+                .position(LogoPosition.TOP_RIGHT)
+                .opacity(0.5f)
+                .duration(2000)
+                .enable();
+        mediaPlayer.logo().set(logo);
     }
 }

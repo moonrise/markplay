@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.net.URL;
 
 public class Main implements IMain {
     private static Main thisApp = null;
@@ -52,35 +53,13 @@ public class Main implements IMain {
         frame.add(contentPane);
         frame.setVisible(true);
 
-        myPlayer.getPlayerComponent().mediaPlayer().media().prepare(mrl);
-        myPlayer.getPlayerComponent().mediaPlayer().media().parsing().parse();
-        myPlayer.getPlayerComponent().mediaPlayer().media().play(mrl);
+        //myPlayer.setLogo(Utils.getResourcePath("/icons/crown.png"));
+        myPlayer.setMarquee(mrl);
+        myPlayer.setMute();
+        myPlayer.play(mrl);
 
         // focus request should be done after the frame becomes visible
-        myPlayer.getPlayerComponent().videoSurfaceComponent().requestFocus();
-        //myPlayer.getPlayerComponent().videoSurfaceComponent().requestFocusInWindow();
-
-        /*
-        Logo logo = Logo.logo()
-                .file(png)
-                .position(LogoPosition.TOP_RIGHT)
-                .opacity(0.1f)
-                .duration(2000)
-                .enable();
-         */
-        //mediaPlayerComponent.mediaPlayer().logo().set(logo);
-
-        /*
-        Marquee marquee = Marquee.marquee()
-                .text(mrl)
-                .size(40)
-                .colour(Color.WHITE)
-                .timeout(3000)
-                .position(MarqueePosition.BOTTOM_RIGHT)
-                .opacity(0.8f)
-                .enable();
-        mediaPlayerComponent.mediaPlayer().marquee().set(marquee);
-        */
+        myPlayer.setFocus();
     }
 
     @Override
@@ -90,7 +69,7 @@ public class Main implements IMain {
 
     @Override
     public void exitApplication() {
-//        mediaPlayerComponent.release();
+        myPlayer.release();
         System.exit(0);
     }
 }
