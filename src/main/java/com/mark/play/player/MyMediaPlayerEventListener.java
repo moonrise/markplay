@@ -3,46 +3,32 @@ package com.mark.play.player;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 
-import javax.swing.*;
 
 public class MyMediaPlayerEventListener extends MediaPlayerEventAdapter {
-    private JFrame frame;
-    private String mrl;
+    private IMyPlayer myPlayer;
 
 
-    public MyMediaPlayerEventListener(JFrame frame, String mrl) {
-        this.mrl = mrl;
-        this.frame = frame;
+    public MyMediaPlayerEventListener(IMyPlayer myPlayer) {
+        this.myPlayer = myPlayer;
     }
 
     @Override
     public void playing(MediaPlayer mediaPlayer) {
-        System.out.println("Playing...");
+        myPlayer.onPlayStarted();
     }
 
     @Override
     public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
-//        System.out.printf("time changed: %d\n", newTime);
+        myPlayer.onTimelineChange(newTime);
     }
 
     @Override
     public void finished(MediaPlayer mediaPlayer) {
-        System.out.println("Finished.");
-        mediaPlayer.submit(new Runnable() {
-            @Override
-            public void run() {
-                mediaPlayer.media().play(mrl);
-            }
-        });
+        myPlayer.onPlayFinished();
     }
 
     @Override
     public void error(MediaPlayer mediaPlayer) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JOptionPane.showMessageDialog(frame, "Failed to play media", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        myPlayer.onError("Failed to play media");
     }
 }

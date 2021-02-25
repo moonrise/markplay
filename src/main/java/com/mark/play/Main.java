@@ -34,8 +34,8 @@ public class Main implements IMain {
     }
 
     public Main(String mrl) {
-        frame = new JFrame("My First Media Player");
-        frame.setBounds(100, 100, 600, 400);
+        frame = new JFrame("Mark and Play");
+        frame.setBounds(100, 100, 800, 600);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         frame.addWindowListener(new WindowAdapter() {
@@ -51,6 +51,7 @@ public class Main implements IMain {
         myPlayer = new MyPlayer(this, contentPane, mrl);
 
         frame.add(contentPane);
+        frame.pack();
         frame.setVisible(true);
 
         //myPlayer.setLogo(Utils.getResourcePath("/icons/crown.png"));
@@ -65,6 +66,16 @@ public class Main implements IMain {
     @Override
     public JFrame getAppFrame() {
         return this.frame;
+    }
+
+    @Override
+    public void displayErrorMessage(String message) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JOptionPane.showMessageDialog(frame, message, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 
     @Override

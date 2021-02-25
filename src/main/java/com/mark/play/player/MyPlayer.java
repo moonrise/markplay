@@ -15,8 +15,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MyPlayer {
-    private IMain iMain;
+public class MyPlayer implements IMyPlayer {
+    private IMain main;
     private String mrl;
     private EmbeddedMediaPlayerComponent mediaPlayerComponent2;
 
@@ -24,9 +24,12 @@ public class MyPlayer {
     private EmbeddedMediaPlayer mediaPlayer;
     private Component videoSurface;
 
+    private MyMediaPlayerEventListener playerEventListener;
+    private Timeline timeline;
 
-    public MyPlayer(IMain iMain, JPanel container, String mrl) {
-        this.iMain = iMain;
+
+    public MyPlayer(IMain main, JPanel container, String mrl) {
+        this.main = main;
         this.mrl = mrl;
 
         buildPlayer();
@@ -46,7 +49,7 @@ public class MyPlayer {
 
         MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory(EMBEDDED_MEDIA_PLAYER_ARGS);
 
-        AdaptiveFullScreenStrategy adaptiveFullScreenStrategy = new AdaptiveFullScreenStrategy(iMain.getAppFrame()) {
+        AdaptiveFullScreenStrategy adaptiveFullScreenStrategy = new AdaptiveFullScreenStrategy(main.getAppFrame()) {
             @Override
             protected void onBeforeEnterFullScreen() {
                 System.out.println("Entering full screen...");
@@ -65,7 +68,8 @@ public class MyPlayer {
         mediaPlayer = mediaPlayerComponent.mediaPlayer();
         videoSurface = mediaPlayerComponent.videoSurfaceComponent();
 
-        mediaPlayer.events().addMediaPlayerEventListener(new MyMediaPlayerEventListener(iMain.getAppFrame(), this.mrl));
+        playerEventListener = new MyMediaPlayerEventListener(this);
+        mediaPlayer.events().addMediaPlayerEventListener(playerEventListener);
         mediaPlayer.events().addMediaEventListener(new MyMediaEventListener());
 
         MouseListener mouseListener = new MouseAdapter() {
@@ -81,19 +85,31 @@ public class MyPlayer {
             }
         };
 
-        videoSurface.addKeyListener(new MyKeyListener(this.iMain, mediaPlayer));
+        videoSurface.addKeyListener(new MyKeyListener(this.main, mediaPlayer));
         videoSurface.addMouseListener(mouseListener);
         videoSurface.addMouseWheelListener(mouseWheelListener);
     }
 
     private JPanel buildControlPanel() {
+        JPanel container = new JPanel();
+        container.setLayout(new BorderLayout());
+
+
+        timeline = new Timeline();
+        container.add(timeline, BorderLayout.NORTH);
+        container.add(buildButtonPanel(), BorderLayout.SOUTH);
+
+        return container;
+    }
+
+    private JPanel buildButtonPanel() {
         final JButton pauseButton;
         final JButton rewindButton;
         final JButton skipButton;
 
         JPanel controlPanel = new JPanel();
 
-        pauseButton = new JButton("Pause");
+        pauseButton = new JButton("P");
         pauseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -102,7 +118,7 @@ public class MyPlayer {
         });
         controlPanel.add(pauseButton);
 
-        rewindButton = new JButton("Rewind");
+        rewindButton = new JButton("R");
         rewindButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -111,7 +127,7 @@ public class MyPlayer {
         });
         controlPanel.add(rewindButton);
 
-        skipButton = new JButton("Skip");
+        skipButton = new JButton("S");
         skipButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -132,7 +148,7 @@ public class MyPlayer {
     }
 
     public void setMute() {
-        mediaPlayer.audio().mute();
+        mediaPlayer.audio().setMute(true);
     }
 
     public void setRate(float rate) {
@@ -140,8 +156,8 @@ public class MyPlayer {
     }
 
     public void play(String mrl) {
-        //mediaPlayer.media().prepare(mrl);
-        //mediaPlayer.media().parsing().parse();
+        mediaPlayer.media().prepare(mrl);
+        mediaPlayer.media().parsing().parse();
         mediaPlayer.media().play(mrl);
     }
 
@@ -170,5 +186,33 @@ public class MyPlayer {
                 .duration(2000)
                 .enable();
         mediaPlayer.logo().set(logo);
+    }
+
+    @Override
+    public void onError(String errorMessage) {
+        main.displayErrorMessage(errorMessage);
+    }
+
+    @Override
+    public void onPlayStarted() {
+        //System.out.println("timeline starting...");
+    }
+
+    @Override
+    public void onPlayFinished() {
+        //System.out.println("timeline finished.");
+
+        // repeat?
+        mediaPlayer.submit(new Runnable() {
+            @Override
+            public void run() {
+                mediaPlayer.media().play(mrl);
+            }
+        });
+    }
+
+    @Override
+    public void onTimelineChange(float newTime) {
+        timeline.onTimelineChange(newTime);
     }
 }
