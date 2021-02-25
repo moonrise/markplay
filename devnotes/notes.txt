@@ -1,0 +1,5 @@
+Git large file (https://git-lfs.github.com/)
+* On windows, I used IDEA terminal (configured with Ubuntu) to install git-lfs (sudo apt install git-lfs)
+* On the same terminal and where the project is located, run "git-lfs install" once
+* git-lfs track "*.wmv"
+
