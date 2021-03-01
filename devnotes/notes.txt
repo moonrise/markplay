@@ -3,3 +3,4 @@ Git large file (https://git-lfs.github.com/)
 * On the same terminal and where the project is located, run "git-lfs install" once
 * git-lfs track "*.wmv"
 
+* On Mac, brew install git-lfs, git lfs install
