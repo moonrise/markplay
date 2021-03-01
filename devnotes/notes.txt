@@ -4,3 +4,5 @@ Git large file (https://git-lfs.github.com/)
 * git-lfs track "*.wmv"
 
 * On Mac, brew install git-lfs, git lfs install
+
+"git lfs pull" to download the files after clone/pull
