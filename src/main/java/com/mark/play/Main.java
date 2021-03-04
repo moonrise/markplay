@@ -55,7 +55,6 @@ public class Main implements IMain {
         frame.setVisible(true);
 
         //myPlayer.setLogo(Utils.getResourcePath("/icons/crown.png"));
-        myPlayer.setMarquee(mrl);
         myPlayer.setMute();
         myPlayer.play(mrl);
 

@@ -6,14 +6,14 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-public class Timeline extends JPanel {
-    static {
-    }
+public class Timeline extends JPanel implements IMyPlayerStateChangeListener {
+    private MyPlayerState playerState;
 
-    private float playHeadTime;
-
-    public Timeline() {
+    public Timeline(MyPlayerState playerState) {
         super(true);
+        this.playerState = playerState;
+        this.playerState.registerStateChangeListener(this);
+
         setBorder(new LineBorder(Color.LIGHT_GRAY));
         setPreferredSize(new Dimension(0, 30));
     }
@@ -29,12 +29,13 @@ public class Timeline extends JPanel {
         g.fillRect(200, 0, 230, 30);
         g.drawRect(getWidth()/4, 0, getWidth()/2, getHeight());
         g.setFont(new Font("helvetica", Font.PLAIN, 18));
-        g.drawString(Utils.getTimelineFormatted(playHeadTime), 0, 20);
+        g.drawString(Utils.getTimelineFormatted(this.playerState.getCurrentPlayTime(), 1), 0, 20);
     }
 
-    public void onTimelineChange(float newTime) {
-        //System.out.printf("timeline changed: %s\n", Utils.getTimelineFormatted(newTime));
-        playHeadTime = newTime;
-        repaint();
+    @Override
+    public void onPlayerStateChange(MyPlayerState playerState, EPlayerStateChangeType stateChangeType) {
+        if (stateChangeType == EPlayerStateChangeType.PlayTime) {
+            repaint();
+        }
     }
 }

@@ -6,25 +6,30 @@ import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 
 public class MyMediaPlayerEventListener extends MediaPlayerEventAdapter {
     private IMyPlayer myPlayer;
+    private MyPlayerState playerState;
 
 
     public MyMediaPlayerEventListener(IMyPlayer myPlayer) {
         this.myPlayer = myPlayer;
     }
 
+    public MyMediaPlayerEventListener(MyPlayerState playerState) {
+        this.playerState = playerState;
+    }
+
     @Override
     public void playing(MediaPlayer mediaPlayer) {
-        myPlayer.onPlayStarted();
+//        myPlayer.onPlayStarted();
     }
 
     @Override
     public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
-        myPlayer.onTimelineChange(newTime);
+//        myPlayer.onTimelineChange(newTime);
     }
 
     @Override
     public void finished(MediaPlayer mediaPlayer) {
-        myPlayer.onPlayFinished();
+//        myPlayer.onPlayFinished();
     }
 
     @Override

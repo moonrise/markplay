@@ -1,6 +1,7 @@
 package com.mark.play.player;
 
 import com.mark.play.IMain;
+import com.mark.play.Utils;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.Logo;
 import uk.co.caprica.vlcj.player.base.LogoPosition;
@@ -15,7 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MyPlayer implements IMyPlayer {
+public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
     private IMain main;
     private String mrl;
     private EmbeddedMediaPlayerComponent mediaPlayerComponent2;
@@ -24,8 +25,9 @@ public class MyPlayer implements IMyPlayer {
     private EmbeddedMediaPlayer mediaPlayer;
     private Component videoSurface;
 
-    private MyMediaPlayerEventListener playerEventListener;
     private Timeline timeline;
+
+    private MyPlayerState playerState = new MyPlayerState();
 
 
     public MyPlayer(IMain main, JPanel container, String mrl) {
@@ -33,6 +35,8 @@ public class MyPlayer implements IMyPlayer {
         this.mrl = mrl;
 
         buildPlayer();
+
+        this.playerState.registerStateChangeListener(this);
 
         container.add(mediaPlayerComponent, BorderLayout.CENTER);
         container.add(buildControlPanel(), BorderLayout.SOUTH);
@@ -68,8 +72,7 @@ public class MyPlayer implements IMyPlayer {
         mediaPlayer = mediaPlayerComponent.mediaPlayer();
         videoSurface = mediaPlayerComponent.videoSurfaceComponent();
 
-        playerEventListener = new MyMediaPlayerEventListener(this);
-        mediaPlayer.events().addMediaPlayerEventListener(playerEventListener);
+        mediaPlayer.events().addMediaPlayerEventListener(this.playerState);
         mediaPlayer.events().addMediaEventListener(new MyMediaEventListener());
 
         MouseListener mouseListener = new MouseAdapter() {
@@ -95,7 +98,7 @@ public class MyPlayer implements IMyPlayer {
         container.setLayout(new BorderLayout());
 
 
-        timeline = new Timeline();
+        timeline = new Timeline(this.playerState);
         container.add(timeline, BorderLayout.NORTH);
         container.add(buildButtonPanel(), BorderLayout.SOUTH);
 
@@ -166,7 +169,11 @@ public class MyPlayer implements IMyPlayer {
         //videoSurface().requestFocusInWindow();    // this may work better under certain cases?
     }
 
-    public void setMarquee(String text) {
+    public void updateMarquee(String newTime) {
+        setMarquee(newTime);
+    }
+
+    private void setMarquee(String text) {
         Marquee marquee = Marquee.marquee()
                 .text(text)
                 .size(40)
@@ -193,6 +200,7 @@ public class MyPlayer implements IMyPlayer {
         main.displayErrorMessage(errorMessage);
     }
 
+    /*
     @Override
     public void onPlayStarted() {
         //System.out.println("timeline starting...");
@@ -214,5 +222,14 @@ public class MyPlayer implements IMyPlayer {
     @Override
     public void onTimelineChange(float newTime) {
         timeline.onTimelineChange(newTime);
+        playerState.setCurrentPlayTime(newTime);
+    }
+     */
+
+    @Override
+    public void onPlayerStateChange(MyPlayerState playerState, EPlayerStateChangeType stateChangeType) {
+        if (stateChangeType == EPlayerStateChangeType.PlayTime) {
+            updateMarquee(Utils.getTimelineFormatted(playerState.getCurrentPlayTime(), 0));
+        }
     }
 }
