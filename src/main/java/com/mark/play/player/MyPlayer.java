@@ -200,36 +200,19 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
         main.displayErrorMessage(errorMessage);
     }
 
-    /*
-    @Override
-    public void onPlayStarted() {
-        //System.out.println("timeline starting...");
-    }
-
-    @Override
-    public void onPlayFinished() {
-        //System.out.println("timeline finished.");
-
-        // repeat?
-        mediaPlayer.submit(new Runnable() {
-            @Override
-            public void run() {
-                mediaPlayer.media().play(mrl);
-            }
-        });
-    }
-
-    @Override
-    public void onTimelineChange(float newTime) {
-        timeline.onTimelineChange(newTime);
-        playerState.setCurrentPlayTime(newTime);
-    }
-     */
-
     @Override
     public void onPlayerStateChange(MyPlayerState playerState, EPlayerStateChangeType stateChangeType) {
         if (stateChangeType == EPlayerStateChangeType.PlayTime) {
             updateMarquee(Utils.getTimelineFormatted(playerState.getCurrentPlayTime(), 0));
+        }
+        else if (stateChangeType == EPlayerStateChangeType.PlayFinished) {
+            // repeat?
+            mediaPlayer.submit(new Runnable() {
+                @Override
+                public void run() {
+                    mediaPlayer.media().play(mrl);
+                }
+            });
         }
     }
 }
