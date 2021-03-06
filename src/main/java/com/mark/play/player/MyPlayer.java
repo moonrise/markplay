@@ -169,8 +169,12 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
         //videoSurface().requestFocusInWindow();    // this may work better under certain cases?
     }
 
-    public void updateMarquee(String newTime) {
-        setMarquee(newTime);
+    public void updateMarquee() {
+        String marguee = String.format("%s %.1f %s",
+                Utils.getTimelineFormatted(playerState.getPlayTime(), 0),
+                playerState.getVolume(),
+                mediaPlayer.audio().isMute() ? "M":"");
+        setMarquee(marguee);
     }
 
     private void setMarquee(String text) {
@@ -203,7 +207,10 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
     @Override
     public void onPlayerStateChange(MyPlayerState playerState, EPlayerStateChangeType stateChangeType) {
         if (stateChangeType == EPlayerStateChangeType.PlayTime) {
-            updateMarquee(Utils.getTimelineFormatted(playerState.getCurrentPlayTime(), 0));
+            updateMarquee();
+        }
+        else if (stateChangeType == EPlayerStateChangeType.Volume) {
+            updateMarquee();
         }
         else if (stateChangeType == EPlayerStateChangeType.PlayFinished) {
             // repeat?

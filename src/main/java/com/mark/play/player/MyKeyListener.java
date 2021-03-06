@@ -21,12 +21,20 @@ public class MyKeyListener extends KeyAdapter  {
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT:
-                System.out.println("VK_LEFT...");
                 mediaPlayer.controls().skipTime(-5000);
                 break;
             case KeyEvent.VK_RIGHT:
-                System.out.println("VK_RIGHT...");
                 mediaPlayer.controls().skipTime(5000);
+                break;
+            case KeyEvent.VK_UP:
+                mediaPlayer.audio().setVolume(mediaPlayer.audio().volume() + 5);
+                break;
+            case KeyEvent.VK_DOWN:
+                mediaPlayer.audio().setVolume(mediaPlayer.audio().volume() - 5);
+                break;
+            case'z':
+            case'Z':
+                mediaPlayer.audio().setMute(!mediaPlayer.audio().isMute());
                 break;
         }
 

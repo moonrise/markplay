@@ -29,7 +29,7 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener {
         g.fillRect(200, 0, 230, 30);
         g.drawRect(getWidth()/4, 0, getWidth()/2, getHeight());
         g.setFont(new Font("helvetica", Font.PLAIN, 18));
-        g.drawString(Utils.getTimelineFormatted(this.playerState.getCurrentPlayTime(), 1), 0, 20);
+        g.drawString(Utils.getTimelineFormatted(this.playerState.getPlayTime(), 1), 0, 20);
     }
 
     @Override
