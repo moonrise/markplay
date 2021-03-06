@@ -11,7 +11,7 @@ public class MyPlayerState extends MediaPlayerEventAdapter {
     private ArrayList<IMyPlayerStateChangeListener> stateChangeListeners = new ArrayList<>();
 
     private EmbeddedMediaPlayer mediaPlayer;
-    private float playTime = 0;
+    private long playTime = 0;
     private String errorMessage = "";
 
     public MyPlayerState(EmbeddedMediaPlayer mediaPlayer) {
@@ -28,12 +28,12 @@ public class MyPlayerState extends MediaPlayerEventAdapter {
         }
     }
 
-    public float getPlayTime() {
+    public long getPlayTime() {
         return this.playTime;
     }
 
     public int getVolume() {
-        Log.log("getVolume %d", this.mediaPlayer.audio().volume());
+        //Log.log("getVolume %d", this.mediaPlayer.audio().volume());
         return this.mediaPlayer.audio().volume() / 2;       // normalize it to 0-100 (from 0-200)
     }
 
@@ -80,7 +80,7 @@ public class MyPlayerState extends MediaPlayerEventAdapter {
 
     @Override
     public void volumeChanged(MediaPlayer mediaPlayer, float volume) {
-        Log.log("volume %f", volume);
+        //Log.log("volume %f", volume);
         super.volumeChanged(mediaPlayer, volume);
     }
 }

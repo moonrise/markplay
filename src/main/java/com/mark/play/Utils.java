@@ -1,15 +1,28 @@
 package com.mark.play;
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
+
 public class Utils {
 
     public static String getResourcePath(String path) {
         return Utils.class.getResource(path).getPath();
     }
 
-    public static String getTimelineFormatted(float time, int width) {
-        float seconds = time/1000F%60;
-        int minutes = (int) (time/60000);
-        int hours = minutes/60;
-        return String.format("%s%s%."+width+"f", hours > 0 ? String.format("%d:", hours) : "", minutes > 0 ? String.format("%d:", minutes) : "", seconds);
+    public static String getTimelineFormatted(long timeMilli, int width) {
+        String time = DurationFormatUtils.formatDuration(timeMilli, "H:mm:ss", true);
+
+        if (time.startsWith("0:")) {
+            time = time.substring(2);
+        }
+
+        if (time.startsWith("00:")) {
+            time = time.substring(3);
+        }
+
+        if (time.startsWith("0")) {
+            time = time.substring(1);
+        }
+
+        return time;
     }
 }
