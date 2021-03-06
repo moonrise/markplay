@@ -27,13 +27,13 @@ public class MyKeyListener extends KeyAdapter  {
                 mediaPlayer.controls().skipTime(5000);
                 break;
             case KeyEvent.VK_UP:
-                mediaPlayer.audio().setVolume(mediaPlayer.audio().volume() + 5);
+                mediaPlayer.audio().setVolume(Math.min(200, mediaPlayer.audio().volume() + 2)); // 0-200
                 break;
             case KeyEvent.VK_DOWN:
-                mediaPlayer.audio().setVolume(mediaPlayer.audio().volume() - 5);
+                mediaPlayer.audio().setVolume(mediaPlayer.audio().volume() - 2);    // lower bound guarded already
                 break;
-            case'z':
-            case'Z':
+            case'm':
+            case'M':
                 mediaPlayer.audio().setMute(!mediaPlayer.audio().isMute());
                 break;
         }

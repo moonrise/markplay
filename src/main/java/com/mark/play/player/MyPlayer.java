@@ -26,8 +26,7 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
     private Component videoSurface;
 
     private Timeline timeline;
-
-    private MyPlayerState playerState = new MyPlayerState();
+    private MyPlayerState playerState;
 
 
     public MyPlayer(IMain main, JPanel container, String mrl) {
@@ -35,8 +34,6 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
         this.mrl = mrl;
 
         buildPlayer();
-
-        this.playerState.registerStateChangeListener(this);
 
         container.add(mediaPlayerComponent, BorderLayout.CENTER);
         container.add(buildControlPanel(), BorderLayout.SOUTH);
@@ -71,6 +68,9 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
         //mediaPlayerComponent = new EmbeddedMediaPlayerComponent(mediaPlayerFactory, null, adaptiveFullScreenStrategy, null, null);
         mediaPlayer = mediaPlayerComponent.mediaPlayer();
         videoSurface = mediaPlayerComponent.videoSurfaceComponent();
+
+        this.playerState = new MyPlayerState(mediaPlayer);
+        this.playerState.registerStateChangeListener(this);
 
         mediaPlayer.events().addMediaPlayerEventListener(this.playerState);
         mediaPlayer.events().addMediaEventListener(new MyMediaEventListener());
@@ -170,10 +170,10 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
     }
 
     public void updateMarquee() {
-        String marguee = String.format("%s %.1f %s",
+        String marguee = String.format("%s %d %s",
                 Utils.getTimelineFormatted(playerState.getPlayTime(), 0),
                 playerState.getVolume(),
-                mediaPlayer.audio().isMute() ? "M":"");
+                playerState.isMute() ? "M":"");
         setMarquee(marguee);
     }
 
