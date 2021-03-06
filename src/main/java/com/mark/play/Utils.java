@@ -8,8 +8,8 @@ public class Utils {
         return Utils.class.getResource(path).getPath();
     }
 
-    public static String getTimelineFormatted(long timeMilli, int width) {
-        String time = DurationFormatUtils.formatDuration(timeMilli, "H:mm:ss", true);
+    public static String getTimelineFormatted(long timeMilli, boolean milli) {
+        String time = DurationFormatUtils.formatDuration(timeMilli, "H:mm:ss.S", true);
 
         if (time.startsWith("0:")) {
             time = time.substring(2);
@@ -23,6 +23,6 @@ public class Utils {
             time = time.substring(1);
         }
 
-        return time;
+        return time.substring(0, time.length() - (milli ? 2 : 4));
     }
 }

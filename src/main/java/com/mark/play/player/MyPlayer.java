@@ -171,7 +171,7 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
 
     public void updateMarquee() {
         String marguee = String.format("%s %d %s",
-                Utils.getTimelineFormatted(playerState.getPlayTime(), 0),
+                Utils.getTimelineFormatted(playerState.getPlayTime(), false),
                 playerState.getVolume(),
                 playerState.isMute() ? "M":"");
         setMarquee(marguee);
