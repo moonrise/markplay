@@ -1,6 +1,7 @@
 package com.mark.play.player;
 
 import com.mark.play.Log;
+import uk.co.caprica.vlcj.media.*;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
@@ -11,11 +12,17 @@ public class MyPlayerState extends MediaPlayerEventAdapter {
     private ArrayList<IMyPlayerStateChangeListener> stateChangeListeners = new ArrayList<>();
 
     private EmbeddedMediaPlayer mediaPlayer;
+    private Media media;
+
+
     private long playTime = 0;
     private String errorMessage = "";
 
     public MyPlayerState(EmbeddedMediaPlayer mediaPlayer) {
         this.mediaPlayer = mediaPlayer;
+
+        this.mediaPlayer.events().addMediaEventListener(new MyMediaEventListener(this));
+        this.mediaPlayer.events().addMediaPlayerEventListener(this);
     }
 
     public void registerStateChangeListener(IMyPlayerStateChangeListener listener) {
@@ -26,6 +33,41 @@ public class MyPlayerState extends MediaPlayerEventAdapter {
         for (IMyPlayerStateChangeListener listener : this.stateChangeListeners) {
             listener.onPlayerStateChange(this, changeType);
         }
+    }
+
+    public void mediaParsed(Media media, MediaParsedStatus newStatus) {
+        this.media = media;
+
+        if (newStatus == MediaParsedStatus.DONE) {
+            this.notifyStateChangeListeners(EPlayerStateChangeType.MediaParsed);
+
+            final InfoApi info = media.info();
+            Log.log("media duration: %d", info.duration());
+
+            for (VideoTrackInfo videoTrack : info.videoTracks()) {
+                Log.log("media video track width/height: %d x %d", videoTrack.width(), videoTrack.height());
+                Log.log("media video track aspect ratio: %d / %d", videoTrack.sampleAspectRatio(), videoTrack.sampleAspectRatioBase());
+                Log.log("media video track codec: %s (%s)", videoTrack.codecName(), videoTrack.codecDescription());
+                //Log.log("media video track : %s\n", videoTrack);
+            }
+
+            for (AudioTrackInfo audioTrack : info.audioTracks()) {
+                Log.log("media audio track codec: %s (%s)", audioTrack.codecName(), audioTrack.codecDescription());
+                Log.log("media audio track bitrate: %d, channels/rate: (%d:%d)", audioTrack.bitRate(), audioTrack.channels(), audioTrack.rate());
+                //Log.log("media audio track : %s", audioTrack);
+            }
+        } else {
+            Log.err("media parsed with error: %s", newStatus.toString());
+            this.notifyStateChangeListeners(EPlayerStateChangeType.MediaParsedFailed);
+            this.errorMessage = newStatus.toString();
+        }
+    }
+
+    public long getMediaDuration() {
+        if (this.media != null) {
+            return this.media.info().duration();
+        }
+        return 1000;        // default 1 second (better than zero?)
     }
 
     public long getPlayTime() {

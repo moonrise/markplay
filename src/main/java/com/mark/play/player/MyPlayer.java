@@ -72,9 +72,6 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
         this.playerState = new MyPlayerState(mediaPlayer);
         this.playerState.registerStateChangeListener(this);
 
-        mediaPlayer.events().addMediaPlayerEventListener(this.playerState);
-        mediaPlayer.events().addMediaEventListener(new MyMediaEventListener());
-
         MouseListener mouseListener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
