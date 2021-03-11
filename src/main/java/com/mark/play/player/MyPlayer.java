@@ -1,6 +1,8 @@
 package com.mark.play.player;
 
 import com.mark.play.IMain;
+import com.mark.play.Log;
+import com.mark.play.Resource;
 import com.mark.play.Utils;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.Logo;
@@ -16,9 +18,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
+public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateChangeListener {
     private IMain main;
-    private String mrl;
+    private Resource resource;
     private EmbeddedMediaPlayerComponent mediaPlayerComponent2;
 
     private CallbackMediaPlayerComponent mediaPlayerComponent;
@@ -29,9 +31,9 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
     private MyPlayerState playerState;
 
 
-    public MyPlayer(IMain main, JPanel container, String mrl) {
+    public MyPlayer(IMain main, JPanel container, Resource resource) {
         this.main = main;
-        this.mrl = mrl;
+        this.resource = resource;
 
         buildPlayer();
 
@@ -69,7 +71,7 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
         mediaPlayer = mediaPlayerComponent.mediaPlayer();
         videoSurface = mediaPlayerComponent.videoSurfaceComponent();
 
-        this.playerState = new MyPlayerState(mediaPlayer);
+        this.playerState = new MyPlayerState(mediaPlayer, resource);
         this.playerState.registerStateChangeListener(this);
 
         MouseListener mouseListener = new MouseAdapter() {
@@ -85,7 +87,7 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
             }
         };
 
-        videoSurface.addKeyListener(new MyKeyListener(this.main, mediaPlayer));
+        videoSurface.addKeyListener(new MyKeyListener(this, mediaPlayer));
         videoSurface.addMouseListener(mouseListener);
         videoSurface.addMouseWheelListener(mouseWheelListener);
     }
@@ -95,7 +97,7 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
         container.setLayout(new BorderLayout());
 
 
-        timeline = new Timeline(this.playerState);
+        timeline = new Timeline(this.playerState, this.resource);
         container.add(timeline, BorderLayout.NORTH);
         container.add(buildButtonPanel(), BorderLayout.SOUTH);
 
@@ -197,6 +199,18 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
     }
 
     @Override
+    public void onApplicationExitRequest() {
+        this.main.exitApplication();
+    }
+
+    @Override
+    public void onAddMarkerRequest() {
+        long currentTime = playerState.getPlayTime();
+        this.resource.addMarker(currentTime/1000F);
+        Log.log("add marker at %d", currentTime);
+    }
+
+    @Override
     public void onError(String errorMessage) {
         main.displayErrorMessage(errorMessage);
     }
@@ -214,7 +228,7 @@ public class MyPlayer implements IMyPlayer, IMyPlayerStateChangeListener {
             mediaPlayer.submit(new Runnable() {
                 @Override
                 public void run() {
-                    mediaPlayer.media().play(mrl);
+                    mediaPlayer.media().play(resource.path);
                 }
             });
         }

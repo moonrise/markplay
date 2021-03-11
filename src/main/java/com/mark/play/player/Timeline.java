@@ -1,13 +1,12 @@
 package com.mark.play.player;
 
-import com.mark.play.Utils;
-import org.apache.commons.lang3.StringUtils;
+import com.mark.play.*;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-public class Timeline extends JPanel implements IMyPlayerStateChangeListener {
+public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IResourceChangeListener {
     final int height = 50;
     final int middle = 20;
 
@@ -16,11 +15,15 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener {
     int timeWidth;
 
     private MyPlayerState playerState;
+    private Resource resource;
 
-    public Timeline(MyPlayerState playerState) {
+    public Timeline(MyPlayerState playerState, Resource resource) {
         super(true);
         this.playerState = playerState;
         this.playerState.registerStateChangeListener(this);
+
+        this.resource = resource;
+        this.resource.registerChangeListener(this);
 
         setBorder(new LineBorder(Color.LIGHT_GRAY));
         setPreferredSize(new Dimension(0, this.height));
@@ -34,6 +37,11 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener {
         //Font font = new Font("helvetica", Font.PLAIN, 16);
         FontMetrics metrics = g.getFontMetrics(this.font);
         this.timeWidth = metrics.stringWidth("H:MM:SS.S");
+    }
+
+    @Override
+    public void onResourceChange(Resource resource, EResourceChangeType type) {
+        repaint();
     }
 
     @Override
@@ -56,9 +64,9 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener {
         //g.drawRect(0, 0, getWidth(), this.middle);
         g.drawRect(0, 0, getWidth(), this.middle);
 
-        // time line
+        // play head
         g.setColor(Color.BLUE);
-        g.drawRect(timeX(this.getWidth(), playRatio), 0, 1, this.middle/2);
+        g.fillRect(timeX(this.getWidth(), playRatio)-2, 1, 4, this.middle/2+1);
 
         // bottom frame - play time value
         Rectangle timeRect = new Rectangle(this.getWidth()/2 - timeWidth/2, this.middle, timeWidth, this.getHeight());
@@ -69,10 +77,11 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener {
         // markers
         g.setColor(Color.BLACK);
         this.drawMarkerAt(g, 0);
-        this.drawMarkerAt(g, 0.4);
-        this.drawMarkerAt(g, 0.5);
-        this.drawMarkerAt(g, 0.9);
         this.drawMarkerAt(g, 1);
+        for (Marker marker : resource.markers) {
+            float markerAt = marker.position * 1000 / duration;
+            this.drawMarkerAt(g, markerAt);
+        }
     }
 
     private int timeX(int width, double ratio) {

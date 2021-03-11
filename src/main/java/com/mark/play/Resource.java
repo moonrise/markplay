@@ -14,12 +14,25 @@ public class Resource {
 
     public ArrayList<Marker> markers = new ArrayList<>();
 
+    private ArrayList<IResourceChangeListener> resourceChangeListeners = new ArrayList<>();
+
     public Resource(String path) {
         this.path = path;
     }
 
+    public void registerChangeListener(IResourceChangeListener listener) {
+        this.resourceChangeListeners.add(listener);
+    }
+
+    private void notifyChangeListeners(EResourceChangeType changeType) {
+        for (IResourceChangeListener listener : this.resourceChangeListeners) {
+            listener.onResourceChange(this, changeType);
+        }
+    }
+
     public void addMarker(float position) {
         markers.add(new Marker(position));
+        notifyChangeListeners(EResourceChangeType.MarkerAdded);
     }
 
     /**

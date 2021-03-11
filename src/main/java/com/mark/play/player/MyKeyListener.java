@@ -1,17 +1,16 @@
 package com.mark.play.player;
 
-import com.mark.play.IMain;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class MyKeyListener extends KeyAdapter  {
-    private IMain iMain;
+    private IMyPlayer myPlayer;
     private EmbeddedMediaPlayer mediaPlayer;
 
-    public MyKeyListener(IMain iMain, EmbeddedMediaPlayer mediaPlayer) {
-        this.iMain = iMain;
+    public MyKeyListener(IMyPlayer myPlayer, EmbeddedMediaPlayer mediaPlayer) {
+        this.myPlayer = myPlayer;
         this.mediaPlayer = mediaPlayer;
     }
 
@@ -31,6 +30,10 @@ public class MyKeyListener extends KeyAdapter  {
                 break;
             case KeyEvent.VK_DOWN:
                 mediaPlayer.audio().setVolume(mediaPlayer.audio().volume() - 2);    // lower bound guarded already
+                break;
+            case't':
+            case'T':
+                myPlayer.onAddMarkerRequest();
                 break;
             case'm':
             case'M':
@@ -54,7 +57,7 @@ public class MyKeyListener extends KeyAdapter  {
             case 'Q':
             case 'x':
             case 'X':
-                iMain.exitApplication();
+                myPlayer.onApplicationExitRequest();
                 break;
             case 'f':
             case 'F':

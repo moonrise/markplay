@@ -1,6 +1,9 @@
 package com.mark.play.player;
 
+import com.mark.play.EResourceChangeType;
+import com.mark.play.IResourceChangeListener;
 import com.mark.play.Log;
+import com.mark.play.Resource;
 import uk.co.caprica.vlcj.media.*;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
@@ -8,21 +11,24 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 import java.util.ArrayList;
 
-public class MyPlayerState extends MediaPlayerEventAdapter {
+public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceChangeListener {
     private ArrayList<IMyPlayerStateChangeListener> stateChangeListeners = new ArrayList<>();
 
     private EmbeddedMediaPlayer mediaPlayer;
     private Media media;
+    private Resource resource;
 
 
     private long playTime = 0;
     private String errorMessage = "";
 
-    public MyPlayerState(EmbeddedMediaPlayer mediaPlayer) {
+    public MyPlayerState(EmbeddedMediaPlayer mediaPlayer, Resource resource) {
         this.mediaPlayer = mediaPlayer;
+        this.resource = resource;
 
         this.mediaPlayer.events().addMediaEventListener(new MyMediaEventListener(this));
         this.mediaPlayer.events().addMediaPlayerEventListener(this);
+        this.resource.registerChangeListener(this);
     }
 
     public void registerStateChangeListener(IMyPlayerStateChangeListener listener) {
@@ -33,6 +39,10 @@ public class MyPlayerState extends MediaPlayerEventAdapter {
         for (IMyPlayerStateChangeListener listener : this.stateChangeListeners) {
             listener.onPlayerStateChange(this, changeType);
         }
+    }
+
+    @Override
+    public void onResourceChange(Resource resource, EResourceChangeType type) {
     }
 
     public void mediaParsed(Media media, MediaParsedStatus newStatus) {

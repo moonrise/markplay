@@ -48,7 +48,7 @@ public class Main implements IMain {
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout());
 
-        myPlayer = new MyPlayer(this, contentPane, mrl);
+        myPlayer = new MyPlayer(this, contentPane, new Resource(mrl));
 
         frame.add(contentPane);
         frame.pack();
