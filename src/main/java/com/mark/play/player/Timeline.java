@@ -8,11 +8,11 @@ import java.awt.*;
 
 public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IResourceChangeListener {
     final int height = 50;
-    final int middle = 20;
+    final int middle = 30;
 
-    Font font = new Font("helvetica", Font.PLAIN, 16);
-    boolean graphicsSet = false;
-    int timeWidth;
+    private Font font = new Font("helvetica", Font.PLAIN, 12);
+    private boolean graphicsSet = false;
+    private int timeWidth;
 
     private MyPlayerState playerState;
     private Resource resource;
@@ -34,7 +34,6 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
             ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         }
 
-        //Font font = new Font("helvetica", Font.PLAIN, 16);
         FontMetrics metrics = g.getFontMetrics(this.font);
         this.timeWidth = metrics.stringWidth("H:MM:SS.S");
     }
@@ -57,33 +56,54 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
         long duration = this.playerState.getMediaDuration();
         long playTime = this.playerState.getPlayTime();
         float playRatio = playTime/(float)duration;
+        float zoomScale = 10.0F;
 
         // top frame
         g2.setStroke(new BasicStroke(1));
         g.setColor(Color.LIGHT_GRAY);
-        //g.drawRect(0, 0, getWidth(), this.middle);
-        g.drawRect(0, 0, getWidth(), this.middle);
+        g.drawRect(0, 0, getWidth(), this.middle/2);
+        g.drawRect(0, this.middle/2, getWidth(), this.middle/2);
+
+        // zoom segment bar
+        float segmentDuration = duration/zoomScale;
+        float segmentWest = playTime - segmentDuration/2;
+        float segmentEast = playTime + segmentDuration/2;
+        if (segmentWest < 0) {
+            segmentEast -= segmentWest;
+            segmentWest = 0;
+        }
+        else if (segmentEast > duration) {
+            segmentWest += (segmentEast - duration);
+            segmentEast = duration;
+        }
+
+        int segmentWestX = timeX(this.getWidth(), segmentWest/duration);
+        //int segmentEastX = timeX(this.getWidth(), segmentEast/duration);
+        g.setColor(Color.GRAY);
+        this.drawMarkerAt(g, 0);
+        this.drawMarkerAt(g, 1);
+        g.fillRect(segmentWestX, this.middle/2, (int)(this.getWidth()/zoomScale), 3);
 
         // play head
         g.setColor(Color.BLUE);
-        g.fillRect(timeX(this.getWidth(), playRatio)-2, 1, 4, this.middle/2+1);
+        g.fillRect(timeX(this.getWidth(), playRatio)-1, 1, 4, this.middle/2+6);
 
         // bottom frame - play time value
-        Rectangle timeRect = new Rectangle(this.getWidth()/2 - timeWidth/2, this.middle, timeWidth, this.getHeight());
-        g.setColor(Color.BLUE);
-        //this.drawRect(g, timeRect);
+        Rectangle timeRect = new Rectangle(this.getWidth()/2 - timeWidth/2, this.middle, timeWidth, this.getHeight()-this.middle);
+        g.setColor(Color.LIGHT_GRAY);
+        this.drawRect(g, timeRect);
+        g.setColor(Color.BLACK);
         this.drawCenteredString(g, Utils.getTimelineFormatted(playTime, true), timeRect, font);
 
         // markers
         g.setColor(Color.BLACK);
-        this.drawMarkerAt(g, 0);
-        this.drawMarkerAt(g, 1);
         for (Marker marker : resource.markers) {
             float markerAt = marker.position * 1000 / duration;
             this.drawMarkerAt(g, markerAt);
         }
     }
 
+    // compute X coordinate of the timeline
     private int timeX(int width, double ratio) {
         final int margin = 3;
         return (int)((width - 2*margin) * (float)ratio) + margin;
@@ -91,7 +111,7 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
 
     private void drawMarkerAt(Graphics g, double ratio) {
         int marker = timeX(getWidth(), ratio);
-        g.drawLine(marker, this.middle/2, marker, this.middle-2);
+        g.drawLine(marker, this.middle/2+1, marker, this.middle-1);
     }
 
     private void drawRect(Graphics g, Rectangle rect) {
@@ -111,7 +131,7 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
         // Determine the X coordinate for the text
         int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
         // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
-        int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent()/2;
+        int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
         // Set the font
         g.setFont(font);
         // Draw the String
