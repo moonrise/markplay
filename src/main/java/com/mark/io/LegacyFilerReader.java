@@ -1,5 +1,7 @@
-package com.mark.play;
+package com.mark.io;
 
+import com.mark.play.Log;
+import com.mark.play.Resource;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -9,6 +11,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.StringWriter;
 import java.util.Date;
 
 public class LegacyFilerReader extends DefaultHandler {
@@ -20,15 +23,15 @@ public class LegacyFilerReader extends DefaultHandler {
             String givenFile = args[0];
             File xmlFile = new File(givenFile);
             if (xmlFile.exists()) {
-                System.out.printf("Given file: %s\n", givenFile);
+                Log.log("Given file: %s", givenFile);
                 new LegacyFilerReader().read(xmlFile);
             }
             else {
-                System.err.printf("Given file: '%s' does not exist.\n", givenFile);
+                Log.err("Given file: '%s' does not exist.", givenFile);
             }
         }
         else {
-            System.out.println("Provide a legacy xml file as the first command line argument.");
+            Log.log("Provide a legacy xml file as the first command line argument.");
         }
     }
 
@@ -44,7 +47,7 @@ public class LegacyFilerReader extends DefaultHandler {
 
     @Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-		//System.out.printf("start element : %s\n", qName);
+		//Log.log("start element : %s", qName);
 
 		/*
 		if (qName.equalsIgnoreCase("Employee")) {
@@ -74,7 +77,7 @@ public class LegacyFilerReader extends DefaultHandler {
 
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-    	//System.out.printf("end element : %s, %s\n", qName, data.toString());
+    	//Log.log("end element : %s, %s", qName, data.toString());
 
 		if (qName.equals("Path")) {
 		    resource = new Resource(data.toString());
@@ -98,7 +101,7 @@ public class LegacyFilerReader extends DefaultHandler {
             resource.accessedTime = new Date(data.toString());
         }
         else if (qName.equals("CResourceItem")) {
-            System.out.printf("resource: %s\n", resource.toString());
+            Log.log("resource: %s", resource.toString());
         }
         else if (qName.equals("Position")) {
             resource.addMarker(Float.parseFloat(data.toString()));
@@ -108,7 +111,25 @@ public class LegacyFilerReader extends DefaultHandler {
         }
 	}
 
-	@Override
+    @Override
+    public void endDocument() throws SAXException {
+        super.endDocument();
+        Log.log("Legacy file parsed; %s", resource.path);
+
+        String json = GsonHandler.toJsonString(this.resource);
+
+        // write to string
+        StringWriter writer = new StringWriter();
+        writer.write(json);
+        String stringValue = writer.toString();
+        Log.log("Legacy file to json: %s", stringValue);
+    }
+
+    public String toJson() {
+        return GsonHandler.toJsonString(this.resource);
+    }
+
+    @Override
 	public void characters(char ch[], int start, int length) throws SAXException {
 		data.append(new String(ch, start, length));
 	}

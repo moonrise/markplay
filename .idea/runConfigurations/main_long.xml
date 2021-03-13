@@ -5,7 +5,7 @@
     <option name="PROGRAM_PARAMETERS" value="./media/WhatIsMyth.wmv" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.mark.play.*" />
+        <option name="PATTERN" value="com.mark.io.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

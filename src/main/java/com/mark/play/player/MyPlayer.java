@@ -1,5 +1,6 @@
 package com.mark.play.player;
 
+import com.mark.io.ResourceList;
 import com.mark.play.IMain;
 import com.mark.play.Log;
 import com.mark.play.Resource;
@@ -20,6 +21,7 @@ import java.awt.event.*;
 
 public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateChangeListener {
     private IMain main;
+    private ResourceList resourceList;
     private Resource resource;
     private EmbeddedMediaPlayerComponent mediaPlayerComponent2;
 
@@ -33,7 +35,10 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
 
     public MyPlayer(IMain main, JPanel container, Resource resource) {
         this.main = main;
+
+        this.resourceList = new ResourceList(null);
         this.resource = resource;
+        this.resourceList.addResource(this.resource);
 
         buildPlayer();
 

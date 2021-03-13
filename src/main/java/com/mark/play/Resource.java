@@ -14,7 +14,7 @@ public class Resource {
 
     public ArrayList<Marker> markers = new ArrayList<>();
 
-    private ArrayList<IResourceChangeListener> resourceChangeListeners = new ArrayList<>();
+    private transient ArrayList<IResourceChangeListener> resourceChangeListeners = new ArrayList<>();
 
     public Resource(String path) {
         this.path = path;
