@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="main" type="Application" factoryName="Application">
+  <configuration default="false" name="main-cloud" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.mark.play.Main" />
     <module name="markplay" />
     <option name="PROGRAM_PARAMETERS" value="./media/cloud.wmv" />

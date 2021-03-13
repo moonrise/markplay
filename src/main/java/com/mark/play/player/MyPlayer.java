@@ -33,12 +33,15 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     private MyPlayerState playerState;
 
 
-    public MyPlayer(IMain main, JPanel container, Resource resource) {
+    public MyPlayer(IMain main, JPanel container) {
+        this(main, container, new ResourceList());
+    }
+
+    public MyPlayer(IMain main, JPanel container, ResourceList resourceList) {
         this.main = main;
 
-        this.resourceList = new ResourceList(null);
-        this.resource = resource;
-        this.resourceList.addResource(this.resource);
+        this.resourceList = resourceList;
+        this.resource = resourceList.getCurrent();
 
         buildPlayer();
 
@@ -160,6 +163,12 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
 
     public void setRate(float rate) {
         mediaPlayer.controls().setRate(rate);
+    }
+
+    public void play() {
+        if (this.resource != null) {
+            play(this.resource.path);
+        }
     }
 
     public void play(String mrl) {

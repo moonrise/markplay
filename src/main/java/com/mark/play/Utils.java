@@ -3,6 +3,7 @@ package com.mark.play;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 public class Utils {
+    public static final String NoName = "<New>";
 
     public static String getResourcePath(String path) {
         return Utils.class.getResource(path).getPath();

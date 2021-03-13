@@ -2,6 +2,8 @@ package com.mark.io;
 
 import com.mark.play.Log;
 import com.mark.play.Resource;
+import com.mark.play.Utils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,10 +11,10 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 
 public class ResourceList {
-    public static final String FileExtension = "mrk";
+    public static final String FileExtension = ".mrk";
 
-    private ArrayList resources = new ArrayList<Resource>();
-    private String filePath;
+    private ArrayList<Resource> resources = new ArrayList<>();
+    private transient String filePath;
 
 
     public static void main(String[] args) {
@@ -23,6 +25,18 @@ public class ResourceList {
         else {
             new ResourceList(null);
         }
+    }
+
+    public static boolean isFileExtensionMatch(String filePath) {
+        return filePath.endsWith(FileExtension);
+    }
+
+    public String getName() {
+        return filePath == null ? Utils.NoName : FilenameUtils.getBaseName(filePath);
+    }
+
+    public boolean isDirty() {
+        return false;
     }
 
     public static void instantiate(String path) {
@@ -63,6 +77,10 @@ public class ResourceList {
 
          */
 
+    }
+
+    public ResourceList() {
+        this(null);
     }
 
     public ResourceList(String filePath) {
@@ -115,5 +133,12 @@ public class ResourceList {
 
     public void addResource(Resource resource) {
         this.resources.add(resource);
+    }
+
+    public Resource getCurrent() {
+        if (resources.size() > 0) {
+            return resources.get(0);
+        }
+        return null;
     }
 }
