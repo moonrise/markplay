@@ -3,8 +3,10 @@ package com.mark.play;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 public class Utils {
+    public static final String AppName = "MarkPlay";
     public static final String NoName = "<New>";
 
+    // get the resource from the resources directory (packaged in the jar)
     public static String getResourcePath(String path) {
         return Utils.class.getResource(path).getPath();
     }

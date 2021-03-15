@@ -1,6 +1,7 @@
 package com.mark.play;
 
 import com.mark.io.ResourceList;
+import com.mark.play.actions.AppMenuBar;
 import com.mark.play.player.MyPlayer;
 
 import javax.swing.*;
@@ -10,7 +11,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 
 public class Main implements IMain {
-    private static final String AppName = "MarkPlay";
     private static Main thisApp = null;
 
     private final JFrame frame;
@@ -44,7 +44,7 @@ public class Main implements IMain {
             }
         }
 
-        frame = new JFrame(AppName);
+        frame = new JFrame(Utils.AppName);
         frame.setBounds(100, 100, 800, 600);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -60,6 +60,7 @@ public class Main implements IMain {
 
         myPlayer = new MyPlayer(this, contentPane, resourceList);
 
+        frame.setJMenuBar(new AppMenuBar(this));
         frame.add(contentPane);
         frame.pack();
         frame.setVisible(true);
@@ -96,7 +97,7 @@ public class Main implements IMain {
     }
 
     public void updateAppHeader() {
-        String header = String.format("%s (%s%s)", AppName,
+        String header = String.format("%s (%s%s)", Utils.AppName,
            resourceList == null ? Utils.NoName : resourceList.getName(),
            resourceList == null ? "" : resourceList.isDirty() ? " *" : "");
         frame.setTitle(header);
