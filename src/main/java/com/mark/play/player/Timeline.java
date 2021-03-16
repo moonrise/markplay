@@ -15,15 +15,11 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
     private int timeWidth;
 
     private MyPlayerState playerState;
-    private Resource resource;
 
-    public Timeline(MyPlayerState playerState, Resource resource) {
+    public Timeline(MyPlayerState playerState) {
         super(true);
         this.playerState = playerState;
         this.playerState.registerStateChangeListener(this);
-
-        this.resource = resource;
-        this.resource.registerChangeListener(this);
 
         setBorder(new LineBorder(Color.LIGHT_GRAY));
         setPreferredSize(new Dimension(0, this.height));
@@ -96,10 +92,13 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
         this.drawCenteredString(g, Utils.getTimelineFormatted(playTime, true), timeRect, font);
 
         // markers
-        g.setColor(Color.BLACK);
-        for (Marker marker : resource.markers) {
-            float markerAt = marker.position * 1000 / duration;
-            this.drawMarkerAt(g, markerAt);
+        Resource resource = this.playerState.getResource();
+        if (resource != null) {
+            g.setColor(Color.BLACK);
+            for (Marker marker : resource.markers) {
+                float markerAt = marker.position * 1000 / duration;
+                this.drawMarkerAt(g, markerAt);
+            }
         }
     }
 
@@ -140,10 +139,18 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
 
     @Override
     public void onPlayerStateChange(MyPlayerState playerState, EPlayerStateChangeType stateChangeType) {
-        if (stateChangeType == EPlayerStateChangeType.MediaParsed) {
+        if (stateChangeType == EPlayerStateChangeType.MediaLoaded) {
+            playerState.getResource().registerChangeListener(this);
+            repaint();
+        }
+        else if (stateChangeType == EPlayerStateChangeType.MediaParsed) {
             repaint();
         }
         else if (stateChangeType == EPlayerStateChangeType.PlayTime) {
+            repaint();
+        }
+        else if (stateChangeType == EPlayerStateChangeType.MediaUnloaded) {
+            playerState.getResource().unRegisterChangeListener(this);
             repaint();
         }
     }

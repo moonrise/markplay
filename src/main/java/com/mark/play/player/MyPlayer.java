@@ -105,7 +105,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         container.setLayout(new BorderLayout());
 
 
-        timeline = new Timeline(this.playerState, this.resource);
+        timeline = new Timeline(this.playerState);
         container.add(timeline, BorderLayout.NORTH);
         container.add(buildButtonPanel(), BorderLayout.SOUTH);
 

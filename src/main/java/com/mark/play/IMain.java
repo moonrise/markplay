@@ -1,5 +1,7 @@
 package com.mark.play;
 
+import com.mark.io.IAppDataChangeListener;
+
 import javax.swing.*;
 
 public interface IMain {
@@ -7,4 +9,5 @@ public interface IMain {
     void updateAppHeader();
     void displayErrorMessage(String message);
     void exitApplication();
+    void registerAppDataChangeListener(IAppDataChangeListener listener);
 }

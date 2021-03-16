@@ -28,7 +28,14 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
 
         this.mediaPlayer.events().addMediaEventListener(new MyMediaEventListener(this));
         this.mediaPlayer.events().addMediaPlayerEventListener(this);
-        this.resource.registerChangeListener(this);
+
+        if (this.resource != null) {
+            this.resource.registerChangeListener(this);
+        }
+    }
+
+    public Media getMedia() {
+        return this.media;
     }
 
     public void registerStateChangeListener(IMyPlayerStateChangeListener listener) {
@@ -39,6 +46,10 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
         for (IMyPlayerStateChangeListener listener : this.stateChangeListeners) {
             listener.onPlayerStateChange(this, changeType);
         }
+    }
+
+    public Resource getResource() {
+        return this.resource;
     }
 
     @Override

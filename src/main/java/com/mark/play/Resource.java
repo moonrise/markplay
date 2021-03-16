@@ -24,6 +24,10 @@ public class Resource {
         this.resourceChangeListeners.add(listener);
     }
 
+    public void unRegisterChangeListener(IResourceChangeListener listener) {
+        this.resourceChangeListeners.remove(listener);
+    }
+
     private void notifyChangeListeners(EResourceChangeType changeType) {
         for (IResourceChangeListener listener : this.resourceChangeListeners) {
             listener.onResourceChange(this, changeType);

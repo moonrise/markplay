@@ -1,5 +1,6 @@
 package com.mark.play;
 
+import com.mark.io.IAppDataChangeListener;
 import com.mark.io.ResourceList;
 import com.mark.play.actions.AppMenuBar;
 import com.mark.play.player.MyPlayer;
@@ -9,41 +10,44 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.ArrayList;
 
 public class Main implements IMain {
     private static Main thisApp = null;
 
     private final JFrame frame;
+    private ArrayList<IAppDataChangeListener> appDataChangeListeners = new ArrayList<>();
+
     private ResourceList resourceList = new ResourceList();
 
     private MyPlayer myPlayer;
 
 
     public static void main(String[] args) {
-        String givenFile = null;
-        if (args.length > 0 && args[0].length() > 0) {
-            if (new File(args[0]).exists()) {
-                givenFile = args[0];
-                Log.log("Given file: %s", givenFile);
-            }
-            else {
-                System.err.printf("Given file: '%s' does not exist.\n", args[0]);
-            }
-        }
+        thisApp = new Main();
 
-        thisApp = new Main(givenFile);
+        if (args.length > 0) {
+            thisApp.processCommandLineArguments(args);
+        }
     }
 
-    public Main(String filePath) {
-        if (filePath != null) {
-            if (ResourceList.isFileExtensionMatch(filePath)) {
-                this.resourceList = new ResourceList(filePath);
-            }
-            else {
-                this.resourceList.addResource(new Resource(filePath));
-            }
+    private void processCommandLineArguments(String[] args) {
+        File givenFile = new File(args[0]);
+        if (givenFile.exists()) {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    processFile(givenFile.getPath());
+                }
+            });
+            Log.log("Given file: %s", givenFile);
         }
+        else {
+            displayErrorMessage(String.format("Given file: '%s' does not exist.", givenFile));
+        }
+    }
 
+    public Main() {
         frame = new JFrame(Utils.AppName);
         frame.setBounds(100, 100, 800, 600);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -82,6 +86,7 @@ public class Main implements IMain {
 
     @Override
     public void displayErrorMessage(String message) {
+        Log.err(message);
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -101,5 +106,25 @@ public class Main implements IMain {
            resourceList == null ? Utils.NoName : resourceList.getName(),
            resourceList == null ? "" : resourceList.isDirty() ? " *" : "");
         frame.setTitle(header);
+    }
+
+    @Override
+    public void registerAppDataChangeListener(IAppDataChangeListener listener) {
+        this.appDataChangeListeners.add(listener);
+    }
+
+//    private void notifyAppDataChangeListeners(EResourceChangeType changeType) {
+//        for (IAppDataChangeListener listener : this.appDataChangeListeners) {
+//            listener.onResourceListLoaded(this, changeType);
+//        }
+//    }
+
+    private void processFile(String filePath) {
+        if (ResourceList.isFileExtensionMatch(filePath)) {
+            this.resourceList = new ResourceList(filePath);
+        }
+        else {
+            this.resourceList.addResource(new Resource(filePath));
+        }
     }
 }
