@@ -1,5 +1,6 @@
 package com.mark.play;
 
+import com.mark.MainSplitPane;
 import com.mark.io.IAppDataChangeListener;
 import com.mark.io.ResourceList;
 import com.mark.play.actions.AppMenuBar;
@@ -17,6 +18,8 @@ public class Main implements IMain {
     private static Main thisApp = null;
 
     private final JFrame frame;
+    private MainSplitPane splitPane;
+
     private ArrayList<IAppDataChangeListener> appDataChangeListeners = new ArrayList<>();
 
     private ResourceList resourceList = new ResourceList();
@@ -88,12 +91,8 @@ public class Main implements IMain {
             }
         }
 
-        JScrollPane tableContainer = new JScrollPane(table);
+        splitPane = new MainSplitPane(new JScrollPane(table), playerContainer);
         table.setFillsViewportHeight(true);
-
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tableContainer, playerContainer);
-        splitPane.setOneTouchExpandable(true);
-        splitPane.setDividerLocation(150);
 
         myPlayer = new MyPlayer(this, playerContainer, resourceList);
 
@@ -146,7 +145,12 @@ public class Main implements IMain {
         this.appDataChangeListeners.add(listener);
     }
 
-//    private void notifyAppDataChangeListeners(EResourceChangeType changeType) {
+    @Override
+    public boolean flipShowNavigator() {
+        return splitPane.flipVisibilityLeftPanel();
+    }
+
+    //    private void notifyAppDataChangeListeners(EResourceChangeType changeType) {
 //        for (IAppDataChangeListener listener : this.appDataChangeListeners) {
 //            listener.onResourceListLoaded(this, changeType);
 //        }

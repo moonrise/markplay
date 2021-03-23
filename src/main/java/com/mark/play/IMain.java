@@ -9,5 +9,6 @@ public interface IMain {
     void updateAppHeader();
     void displayErrorMessage(String message);
     void exitApplication();
+    boolean flipShowNavigator();
     void registerAppDataChangeListener(IAppDataChangeListener listener);
 }
