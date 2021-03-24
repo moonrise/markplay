@@ -52,13 +52,7 @@ public class Main implements IMain {
     }
 
     public Main() {
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice[] screens = ge.getScreenDevices();
-        GraphicsDevice gd = screens[0];
-
-//        gd.getIDstring();
-
-        frame = new MainFrame(screens[0], this);
+        frame = new MainFrame(this);
 
         JPanel playerContainer = new JPanel();
         playerContainer.setLayout(new BorderLayout());

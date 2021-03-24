@@ -13,14 +13,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class MainFrame extends JFrame implements ComponentListener {
-    private IMain main;
-
-    public MainFrame(GraphicsDevice gd, IMain main) throws HeadlessException {
-//        super(gd.getDefaultConfiguration());
-        super();
-        setTitle(Utils.AppName);
-
-        this.main = main;
+    public MainFrame(IMain main) throws HeadlessException {
+        super(Utils.AppName);
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setJMenuBar(new AppMenuBar(main));
@@ -35,13 +29,9 @@ public class MainFrame extends JFrame implements ComponentListener {
         addComponentListener(this);
     }
 
-    private GraphicsDevice getGraphicsDevice() {
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice[] screens = ge.getScreenDevices();
-        return screens[0];
-    }
-
     public void display() {
+        /*
+        [TODO] See the TODO comment in componentMoved method in this class.
         if (getScreenCount() > 1) {
             dumpGraphicsDevices();
             String savedDeviceId = Prefs.getDeviceId();
@@ -50,9 +40,9 @@ public class MainFrame extends JFrame implements ComponentListener {
                 // move it to the previously known device if possible
                 GraphicsDevice prevGd = findGraphicsDevice(savedDeviceId);
                 Log.log("move the window to device %s from device %s", savedDeviceId, currentDeviceId);
-
             }
         }
+        */
 
         setBounds();
         // pack();      // DO NOT pack since we're setting the bounds above
@@ -92,6 +82,10 @@ public class MainFrame extends JFrame implements ComponentListener {
         return null;
     }
 
+    private GraphicsDevice getGraphicsDevice() {
+        return getGraphicsConfiguration().getDevice();
+    }
+
     private Rectangle getDeviceBounds() {
         GraphicsConfiguration gc = getGraphicsConfiguration();
         //Log.log("Device/Monitor ID: %s, %s", gc.getDevice().getIDstring(), gc.getBounds().toString());
@@ -112,9 +106,12 @@ public class MainFrame extends JFrame implements ComponentListener {
     public void componentMoved(ComponentEvent componentEvent) {
         saveCurrentGeometry();
 
+        // [TODO] Strange thing is that the device location is restored in multi monitor environments, all of sudden.
+        // The work was being done to get it to work, but not sure why it started showing the main frame in the last
+        // monitor location. STRANGE.... will revisit if it stops working.
         // save deviceID for the environment where multiple monitors are available
-        Log.log("Device/Monitor ID: %s, %s", getGraphicsDevice().getIDstring(), getGraphicsConfiguration().getBounds());
-        Prefs.setDeviceId(getGraphicsDevice().getIDstring());
+        // Log.log("Device/Monitor ID: %s, Bounds: %s", getGraphicsDevice().getIDstring(), getDeviceBounds());
+        // Prefs.setDeviceId(getGraphicsDevice().getIDstring());
     }
 
     @Override
