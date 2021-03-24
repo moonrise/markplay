@@ -22,7 +22,7 @@ public class MainSplitPane extends JSplitPane implements PropertyChangeListener 
 
     @Override
     public void propertyChange(PropertyChangeEvent pce) {
-        Log.log("MainSplitPane property changed; new divider location: %d", pce.getNewValue());
+        //Log.log("MainSplitPane property changed; new divider location: %d", pce.getNewValue());
         Prefs.setDividerX((int) (pce.getNewValue()));
     }
 

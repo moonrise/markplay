@@ -2,6 +2,8 @@ package com.mark.play;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
+import java.awt.*;
+
 public class Utils {
     public static final String AppName = "MarkPlay";
     public static final String NoName = "<New>";
@@ -27,5 +29,22 @@ public class Utils {
         }
 
         return time.substring(0, time.length() - (milli ? 2 : 4));
+    }
+
+    /**
+     * @param rect string notation of "x,y,width,height"
+     * @return Rectangle
+     */
+    public static Rectangle stringToRect(String rect) {
+        String[] split = rect.split(",");
+        return new Rectangle(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]));
+    }
+
+    /**
+     * @param rect Rectangle
+     * @return  string notation of "x,y,width,height"
+     */
+    public static String rectToString(Rectangle rect) {
+        return String.format("%d,%d,%d,%d", rect.x, rect.y, rect.width, rect.height);
     }
 }

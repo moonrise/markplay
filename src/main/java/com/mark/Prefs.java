@@ -1,7 +1,9 @@
 package com.mark;
 
 import com.mark.play.Log;
+import com.mark.play.Utils;
 
+import java.awt.*;
 import java.util.prefs.Preferences;
 
 public class Prefs {
@@ -24,6 +26,15 @@ public class Prefs {
         }
     }
 
+    public static Rectangle getMainFrameGeometry() {
+        return Utils.stringToRect(userPrefs.get("mainFrameGeometry", "0, 0, 800, 600"));
+    }
+
+    public static void setMainFrameGeometry(Rectangle rect) {
+        userPrefs.put("mainFrameGeometry", Utils.rectToString(rect));
+        //dumpAll();
+    }
+
     public static int getDividerX() {
         return userPrefs.getInt("dividerX", 150);
     }
@@ -34,7 +45,6 @@ public class Prefs {
 
     public static void setNavigatorVisible(boolean visible) {
         userPrefs.putBoolean("navigatorVisible", visible);
-        //dumpAll();
     }
 
     public static boolean isNavigatorVisible() {

@@ -1,23 +1,21 @@
 package com.mark.play;
 
+import com.mark.MainFrame;
 import com.mark.MainSplitPane;
 import com.mark.io.IAppDataChangeListener;
 import com.mark.io.ResourceList;
-import com.mark.play.actions.AppMenuBar;
 import com.mark.play.player.MyPlayer;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 
 public class Main implements IMain {
     private static Main thisApp = null;
 
-    private final JFrame frame;
+    private final MainFrame frame;
     private MainSplitPane splitPane;
 
     private ArrayList<IAppDataChangeListener> appDataChangeListeners = new ArrayList<>();
@@ -52,16 +50,7 @@ public class Main implements IMain {
     }
 
     public Main() {
-        frame = new JFrame(Utils.AppName);
-        frame.setBounds(100, 100, 800, 600);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                exitApplication();
-            }
-        });
+        frame = new MainFrame(this);
 
         JPanel playerContainer = new JPanel();
         playerContainer.setLayout(new BorderLayout());
@@ -96,10 +85,8 @@ public class Main implements IMain {
 
         myPlayer = new MyPlayer(this, playerContainer, resourceList);
 
-        frame.setJMenuBar(new AppMenuBar(this));
         frame.add(splitPane);
-        frame.pack();
-        frame.setVisible(true);
+        frame.display();
 
         this.updateAppHeader();
 
