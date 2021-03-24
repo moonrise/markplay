@@ -47,4 +47,13 @@ public class Prefs {
     public static boolean isNavigatorVisible() {
         return userPrefs.getBoolean("navigatorVisible", true);
     }
+
+    public static String getDeviceId() {
+        return userPrefs.get("deviceId", null);
+    }
+
+    public static void setDeviceId(String deviceId) {
+        userPrefs.put("deviceId", deviceId);
+        //dumpAll();
+    }
 }
