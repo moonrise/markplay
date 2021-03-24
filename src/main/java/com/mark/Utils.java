@@ -1,4 +1,4 @@
-package com.mark.play;
+package com.mark;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 

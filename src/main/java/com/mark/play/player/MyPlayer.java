@@ -1,10 +1,10 @@
 package com.mark.play.player;
 
 import com.mark.io.ResourceList;
-import com.mark.play.IMain;
-import com.mark.play.Log;
+import com.mark.main.IMain;
+import com.mark.Log;
 import com.mark.play.Resource;
-import com.mark.play.Utils;
+import com.mark.Utils;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.Logo;
 import uk.co.caprica.vlcj.player.base.LogoPosition;

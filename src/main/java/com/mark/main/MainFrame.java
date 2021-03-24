@@ -1,8 +1,7 @@
-package com.mark;
+package com.mark.main;
 
-import com.mark.play.IMain;
-import com.mark.play.Log;
-import com.mark.play.Utils;
+import com.mark.Prefs;
+import com.mark.Utils;
 import com.mark.play.actions.AppMenuBar;
 
 import javax.swing.*;

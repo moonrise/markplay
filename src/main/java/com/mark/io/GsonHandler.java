@@ -2,7 +2,7 @@ package com.mark.io;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mark.play.Log;
+import com.mark.Log;
 import com.mark.play.Resource;
 
 

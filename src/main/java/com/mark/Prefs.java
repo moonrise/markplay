@@ -1,8 +1,5 @@
 package com.mark;
 
-import com.mark.play.Log;
-import com.mark.play.Utils;
-
 import java.awt.*;
 import java.util.prefs.Preferences;
 

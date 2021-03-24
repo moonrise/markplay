@@ -1,7 +1,7 @@
 package com.mark.play.actions;
 
 import com.mark.Prefs;
-import com.mark.play.IMain;
+import com.mark.main.IMain;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;

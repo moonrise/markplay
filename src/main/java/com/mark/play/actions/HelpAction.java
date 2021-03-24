@@ -1,8 +1,8 @@
 package com.mark.play.actions;
 
-import com.mark.play.IMain;
-import com.mark.play.Log;
-import com.mark.play.Utils;
+import com.mark.main.IMain;
+import com.mark.Log;
+import com.mark.Utils;
 
 import javax.swing.*;
 import java.awt.*;

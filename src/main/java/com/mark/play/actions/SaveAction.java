@@ -1,6 +1,6 @@
 package com.mark.play.actions;
 
-import com.mark.play.Log;
+import com.mark.Log;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

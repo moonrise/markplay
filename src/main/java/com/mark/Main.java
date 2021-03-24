@@ -1,9 +1,11 @@
-package com.mark.play;
+package com.mark;
 
-import com.mark.MainFrame;
-import com.mark.MainSplitPane;
 import com.mark.io.IAppDataChangeListener;
 import com.mark.io.ResourceList;
+import com.mark.main.IMain;
+import com.mark.main.MainFrame;
+import com.mark.main.MainSplitPane;
+import com.mark.play.Resource;
 import com.mark.play.player.MyPlayer;
 
 import javax.swing.*;

@@ -1,6 +1,6 @@
 package com.mark.io;
 
-import com.mark.play.Log;
+import com.mark.Log;
 
 public abstract class AppDataChangeListenerAdaptor implements IAppDataChangeListener {
     @Override

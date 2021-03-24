@@ -1,6 +1,6 @@
-package com.mark;
+package com.mark.main;
 
-import com.mark.play.Log;
+import com.mark.Prefs;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
