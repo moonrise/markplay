@@ -31,14 +31,6 @@ public class ResourceList {
         return filePath.endsWith(FileExtension);
     }
 
-    public String getName() {
-        return filePath == null ? Utils.NoName : FilenameUtils.getBaseName(filePath);
-    }
-
-    public boolean isDirty() {
-        return false;
-    }
-
     public static void instantiate(String path) {
         /*
         File file = new File(path);
@@ -89,6 +81,18 @@ public class ResourceList {
         if (filePath != null) {
                 read();
         }
+    }
+
+    public String getName() {
+        return filePath == null ? Utils.NoName : FilenameUtils.getBaseName(filePath);
+    }
+
+    public boolean isDirty() {
+        return false;
+    }
+
+    public ArrayList<Resource> getResources() {
+        return resources;
     }
 
     public void read() {

@@ -7,6 +7,7 @@ import com.mark.main.MainFrame;
 import com.mark.main.MainSplitPane;
 import com.mark.resource.Resource;
 import com.mark.play.player.MyPlayer;
+import com.mark.resource.ResourceTableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -19,6 +20,8 @@ public class Main implements IMain {
 
     private final MainFrame frame;
     private MainSplitPane splitPane;
+    private JTable table;
+    private ResourceTableModel tableModel = new ResourceTableModel(new ResourceList());
 
     private ArrayList<IAppDataChangeListener> appDataChangeListeners = new ArrayList<>();
 
@@ -57,23 +60,12 @@ public class Main implements IMain {
         JPanel playerContainer = new JPanel();
         playerContainer.setLayout(new BorderLayout());
 
-        String[] columnNames = {"First Name", "Last Name", "Sport", "# of Years", "Vegetarian"};
-
-        Object[][] data =
-        {
-                {"Kathy", "Smith", "Snowboarding", new Integer(5), new Boolean(false)},
-                {"John", "Doe", "Rowing", new Integer(3), new Boolean(true)},
-                {"Sue", "Black", "Knitting", new Integer(2), new Boolean(false)},
-                {"Jane", "White", "Speed reading", new Integer(20), new Boolean(true)},
-                {"Joe", "Brown", "Pool", new Integer(10), new Boolean(false)}
-        };
-        JTable table = new JTable(data, columnNames);
-
+        table = new JTable(tableModel);
 
         TableColumn column = null;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             column = table.getColumnModel().getColumn(i);
-            if (i == 2) {
+            if (i == 1) {
                 column.setPreferredWidth(100); //third column is bigger
                 column.setMinWidth(100); //third column is bigger
             } else {
@@ -147,10 +139,13 @@ public class Main implements IMain {
 
     private void processFile(String filePath) {
         if (ResourceList.isFileExtensionMatch(filePath)) {
-            this.resourceList = new ResourceList(filePath);
+            resourceList = new ResourceList(filePath);
         }
         else {
-            this.resourceList.addResource(new Resource(filePath));
+            resourceList.addResource(new Resource(filePath));
         }
+
+        tableModel.setResourceList(resourceList);
+        tableModel.fireTableStructureChanged();
     }
 }
