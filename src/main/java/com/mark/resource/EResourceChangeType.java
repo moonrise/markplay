@@ -1,4 +1,4 @@
-package com.mark.play;
+package com.mark.resource;
 
 public enum EResourceChangeType {
     MarkerAdded,

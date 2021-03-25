@@ -1,7 +1,7 @@
 package com.mark.io;
 
 import com.mark.Log;
-import com.mark.play.Resource;
+import com.mark.resource.Resource;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

@@ -1,9 +1,9 @@
 package com.mark.play.player;
 
-import com.mark.play.EResourceChangeType;
-import com.mark.play.IResourceChangeListener;
+import com.mark.resource.EResourceChangeType;
+import com.mark.resource.IResourceChangeListener;
 import com.mark.Log;
-import com.mark.play.Resource;
+import com.mark.resource.Resource;
 import uk.co.caprica.vlcj.media.*;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;

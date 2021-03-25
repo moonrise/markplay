@@ -1,7 +1,10 @@
 package com.mark.play.player;
 
 import com.mark.Utils;
-import com.mark.play.*;
+import com.mark.resource.EResourceChangeType;
+import com.mark.resource.IResourceChangeListener;
+import com.mark.resource.Marker;
+import com.mark.resource.Resource;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

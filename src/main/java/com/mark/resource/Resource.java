@@ -1,4 +1,4 @@
-package com.mark.play;
+package com.mark.resource;
 
 import java.util.ArrayList;
 import java.util.Date;
