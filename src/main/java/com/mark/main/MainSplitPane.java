@@ -40,8 +40,10 @@ public class MainSplitPane extends JSplitPane implements PropertyChangeListener 
             setDividerSize(dividerSize);
             setDividerLocation(Prefs.getDividerX());
             addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, this);
+            //addPropertyChangeListener(JSplitPane.ONE_TOUCH_EXPANDABLE_PROPERTY, this);
         } else {
             removePropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, this);
+            //removePropertyChangeListener(JSplitPane.ONE_TOUCH_EXPANDABLE_PROPERTY, this);
             setLeftComponent(null);
             setDividerSize(0);
         }
