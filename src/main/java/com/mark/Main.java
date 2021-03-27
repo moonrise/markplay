@@ -146,6 +146,5 @@ public class Main implements IMain {
         }
 
         tableModel.setResourceList(resourceList);
-        tableModel.fireTableStructureChanged();
     }
 }

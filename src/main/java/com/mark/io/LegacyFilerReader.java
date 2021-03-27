@@ -35,7 +35,7 @@ public class LegacyFilerReader extends DefaultHandler {
         }
     }
 
-    private void read(File xmlFile) {
+    public void read(File xmlFile) {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();

@@ -18,6 +18,7 @@ public class ResourceTableModel extends AbstractTableModel {
 
     public void setResourceList(ResourceList resourceList) {
         this.resourceList = resourceList;
+        fireTableStructureChanged();
     }
 
     @Override
