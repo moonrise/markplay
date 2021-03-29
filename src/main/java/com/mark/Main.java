@@ -1,15 +1,11 @@
 package com.mark;
 
-import com.mark.io.IAppDataChangeListener;
 import com.mark.io.LegacyFilerReader;
-import com.mark.io.ResourceList;
+import com.mark.resource.*;
 import com.mark.main.IMain;
 import com.mark.main.MainFrame;
 import com.mark.main.MainSplitPane;
-import com.mark.resource.EResourceChangeType;
-import com.mark.resource.Resource;
 import com.mark.play.player.MyPlayer;
-import com.mark.resource.ResourceTableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -17,7 +13,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 
-public class Main implements IMain {
+public class Main implements IMain, IResourceListChangeListener {
     private static Main thisApp = null;
 
     private final MainFrame frame;
@@ -25,7 +21,7 @@ public class Main implements IMain {
     private JTable table;
     private ResourceTableModel tableModel = new ResourceTableModel(new ResourceList());
 
-    private ArrayList<IAppDataChangeListener> appDataChangeListeners = new ArrayList<>();
+    private ArrayList<IResourceListChangeListener> resourceListChangeListeners = new ArrayList<>();
 
     private ResourceList resourceList = new ResourceList();
 
@@ -92,6 +88,9 @@ public class Main implements IMain {
 
         // focus request should be done after the frame becomes visible
         myPlayer.setFocus();
+
+        // app event listeners
+        registerResourceListChangeListener(this);
     }
 
     @Override
@@ -124,8 +123,13 @@ public class Main implements IMain {
     }
 
     @Override
-    public void registerAppDataChangeListener(IAppDataChangeListener listener) {
-        this.appDataChangeListeners.add(listener);
+    public void registerResourceListChangeListener(IResourceListChangeListener listener) {
+        this.resourceListChangeListeners.add(listener);
+    }
+
+    @Override
+    public void onResourceListChange(ResourceList resourceList, EResourceListChangeType type) {
+        updateAppHeader();
     }
 
     @Override
@@ -133,35 +137,37 @@ public class Main implements IMain {
         return splitPane.flipVisibilityLeftPanel();
     }
 
-    /*
-    private void notifyAppDataChangeListeners(EResourceChangeType changeType) {
-        for (IAppDataChangeListener listener : this.appDataChangeListeners) {
-            listener.onResourceListLoaded(resourceList, changeType);
+    private void notifyResourceListChange(ResourceList resourceList, EResourceListChangeType changeType) {
+        for (IResourceListChangeListener listener : this.resourceListChangeListeners) {
+            listener.onResourceListChange(resourceList, changeType);
         }
     }
-     */
 
     public boolean processCurrentContent() {
         if (!resourceList.isDirty()) {
             return true;
         }
 
-        return JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(getAppFrame(), "Current content modified. Do you want to loose the change and continue?");
+        return JOptionPane.YES_OPTION ==
+               JOptionPane.showConfirmDialog(getAppFrame(), "Current content modified. Do you want to lose the change and continue?", "Confirm", JOptionPane.YES_NO_OPTION);
     }
 
     public void processFile(String filePath) {
         if (ResourceList.isFileExtensionMatch(filePath)) {
             if (processCurrentContent()) {
                 resourceList = new ResourceList(filePath);              // current json files
+                notifyResourceListChange(resourceList, EResourceListChangeType.ResourceListLoaded);
             }
         }
         else if (LegacyFilerReader.isFileExtensionMatch(filePath)) {    // old xml files
             if (processCurrentContent()) {
                 resourceList = new LegacyFilerReader().read(new File(filePath));
+                notifyResourceListChange(resourceList, EResourceListChangeType.ResourceListLoaded);
             }
         }
         else {                                                          // assume media files for all else
             resourceList.addResource(new Resource(filePath));
+            notifyResourceListChange(resourceList, EResourceListChangeType.ResourceListChanged);
         }
 
         tableModel.setResourceList(resourceList);

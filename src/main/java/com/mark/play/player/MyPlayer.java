@@ -1,6 +1,6 @@
 package com.mark.play.player;
 
-import com.mark.io.ResourceList;
+import com.mark.resource.ResourceList;
 import com.mark.main.IMain;
 import com.mark.Log;
 import com.mark.resource.Resource;

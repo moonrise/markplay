@@ -1,7 +1,5 @@
 package com.mark.resource;
 
-import com.mark.io.ResourceList;
-
 import javax.swing.table.AbstractTableModel;
 
 public class ResourceTableModel extends AbstractTableModel {

@@ -1,6 +1,7 @@
 package com.mark.main;
 
-import com.mark.io.IAppDataChangeListener;
+import com.mark.resource.EResourceListChangeType;
+import com.mark.resource.IResourceListChangeListener;
 
 import javax.swing.*;
 
@@ -10,6 +11,6 @@ public interface IMain {
     void displayErrorMessage(String message);
     void exitApplication();
     boolean flipShowNavigator();
-    void registerAppDataChangeListener(IAppDataChangeListener listener);
+    void registerResourceListChangeListener(IResourceListChangeListener listener);
     void processFile(String filePath);
 }

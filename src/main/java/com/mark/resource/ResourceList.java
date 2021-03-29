@@ -1,7 +1,6 @@
-package com.mark.io;
+package com.mark.resource;
 
 import com.mark.Log;
-import com.mark.resource.Resource;
 import com.mark.Utils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -90,7 +89,11 @@ public class ResourceList {
     }
 
     public boolean isDirty() {
-        return false;
+        return modified;
+    }
+
+    public void clearModified() {
+        modified = false;
     }
 
     public ArrayList<Resource> getResources() {

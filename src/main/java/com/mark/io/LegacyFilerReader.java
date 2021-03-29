@@ -2,6 +2,7 @@ package com.mark.io;
 
 import com.mark.Log;
 import com.mark.resource.Resource;
+import com.mark.resource.ResourceList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -11,7 +12,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.StringWriter;
 import java.util.Date;
 
 public class LegacyFilerReader extends DefaultHandler {
@@ -124,8 +124,8 @@ public class LegacyFilerReader extends DefaultHandler {
     @Override
     public void endDocument() throws SAXException {
         super.endDocument();
-
-        resourceList.dump();
+        resourceList.clearModified();
+        // resourceList.dump();
 
         /*
         String json = GsonHandler.toJsonString(this.resource);
@@ -134,7 +134,6 @@ public class LegacyFilerReader extends DefaultHandler {
         StringWriter writer = new StringWriter();
         writer.write(json);
         String stringValue = writer.toString();
-        Log.log("Legacy file to json: %s", stringValue);
          */
     }
 
