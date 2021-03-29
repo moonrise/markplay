@@ -14,7 +14,9 @@ public class ResourceList {
     public static final String FileExtension = ".mrk";
 
     private ArrayList<Resource> resources = new ArrayList<>();
+
     private transient String filePath;
+    private transient boolean modified;
 
 
     public static void main(String[] args) {
@@ -114,10 +116,12 @@ public class ResourceList {
         }
 
         write();
+        modified = false;
     }
 
     public void save() {
         write();
+        modified = false;
 
         /*
         // creates the file
@@ -137,6 +141,7 @@ public class ResourceList {
 
     public void addResource(Resource resource) {
         this.resources.add(resource);
+        modified = true;
     }
 
     public Resource getCurrent() {
@@ -144,5 +149,12 @@ public class ResourceList {
             return resources.get(0);
         }
         return null;
+    }
+
+    public void dump() {
+        int n = 0;
+        for (Resource resource : resources) {
+            Log.log("[%d] %s", ++n, resource.toString());
+        }
     }
 }

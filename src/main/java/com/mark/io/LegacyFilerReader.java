@@ -15,8 +15,11 @@ import java.io.StringWriter;
 import java.util.Date;
 
 public class LegacyFilerReader extends DefaultHandler {
-	private StringBuilder data;
-	private Resource resource;
+    public static final String FileExtension = ".cpd";
+
+    private ResourceList resourceList = new ResourceList();
+    private StringBuilder data;
+    private Resource resource;
 
     public static void main(String[] args) {
         if (args.length > 0 && args[0].length() > 0) {
@@ -35,13 +38,19 @@ public class LegacyFilerReader extends DefaultHandler {
         }
     }
 
-    public void read(File xmlFile) {
+    public static boolean isFileExtensionMatch(String filePath) {
+        return filePath.endsWith(FileExtension);
+    }
+
+    public ResourceList read(File xmlFile) {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
             saxParser.parse(xmlFile, this);
+            return resourceList;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
 
@@ -101,7 +110,8 @@ public class LegacyFilerReader extends DefaultHandler {
             resource.accessedTime = new Date(data.toString());
         }
         else if (qName.equals("CResourceItem")) {
-            Log.log("resource: %s", resource.toString());
+            //Log.log("resource: %s", resource.toString());
+            resourceList.addResource(resource);
         }
         else if (qName.equals("Position")) {
             resource.addMarker(Float.parseFloat(data.toString()));
@@ -114,8 +124,10 @@ public class LegacyFilerReader extends DefaultHandler {
     @Override
     public void endDocument() throws SAXException {
         super.endDocument();
-        Log.log("Legacy file parsed; %s", resource.path);
 
+        resourceList.dump();
+
+        /*
         String json = GsonHandler.toJsonString(this.resource);
 
         // write to string
@@ -123,10 +135,7 @@ public class LegacyFilerReader extends DefaultHandler {
         writer.write(json);
         String stringValue = writer.toString();
         Log.log("Legacy file to json: %s", stringValue);
-    }
-
-    public String toJson() {
-        return GsonHandler.toJsonString(this.resource);
+         */
     }
 
     @Override

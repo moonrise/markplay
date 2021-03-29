@@ -11,4 +11,5 @@ public interface IMain {
     void exitApplication();
     boolean flipShowNavigator();
     void registerAppDataChangeListener(IAppDataChangeListener listener);
+    void processFile(String filePath);
 }

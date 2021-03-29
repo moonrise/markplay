@@ -1,16 +1,12 @@
 package com.mark.play.actions;
 
 import com.mark.Log;
-import com.mark.io.LegacyFilerReader;
 import com.mark.main.IMain;
-import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 public class OpenAction extends AbstractAction {
     private IMain main;
@@ -33,7 +29,7 @@ public class OpenAction extends AbstractAction {
         //chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(main.getAppFrame());
         if(returnVal == JFileChooser.APPROVE_OPTION) {
-            System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+            Log.log("You chose to open this file: " + chooser.getSelectedFile().getName());
         }
     }
 
@@ -48,13 +44,6 @@ public class OpenAction extends AbstractAction {
     }
 
     private void openFile(String filePath) {
-        String fileExt = FilenameUtils.getExtension(filePath);
-        if (fileExt.equalsIgnoreCase("xml")) {
-            openLegacyFile(filePath);
-        }
-    }
-
-    private void openLegacyFile(String filePath) {
-        new LegacyFilerReader().read(new File(filePath));
+        main.processFile(filePath);
     }
 }

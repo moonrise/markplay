@@ -18,7 +18,7 @@ public class GsonHandler {
 
     public static String toJsonString(Resource resource) {
         String jsonString = gson.toJson(resource);
-        Log.log("json string: %s", jsonString);
+        //Log.log("json string: %s", jsonString);
         return jsonString;
     }
 }

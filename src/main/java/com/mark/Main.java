@@ -1,10 +1,12 @@
 package com.mark;
 
 import com.mark.io.IAppDataChangeListener;
+import com.mark.io.LegacyFilerReader;
 import com.mark.io.ResourceList;
 import com.mark.main.IMain;
 import com.mark.main.MainFrame;
 import com.mark.main.MainSplitPane;
+import com.mark.resource.EResourceChangeType;
 import com.mark.resource.Resource;
 import com.mark.play.player.MyPlayer;
 import com.mark.resource.ResourceTableModel;
@@ -115,7 +117,7 @@ public class Main implements IMain {
     }
 
     public void updateAppHeader() {
-        String header = String.format("%s -%s%s", Utils.AppName,
+        String header = String.format("%s - %s%s", Utils.AppName,
            resourceList == null ? Utils.NoName : resourceList.getName(),
            resourceList == null ? "" : resourceList.isDirty() ? " *" : "");
         frame.setTitle(header);
@@ -131,17 +133,34 @@ public class Main implements IMain {
         return splitPane.flipVisibilityLeftPanel();
     }
 
-    //    private void notifyAppDataChangeListeners(EResourceChangeType changeType) {
-//        for (IAppDataChangeListener listener : this.appDataChangeListeners) {
-//            listener.onResourceListLoaded(this, changeType);
-//        }
-//    }
-
-    private void processFile(String filePath) {
-        if (ResourceList.isFileExtensionMatch(filePath)) {
-            resourceList = new ResourceList(filePath);
+    /*
+    private void notifyAppDataChangeListeners(EResourceChangeType changeType) {
+        for (IAppDataChangeListener listener : this.appDataChangeListeners) {
+            listener.onResourceListLoaded(resourceList, changeType);
         }
-        else {
+    }
+     */
+
+    public boolean processCurrentContent() {
+        if (!resourceList.isDirty()) {
+            return true;
+        }
+
+        return JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(getAppFrame(), "Current content modified. Do you want to loose the change and continue?");
+    }
+
+    public void processFile(String filePath) {
+        if (ResourceList.isFileExtensionMatch(filePath)) {
+            if (processCurrentContent()) {
+                resourceList = new ResourceList(filePath);              // current json files
+            }
+        }
+        else if (LegacyFilerReader.isFileExtensionMatch(filePath)) {    // old xml files
+            if (processCurrentContent()) {
+                resourceList = new LegacyFilerReader().read(new File(filePath));
+            }
+        }
+        else {                                                          // assume media files for all else
             resourceList.addResource(new Resource(filePath));
         }
 
