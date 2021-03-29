@@ -14,6 +14,11 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class Main implements IMain, IResourceListChangeListener {
+    @FunctionalInterface
+    public interface Foo {
+        ResourceList generateResourceList();
+    }
+
     private static Main thisApp = null;
 
     private final MainFrame frame;
@@ -30,6 +35,8 @@ public class Main implements IMain, IResourceListChangeListener {
 
     public static void main(String[] args) {
         thisApp = new Main();
+
+        thisApp.processFile(null);
 
         if (args.length > 0) {
             thisApp.processCommandLineArguments(args);
@@ -153,23 +160,26 @@ public class Main implements IMain, IResourceListChangeListener {
     }
 
     public void processFile(String filePath) {
-        if (ResourceList.isFileExtensionMatch(filePath)) {
-            if (processCurrentContent()) {
-                resourceList = new ResourceList(filePath);              // current json files
-                notifyResourceListChange(resourceList, EResourceListChangeType.ResourceListLoaded);
-            }
+        if (filePath == null) {                                         // new file request
+            loadResourceList(() -> new ResourceList());
+        }
+        else if (ResourceList.isFileExtensionMatch(filePath)) {
+            loadResourceList(() -> new ResourceList(filePath));
         }
         else if (LegacyFilerReader.isFileExtensionMatch(filePath)) {    // old xml files
-            if (processCurrentContent()) {
-                resourceList = new LegacyFilerReader().read(new File(filePath));
-                notifyResourceListChange(resourceList, EResourceListChangeType.ResourceListLoaded);
-            }
+            loadResourceList(() -> new LegacyFilerReader().read(new File(filePath)));
         }
         else {                                                          // assume media files for all else
             resourceList.addResource(new Resource(filePath));
             notifyResourceListChange(resourceList, EResourceListChangeType.ResourceListChanged);
         }
+    }
 
-        tableModel.setResourceList(resourceList);
+    private void loadResourceList(Foo resourceListGenerator) {
+        if (processCurrentContent()) {
+            resourceList = resourceListGenerator.generateResourceList();
+            notifyResourceListChange(resourceList, EResourceListChangeType.ResourceListLoaded);
+            tableModel.setResourceList(resourceList);
+        }
     }
 }

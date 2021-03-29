@@ -20,6 +20,7 @@ public class AppMenuBar extends JMenuBar {
         JMenu menu = new JMenu("File");
         menu.setMnemonic(KeyEvent.VK_F);
 
+        menu.add(new JMenuItem(new NewAction(this.main)));
         menu.add(new JMenuItem(new OpenAction(this.main)));
         menu.add(new JMenuItem(new SaveAction()));
         menu.addSeparator();

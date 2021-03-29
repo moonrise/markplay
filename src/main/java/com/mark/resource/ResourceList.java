@@ -80,7 +80,7 @@ public class ResourceList {
         this.filePath = filePath;
 
         if (filePath != null) {
-                read();
+            read();
         }
     }
 
