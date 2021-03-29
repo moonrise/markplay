@@ -2,7 +2,7 @@ package com.mark.resource;
 
 import javax.swing.table.AbstractTableModel;
 
-public class ResourceTableModel extends AbstractTableModel {
+public class ResourceTableModel extends AbstractTableModel implements IResourceListChangeListener {
     private ResourceList resourceList;
     private String[] columnNames = {"Select", "Path", "Rating"};
 
@@ -46,5 +46,12 @@ public class ResourceTableModel extends AbstractTableModel {
                 return resource.rating;
         }
         return null;
+    }
+
+    @Override
+    public void onResourceListChange(ResourceList resourceList, EResourceListChangeType type) {
+        if (type == EResourceListChangeType.ResourceListChanged) {
+            fireTableRowsInserted(0, 0);
+        }
     }
 }

@@ -23,12 +23,13 @@ public class Main implements IMain, IResourceListChangeListener {
 
     private final MainFrame frame;
     private MainSplitPane splitPane;
-    private JTable table;
-    private ResourceTableModel tableModel = new ResourceTableModel(new ResourceList());
 
     private ArrayList<IResourceListChangeListener> resourceListChangeListeners = new ArrayList<>();
+    private ResourceList resourceList;
 
-    private ResourceList resourceList = new ResourceList();
+    private JTable table;
+    private ResourceTableModel tableModel;
+
 
     private MyPlayer myPlayer;
 
@@ -65,7 +66,10 @@ public class Main implements IMain, IResourceListChangeListener {
         JPanel playerContainer = new JPanel();
         playerContainer.setLayout(new BorderLayout());
 
+        resourceList = new ResourceList(this);
+        tableModel = new ResourceTableModel(resourceList);
         table = new JTable(tableModel);
+        registerResourceListChangeListener(tableModel);
 
         TableColumn column = null;
         for (int i = 0; i < 3; i++) {
@@ -144,7 +148,7 @@ public class Main implements IMain, IResourceListChangeListener {
         return splitPane.flipVisibilityLeftPanel();
     }
 
-    private void notifyResourceListChange(ResourceList resourceList, EResourceListChangeType changeType) {
+    public void notifyResourceListChange(ResourceList resourceList, EResourceListChangeType changeType) {
         for (IResourceListChangeListener listener : this.resourceListChangeListeners) {
             listener.onResourceListChange(resourceList, changeType);
         }
@@ -161,17 +165,16 @@ public class Main implements IMain, IResourceListChangeListener {
 
     public void processFile(String filePath) {
         if (filePath == null) {                                         // new file request
-            loadResourceList(() -> new ResourceList());
+            loadResourceList(() -> new ResourceList(this));
         }
         else if (ResourceList.isFileExtensionMatch(filePath)) {
-            loadResourceList(() -> new ResourceList(filePath));
+            loadResourceList(() -> new ResourceList(this, filePath));
         }
         else if (LegacyFilerReader.isFileExtensionMatch(filePath)) {    // old xml files
-            loadResourceList(() -> new LegacyFilerReader().read(new File(filePath)));
+            loadResourceList(() -> new LegacyFilerReader().read(this, new File(filePath)));
         }
         else {                                                          // assume media files for all else
             resourceList.addResource(new Resource(filePath));
-            notifyResourceListChange(resourceList, EResourceListChangeType.ResourceListChanged);
         }
     }
 

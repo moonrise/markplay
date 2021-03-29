@@ -2,6 +2,7 @@ package com.mark.resource;
 
 import com.mark.Log;
 import com.mark.Utils;
+import com.mark.main.IMain;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 public class ResourceList {
     public static final String FileExtension = ".mrk";
 
+    private IMain main;
+
     private ArrayList<Resource> resources = new ArrayList<>();
 
     private transient String filePath;
@@ -21,7 +24,7 @@ public class ResourceList {
     public static void main(String[] args) {
         if (args.length > 0) {
             Log.log("The first parameter is taken as a resource list file.");
-            new ResourceList(args[0]);
+            new ResourceList(null, args[0]);
         }
         else {
             new ResourceList(null);
@@ -72,11 +75,12 @@ public class ResourceList {
 
     }
 
-    public ResourceList() {
-        this(null);
+    public ResourceList(IMain main) {
+        this(main, null);
     }
 
-    public ResourceList(String filePath) {
+    public ResourceList(IMain main, String filePath) {
+        this.main = main;
         this.filePath = filePath;
 
         if (filePath != null) {
@@ -143,8 +147,9 @@ public class ResourceList {
     }
 
     public void addResource(Resource resource) {
-        this.resources.add(resource);
+        resources.add(resource);
         modified = true;
+        notifyResourceListChange(EResourceListChangeType.ResourceListChanged);
     }
 
     public Resource getCurrent() {
@@ -152,6 +157,12 @@ public class ResourceList {
             return resources.get(0);
         }
         return null;
+    }
+
+    private void notifyResourceListChange(EResourceListChangeType changeType) {
+        if (main != null) {
+            main.notifyResourceListChange(this, changeType);
+        }
     }
 
     public void dump() {

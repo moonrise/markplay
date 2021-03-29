@@ -34,7 +34,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
 
 
     public MyPlayer(IMain main, JPanel container) {
-        this(main, container, new ResourceList());
+        this(main, container, new ResourceList(null));
     }
 
     public MyPlayer(IMain main, JPanel container, ResourceList resourceList) {

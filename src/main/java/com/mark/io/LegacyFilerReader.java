@@ -1,6 +1,7 @@
 package com.mark.io;
 
 import com.mark.Log;
+import com.mark.main.IMain;
 import com.mark.resource.Resource;
 import com.mark.resource.ResourceList;
 import org.xml.sax.Attributes;
@@ -17,7 +18,7 @@ import java.util.Date;
 public class LegacyFilerReader extends DefaultHandler {
     public static final String FileExtension = ".cpd";
 
-    private ResourceList resourceList = new ResourceList();
+    private ResourceList resourceList;
     private StringBuilder data;
     private Resource resource;
 
@@ -27,7 +28,7 @@ public class LegacyFilerReader extends DefaultHandler {
             File xmlFile = new File(givenFile);
             if (xmlFile.exists()) {
                 Log.log("Given file: %s", givenFile);
-                new LegacyFilerReader().read(xmlFile);
+                new LegacyFilerReader().read(null, xmlFile);
             }
             else {
                 Log.err("Given file: '%s' does not exist.", givenFile);
@@ -42,8 +43,9 @@ public class LegacyFilerReader extends DefaultHandler {
         return filePath.endsWith(FileExtension);
     }
 
-    public ResourceList read(File xmlFile) {
+    public ResourceList read(IMain main, File xmlFile) {
         try {
+            resourceList = new ResourceList(main);
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
             saxParser.parse(xmlFile, this);
