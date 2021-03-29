@@ -1,3 +1,7 @@
+Which shell in terminals (MacOS) or command window (Ubuntu in Windows)?
+* echo $SHELL
+==> MacOS defaults to /bin/zsh
+
 Maven installation in Windows Ubuntu terminal:
 * sudo apt install maven
 
