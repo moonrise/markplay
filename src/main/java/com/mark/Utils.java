@@ -31,13 +31,17 @@ public class Utils {
         return time.substring(0, time.length() - (milli ? 2 : 4));
     }
 
+    public static int parseInt(String value) {
+        return Integer.parseInt(value.trim());
+    }
+
     /**
      * @param rect string notation of "x,y,width,height"
      * @return Rectangle
      */
     public static Rectangle stringToRect(String rect) {
         String[] split = rect.split(",");
-        return new Rectangle(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]));
+        return new Rectangle(parseInt(split[0]), parseInt(split[1]), parseInt(split[2]), parseInt(split[3]));
     }
 
     /**
