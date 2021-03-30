@@ -1,5 +1,6 @@
 package com.mark.play.player;
 
+import com.mark.Prefs;
 import com.mark.main.IMain;
 import com.mark.Log;
 import com.mark.resource.Resource;
@@ -35,6 +36,8 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         this.main = main;
 
         buildPlayer();
+        setVolume(Prefs.getVolume());
+        setMute(Prefs.isMute());
 
         container.add(mediaPlayerComponent, BorderLayout.CENTER);
         container.add(buildControlPanel(), BorderLayout.SOUTH);
@@ -148,8 +151,8 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         mediaPlayer.audio().setVolume(volume);
     }
 
-    public void setMute() {
-        mediaPlayer.audio().setMute(true);
+    public void setMute(boolean mute) {
+        mediaPlayer.audio().setMute(mute);
     }
 
     public void setRate(float rate) {

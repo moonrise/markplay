@@ -48,6 +48,7 @@ public class Prefs {
         return userPrefs.getBoolean("navigatorVisible", true);
     }
 
+    // screen/monitor device id (not used at the moment - 3/30/2021)
     public static String getDeviceId() {
         return userPrefs.get("deviceId", null);
     }
@@ -55,5 +56,21 @@ public class Prefs {
     public static void setDeviceId(String deviceId) {
         userPrefs.put("deviceId", deviceId);
         //dumpAll();
+    }
+
+    public static void setMute(boolean visible) {
+        userPrefs.putBoolean("mute", visible);
+    }
+
+    public static boolean isMute() {
+        return userPrefs.getBoolean("mute", false);
+    }
+
+    public static int getVolume() {
+        return userPrefs.getInt("volume", 100);
+    }
+
+    public static void setVolume(int x) {
+        userPrefs.putInt("volume", x);
     }
 }

@@ -166,7 +166,6 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         }
         else if (update.type == EResourceListChangeType.IndexChanged) {
             //myPlayer.setLogo(Utils.getResourcePath("/icons/crown.png"));
-            myPlayer.setMute();
             myPlayer.playResource(resourceList.getCurrent());
         }
 

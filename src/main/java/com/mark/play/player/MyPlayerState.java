@@ -1,5 +1,6 @@
 package com.mark.play.player;
 
+import com.mark.Prefs;
 import com.mark.resource.EResourceChangeType;
 import com.mark.resource.IResourceChangeListener;
 import com.mark.Log;
@@ -143,13 +144,15 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
 
     @Override
     public void muted(MediaPlayer mediaPlayer, boolean muted) {
-        //Log.log("mute %b", muted);
         super.muted(mediaPlayer, muted);
+        //Log.log("mute %b", muted);
+        Prefs.setMute(muted);
     }
 
     @Override
     public void volumeChanged(MediaPlayer mediaPlayer, float volume) {
-        //Log.log("volume %f", volume);
         super.volumeChanged(mediaPlayer, volume);
+        //Log.log("volume %f", volume);
+        Prefs.setVolume((int)(volume * 100));
     }
 }
