@@ -162,6 +162,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         }
         else if (update.type == EResourceListChangeType.Unloaded) {
             table.getSelectionModel().removeListSelectionListener(this);
+            myPlayer.playResource(null);
         }
         else if (update.type == EResourceListChangeType.IndexChanged) {
             //myPlayer.setLogo(Utils.getResourcePath("/icons/crown.png"));

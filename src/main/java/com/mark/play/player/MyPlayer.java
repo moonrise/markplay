@@ -159,7 +159,15 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     public void playResource(Resource resource) {
         this.resource = resource;
         playerState.setResource(resource);
-        play(resource.path);
+
+        if (resource != null) {
+            play(resource.path);
+        }
+        else {
+            mediaPlayer.controls().stop();
+            // TODO: unload the media  (release crashed the app; what else can be done?)
+            //mediaPlayer.release();
+        }
     }
 
     public void play(String mrl) {
