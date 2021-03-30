@@ -10,8 +10,8 @@ public class ViewNavigatorAction extends AbstractAction {
     private IMain main;
 
     public ViewNavigatorAction(IMain main) {
-        super("Navigator");
-        putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+        super("Show List");
+        putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
 
         this.main = main;
     }
