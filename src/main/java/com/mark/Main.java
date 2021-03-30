@@ -8,12 +8,14 @@ import com.mark.main.MainSplitPane;
 import com.mark.play.player.MyPlayer;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 
-public class Main implements IMain, IResourceListChangeListener {
+public class Main implements IMain, IResourceListChangeListener, ListSelectionListener {
     @FunctionalInterface
     public interface Foo {
         ResourceList generateResourceList();
@@ -68,8 +70,11 @@ public class Main implements IMain, IResourceListChangeListener {
 
         resourceList = new ResourceList(this);
         tableModel = new ResourceTableModel(resourceList);
-        table = new JTable(tableModel);
         registerResourceListChangeListener(tableModel);
+
+        table = new JTable(tableModel);
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        table.setRowSelectionAllowed(true);
 
         TableColumn column = null;
         for (int i = 0; i < 3; i++) {
@@ -127,10 +132,26 @@ public class Main implements IMain, IResourceListChangeListener {
     }
 
     public void updateAppHeader() {
-        String header = String.format("%s - %s%s", Utils.AppName,
+        String resourceListInfo = String.format("%s%s",
            resourceList == null ? Utils.NoName : resourceList.getName(),
            resourceList == null ? "" : resourceList.isDirty() ? " *" : "");
-        frame.setTitle(header);
+
+        String currentIndex = "";
+        if (resourceList != null && resourceList.size() > 0) {
+            currentIndex = String.format(" (%d/%d)", resourceList.getCurrentIndex()+1, resourceList.size());
+        }
+
+        frame.setTitle(String.format("%s - %s%s", Utils.AppName, resourceListInfo, currentIndex));
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (e.getValueIsAdjusting() == false) {
+            // the selection events tend to be not precise, not accurate and redundant; so takes this as a clue only.
+            int selectedRows[] = table.getSelectedRows();
+            Log.log("table row selected %d - %d, %s; %d", e.getFirstIndex(), e.getLastIndex(), e.getValueIsAdjusting(), selectedRows.length > 0 ? selectedRows[0] : -1);
+            resourceList.setCurrentIndex(selectedRows.length > 0 ? selectedRows[0] : -1);
+        }
     }
 
     @Override
@@ -140,6 +161,13 @@ public class Main implements IMain, IResourceListChangeListener {
 
     @Override
     public void onResourceListChange(ResourceList resourceList, ResourceListUpdate update) {
+        if (update.type == EResourceListChangeType.Loaded) {
+            table.getSelectionModel().addListSelectionListener(this);
+        }
+        else if (update.type == EResourceListChangeType.Unloaded) {
+            table.getSelectionModel().removeListSelectionListener(this);
+        }
+
         updateAppHeader();
     }
 
@@ -155,12 +183,13 @@ public class Main implements IMain, IResourceListChangeListener {
     }
 
     public boolean processCurrentContent() {
-        if (!resourceList.isDirty()) {
-            return true;
+        String promptMessage = "Current content modified. Do you want to lose the change and continue?";
+        if (resourceList.isDirty() && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(getAppFrame(), promptMessage, "Confirm", JOptionPane.YES_NO_OPTION)) {
+            return false;
         }
 
-        return JOptionPane.YES_OPTION ==
-               JOptionPane.showConfirmDialog(getAppFrame(), "Current content modified. Do you want to lose the change and continue?", "Confirm", JOptionPane.YES_NO_OPTION);
+        notifyResourceListChange(resourceList, ResourceListUpdate.Unloaded);
+        return true;
     }
 
     public void processFile(String filePath) {
@@ -175,6 +204,7 @@ public class Main implements IMain, IResourceListChangeListener {
         }
         else {                                                          // assume media files for all else
             resourceList.addResource(new Resource(filePath));
+            selectRowTable(resourceList.size() - 1);
         }
     }
 
@@ -183,6 +213,13 @@ public class Main implements IMain, IResourceListChangeListener {
             resourceList = resourceListGenerator.generateResourceList();
             notifyResourceListChange(resourceList, ResourceListUpdate.Loaded);
             tableModel.setResourceList(resourceList);
+            selectRowTable(0);
+        }
+    }
+
+    private void selectRowTable(int rowIndex) {
+        if (resourceList.size() > rowIndex) {
+            table.setRowSelectionInterval(0, 0);
         }
     }
 }

@@ -16,6 +16,7 @@ public class ResourceList {
     private IMain main;
 
     private ArrayList<Resource> resources = new ArrayList<>();
+    private int currentIndex = -1;
 
     private transient String filePath;
     private transient boolean modified;
@@ -104,6 +105,10 @@ public class ResourceList {
         return resources;
     }
 
+    public int size() {
+        return resources.size();
+    }
+
     public void read() {
     }
 
@@ -154,9 +159,21 @@ public class ResourceList {
         notifyResourceListChange(ResourceListUpdate.RowsAdded(rowIndex, rowIndex));
     }
 
+    public void setCurrentIndex(int index) {
+        if (index != currentIndex) {
+            currentIndex = index;
+            Log.log("ResourceList current index changed to %d", currentIndex);
+            notifyResourceListChange(ResourceListUpdate.IndexChanged);
+        }
+    }
+
+    public int getCurrentIndex() {
+        return currentIndex;
+    }
+
     public Resource getCurrent() {
-        if (resources.size() > 0) {
-            return resources.get(0);
+        if (resources.size() > 0 && currentIndex > -1) {
+            return resources.get(currentIndex);
         }
         return null;
     }

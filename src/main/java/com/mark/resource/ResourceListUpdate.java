@@ -9,6 +9,8 @@ public class ResourceListUpdate {
 
     public static ResourceListUpdate Unloaded = new ResourceListUpdate(EResourceListChangeType.Unloaded);
 
+    public static ResourceListUpdate IndexChanged = new ResourceListUpdate(EResourceListChangeType.IndexChanged);
+
     public static ResourceListUpdate RowsAdded(int startRow, int endRow) {
         ResourceListUpdate resourceListUpdate = new ResourceListUpdate(EResourceListChangeType.RowsAdded);
         resourceListUpdate.startRow = startRow;
