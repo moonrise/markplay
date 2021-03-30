@@ -22,12 +22,18 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
     private long playTime = 0;
     private String errorMessage = "";
 
-    public MyPlayerState(EmbeddedMediaPlayer mediaPlayer, Resource resource) {
+    public MyPlayerState(EmbeddedMediaPlayer mediaPlayer) {
         this.mediaPlayer = mediaPlayer;
-        this.resource = resource;
-
         this.mediaPlayer.events().addMediaEventListener(new MyMediaEventListener(this));
         this.mediaPlayer.events().addMediaPlayerEventListener(this);
+    }
+
+    public void setResource(Resource resource) {
+        if (this.resource != null) {
+            this.resource.unRegisterChangeListener(this);
+        }
+
+        this.resource = resource;
 
         if (this.resource != null) {
             this.resource.registerChangeListener(this);

@@ -32,7 +32,6 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     private JTable table;
     private ResourceTableModel tableModel;
 
-
     private MyPlayer myPlayer;
 
 
@@ -76,6 +75,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         table.setRowSelectionAllowed(true);
 
+        // TODO: do more with the column widths
         TableColumn column = null;
         for (int i = 0; i < 3; i++) {
             column = table.getColumnModel().getColumn(i);
@@ -91,16 +91,12 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         splitPane = new MainSplitPane(new JScrollPane(table), playerContainer);
         table.setFillsViewportHeight(true);
 
-        myPlayer = new MyPlayer(this, playerContainer, resourceList);
+        myPlayer = new MyPlayer(this, playerContainer);
 
         frame.add(splitPane);
         frame.display();
 
         this.updateAppHeader();
-
-        //myPlayer.setLogo(Utils.getResourcePath("/icons/crown.png"));
-        myPlayer.setMute();
-        myPlayer.play();
 
         // focus request should be done after the frame becomes visible
         myPlayer.setFocus();
@@ -166,6 +162,11 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         }
         else if (update.type == EResourceListChangeType.Unloaded) {
             table.getSelectionModel().removeListSelectionListener(this);
+        }
+        else if (update.type == EResourceListChangeType.IndexChanged) {
+            //myPlayer.setLogo(Utils.getResourcePath("/icons/crown.png"));
+            myPlayer.setMute();
+            myPlayer.playResource(resourceList.getCurrent());
         }
 
         updateAppHeader();

@@ -1,6 +1,5 @@
 package com.mark.play.player;
 
-import com.mark.resource.ResourceList;
 import com.mark.main.IMain;
 import com.mark.Log;
 import com.mark.resource.Resource;
@@ -21,7 +20,6 @@ import java.awt.event.*;
 
 public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateChangeListener {
     private IMain main;
-    private ResourceList resourceList;
     private Resource resource;
     private EmbeddedMediaPlayerComponent mediaPlayerComponent2;
 
@@ -34,14 +32,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
 
 
     public MyPlayer(IMain main, JPanel container) {
-        this(main, container, new ResourceList(null));
-    }
-
-    public MyPlayer(IMain main, JPanel container, ResourceList resourceList) {
         this.main = main;
-
-        this.resourceList = resourceList;
-        this.resource = resourceList.getCurrent();
 
         buildPlayer();
 
@@ -63,13 +54,13 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         AdaptiveFullScreenStrategy adaptiveFullScreenStrategy = new AdaptiveFullScreenStrategy(main.getAppFrame()) {
             @Override
             protected void onBeforeEnterFullScreen() {
-                System.out.println("Entering full screen...");
+                Log.log("Entering full screen...");
                 //controlsPane.setVisible(false);
             }
 
             @Override
             protected void onAfterExitFullScreen() {
-                System.out.println("Exiting full screen...");
+                Log.log("Exiting full screen...");
                 //controlsPane.setVisible(true);
             }
         };
@@ -79,7 +70,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         mediaPlayer = mediaPlayerComponent.mediaPlayer();
         videoSurface = mediaPlayerComponent.videoSurfaceComponent();
 
-        this.playerState = new MyPlayerState(mediaPlayer, resource);
+        this.playerState = new MyPlayerState(mediaPlayer);
         this.playerState.registerStateChangeListener(this);
 
         MouseListener mouseListener = new MouseAdapter() {
@@ -165,10 +156,10 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         mediaPlayer.controls().setRate(rate);
     }
 
-    public void play() {
-        if (this.resource != null) {
-            play(this.resource.path);
-        }
+    public void playResource(Resource resource) {
+        this.resource = resource;
+        playerState.setResource(resource);
+        play(resource.path);
     }
 
     public void play(String mrl) {
@@ -221,7 +212,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     public void onAddMarkerRequest() {
         long currentTime = playerState.getPlayTime();
         this.resource.addMarker(currentTime/1000F);
-        Log.log("add marker at %d", currentTime);
+        //Log.log("add marker at %d", currentTime);
     }
 
     @Override
