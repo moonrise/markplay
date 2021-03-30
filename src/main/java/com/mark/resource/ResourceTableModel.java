@@ -49,9 +49,9 @@ public class ResourceTableModel extends AbstractTableModel implements IResourceL
     }
 
     @Override
-    public void onResourceListChange(ResourceList resourceList, EResourceListChangeType type) {
-        if (type == EResourceListChangeType.ResourceListChanged) {
-            fireTableRowsInserted(0, 0);
+    public void onResourceListChange(ResourceList resourceList, ResourceListUpdate update) {
+        if (update.type == EResourceListChangeType.RowsAdded) {
+            fireTableRowsInserted(update.startRow, update.endRow);
         }
     }
 }

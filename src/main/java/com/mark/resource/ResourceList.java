@@ -149,7 +149,9 @@ public class ResourceList {
     public void addResource(Resource resource) {
         resources.add(resource);
         modified = true;
-        notifyResourceListChange(EResourceListChangeType.ResourceListChanged);
+
+        int rowIndex = resources.size() - 1;
+        notifyResourceListChange(ResourceListUpdate.RowsAdded(rowIndex, rowIndex));
     }
 
     public Resource getCurrent() {
@@ -159,9 +161,9 @@ public class ResourceList {
         return null;
     }
 
-    private void notifyResourceListChange(EResourceListChangeType changeType) {
+    private void notifyResourceListChange(ResourceListUpdate update) {
         if (main != null) {
-            main.notifyResourceListChange(this, changeType);
+            main.notifyResourceListChange(this, update);
         }
     }
 

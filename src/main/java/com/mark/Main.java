@@ -139,7 +139,7 @@ public class Main implements IMain, IResourceListChangeListener {
     }
 
     @Override
-    public void onResourceListChange(ResourceList resourceList, EResourceListChangeType type) {
+    public void onResourceListChange(ResourceList resourceList, ResourceListUpdate update) {
         updateAppHeader();
     }
 
@@ -148,9 +148,9 @@ public class Main implements IMain, IResourceListChangeListener {
         return splitPane.flipVisibilityLeftPanel();
     }
 
-    public void notifyResourceListChange(ResourceList resourceList, EResourceListChangeType changeType) {
+    public void notifyResourceListChange(ResourceList resourceList, ResourceListUpdate update) {
         for (IResourceListChangeListener listener : this.resourceListChangeListeners) {
-            listener.onResourceListChange(resourceList, changeType);
+            listener.onResourceListChange(resourceList, update);
         }
     }
 
@@ -181,7 +181,7 @@ public class Main implements IMain, IResourceListChangeListener {
     private void loadResourceList(Foo resourceListGenerator) {
         if (processCurrentContent()) {
             resourceList = resourceListGenerator.generateResourceList();
-            notifyResourceListChange(resourceList, EResourceListChangeType.ResourceListLoaded);
+            notifyResourceListChange(resourceList, ResourceListUpdate.Loaded);
             tableModel.setResourceList(resourceList);
         }
     }
