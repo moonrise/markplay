@@ -168,8 +168,10 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         }
         else {
             mediaPlayer.controls().stop();
-            // TODO: unload the media  (release crashed the app; what else can be done?)
-            //mediaPlayer.release();
+            // TODO: unload the media  (not quite; the current media still visible)
+            if (mediaPlayer.media().isValid()) {
+                mediaPlayer.release();
+            }
         }
     }
 
