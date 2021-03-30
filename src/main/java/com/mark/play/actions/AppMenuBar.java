@@ -23,6 +23,7 @@ public class AppMenuBar extends JMenuBar {
         menu.add(new JMenuItem(new NewAction(this.main)));
         menu.add(new JMenuItem(new OpenAction(this.main)));
         menu.add(new JMenuItem(new SaveAction()));
+        menu.add(new JMenuItem(new CloseAction(this.main)));
         menu.addSeparator();
         menu.add(new JMenuItem(new ExitAction(this.main)));
 

@@ -162,7 +162,7 @@ public class ResourceList {
     public void setCurrentIndex(int index) {
         if (index != currentIndex) {
             currentIndex = index;
-            Log.log("ResourceList current index changed to %d", currentIndex);
+            //Log.log("ResourceList current index changed to %d", currentIndex);
             notifyResourceListChange(ResourceListUpdate.IndexChanged);
         }
     }

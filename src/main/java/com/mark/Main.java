@@ -149,7 +149,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         if (e.getValueIsAdjusting() == false) {
             // the selection events tend to be not precise, not accurate and redundant; so takes this as a clue only.
             int selectedRows[] = table.getSelectedRows();
-            Log.log("table row selected %d - %d, %s; %d", e.getFirstIndex(), e.getLastIndex(), e.getValueIsAdjusting(), selectedRows.length > 0 ? selectedRows[0] : -1);
+            //Log.log("table row selected %d - %d, %s; %d", e.getFirstIndex(), e.getLastIndex(), e.getValueIsAdjusting(), selectedRows.length > 0 ? selectedRows[0] : -1);
             resourceList.setCurrentIndex(selectedRows.length > 0 ? selectedRows[0] : -1);
         }
     }
