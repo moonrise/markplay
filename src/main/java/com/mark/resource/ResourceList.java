@@ -15,11 +15,10 @@ import java.util.ArrayList;
 public class ResourceList {
     public static final String FileExtension = ".mrk";
 
-    private IMain main;
-
     private ArrayList<Resource> resources = new ArrayList<>();
     private int currentIndex = -1;
 
+    private transient IMain main;
     private transient String filePath;
     private transient boolean modified;
 
@@ -80,7 +79,8 @@ public class ResourceList {
 
     public String writeToString() {
         StringWriter writer = new StringWriter();
-        writer.write(GsonHandler.getHandler().toJson(resources));
+        //writer.write(GsonHandler.getHandler().toJson(resources));
+        writer.write(GsonHandler.getHandler().toJson(this));
         return writer.toString();
     }
 
