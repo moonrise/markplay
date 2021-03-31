@@ -6,10 +6,7 @@ import com.mark.io.GsonHandler;
 import com.mark.main.IMain;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.ArrayList;
 
 public class ResourceList {
@@ -75,6 +72,21 @@ public class ResourceList {
     }
 
     public void read() {
+        //Log.log("reading from %s", filePath);
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            ResourceList resourceList = GsonHandler.getHandler().fromJson(reader, ResourceList.class);
+            //resourceList.dump();
+            cloneFrom(resourceList);
+        }
+        catch (Exception e) {
+            Log.err("File '%s' read failed with the error %s.", filePath, e.toString());
+        }
+    }
+
+    private void cloneFrom(ResourceList source) {
+        currentIndex = source.getCurrentIndex();
+        resources = source.getResources();
     }
 
     public String writeToString() {

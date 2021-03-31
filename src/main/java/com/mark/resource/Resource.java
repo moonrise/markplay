@@ -14,18 +14,24 @@ public class Resource {
 
     public ArrayList<Marker> markers = new ArrayList<>();
 
-    private transient ArrayList<IResourceChangeListener> resourceChangeListeners = new ArrayList<>();
+    private transient ArrayList<IResourceChangeListener> resourceChangeListeners;
 
     public Resource(String path) {
         this.path = path;
     }
 
     public void registerChangeListener(IResourceChangeListener listener) {
-        this.resourceChangeListeners.add(listener);
+        if (resourceChangeListeners == null) {
+            resourceChangeListeners = new ArrayList<>();
+        }
+
+        resourceChangeListeners.add(listener);
     }
 
     public void unRegisterChangeListener(IResourceChangeListener listener) {
-        this.resourceChangeListeners.remove(listener);
+        if (resourceChangeListeners != null) {
+            resourceChangeListeners.remove(listener);
+        }
     }
 
     private void notifyChangeListeners(EResourceChangeType changeType) {

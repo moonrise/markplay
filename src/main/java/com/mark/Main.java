@@ -158,6 +158,12 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         this.resourceListChangeListeners.add(listener);
     }
 
+    public void notifyResourceListChange(ResourceList resourceList, ResourceListUpdate update) {
+        for (IResourceListChangeListener listener : this.resourceListChangeListeners) {
+            listener.onResourceListChange(resourceList, update);
+        }
+    }
+
     @Override
     public void onResourceListChange(ResourceList resourceList, ResourceListUpdate update) {
         if (update.type == EResourceListChangeType.Loaded) {
@@ -178,12 +184,6 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     @Override
     public boolean flipShowNavigator() {
         return splitPane.flipVisibilityLeftPanel();
-    }
-
-    public void notifyResourceListChange(ResourceList resourceList, ResourceListUpdate update) {
-        for (IResourceListChangeListener listener : this.resourceListChangeListeners) {
-            listener.onResourceListChange(resourceList, update);
-        }
     }
 
     public boolean processCurrentContent() {
@@ -241,7 +241,10 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             resourceList = resourceListGenerator.generateResourceList();
             notifyResourceListChange(resourceList, ResourceListUpdate.Loaded);
             tableModel.setResourceList(resourceList);
-            selectRowTable(0);
+
+            if (resourceList.size() > 0) {
+                selectRowTable(0);
+            }
         }
     }
 

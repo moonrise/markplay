@@ -167,11 +167,13 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
             play(resource.path);
         }
         else {
-            mediaPlayer.controls().stop();
             // TODO: unload the media  (not quite; the current media still visible)
+            /*
             if (mediaPlayer.media().isValid()) {
+                mediaPlayer.controls().stop();
                 mediaPlayer.release();
             }
+            */
         }
     }
 
