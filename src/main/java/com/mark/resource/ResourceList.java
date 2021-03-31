@@ -2,10 +2,12 @@ package com.mark.resource;
 
 import com.mark.Log;
 import com.mark.Utils;
+import com.mark.io.GsonHandler;
 import com.mark.main.IMain;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -36,46 +38,6 @@ public class ResourceList {
         return filePath.endsWith(FileExtension);
     }
 
-    public static void instantiate(String path) {
-        /*
-        File file = new File(path);
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            }
-            catch (IOException e) {
-                Log.err("Given file: '%s' does not exist and creating one failed with error %s.", path, e.toString());
-                return null;
-            }
-            Log.log("Given file: '%s' did not exist. So created an empty list file.", path);
-            return new ResourceList(file);
-        }
-        else {
-            return new ResourceList(file);
-        }
-
-        Log.log("ResourceList created with the file: %s", path);
-
-        File file = new File("Hello1.txt");
-
-        // creates the file
-        file.createNewFile();
-
-        // creates a FileWriter Object
-        FileWriter writer = new FileWriter(file);
-
-        // Writes the content to the file
-        writer.write("This\n is\n an\n example\n");
-        writer.flush();
-        writer.close();
-
-
-        String stringValue = writer.toString();
-
-         */
-
-    }
-
     public ResourceList(IMain main) {
         this(main, null);
     }
@@ -87,6 +49,10 @@ public class ResourceList {
         if (filePath != null) {
             read();
         }
+    }
+
+    public String getFilePath() {
+        return filePath;
     }
 
     public String getName() {
@@ -112,43 +78,29 @@ public class ResourceList {
     public void read() {
     }
 
-    public void write() {
+    public String writeToString() {
         StringWriter writer = new StringWriter();
+        writer.write(GsonHandler.getHandler().toJson(resources));
+        return writer.toString();
     }
 
-    public void saveAs() {
+    public void saveAs(String filePath) {
         File file = new File(filePath);
 
         try {
-            file.createNewFile();
+            FileWriter writer = new FileWriter(file);
+            writer.write(writeToString());
+            writer.flush();
+            writer.close();
         }
         catch (IOException e) {
             Log.err("File '%s' creation failed with the error %s.", file.getPath(), e.toString());
             return;
         }
 
-        write();
         modified = false;
-    }
-
-    public void save() {
-        write();
-        modified = false;
-
-        /*
-        // creates the file
-        file.createNewFile();
-
-        // creates a FileWriter Object
-        FileWriter writer = new FileWriter(file);
-
-        // Writes the content to the file
-        writer.write("This\n is\n an\n example\n");
-        writer.flush();
-        writer.close();
-
-         */
-
+        this.filePath = filePath;
+        notifyResourceListChange(ResourceListUpdate.Saved);
     }
 
     public void addResource(Resource resource) {

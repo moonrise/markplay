@@ -19,7 +19,7 @@ public class ExitAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        Log.log("Exit action");
+        //Log.log("Exit action");
         this.main.exitApplication();
     }
 }

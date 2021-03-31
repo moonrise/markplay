@@ -20,30 +20,12 @@ public class OpenAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        chooseFile2();
-    }
-
-    private void chooseFile1() {
-        JFileChooser chooser = new JFileChooser();
-        //FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF Images", "jpg", "gif");
-        //chooser.setFileFilter(filter);
-        int returnVal = chooser.showOpenDialog(main.getAppFrame());
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
-            Log.log("You chose to open this file: " + chooser.getSelectedFile().getName());
-        }
-    }
-
-    private void chooseFile2() {
         FileDialog dialog = new FileDialog(main.getAppFrame(), "Select File to Open", FileDialog.LOAD);
         dialog.setVisible(true);
 
         if (dialog.getFile() != null) {
             //Log.log("chosen file: %s in directory: %s", dialog.getFile(), dialog.getDirectory());
-            openFile(dialog.getDirectory() + dialog.getFile());
+            main.processFile(dialog.getDirectory() + dialog.getFile());
         }
-    }
-
-    private void openFile(String filePath) {
-        main.processFile(filePath);
     }
 }

@@ -11,6 +11,8 @@ public class ResourceListUpdate {
 
     public static ResourceListUpdate IndexChanged = new ResourceListUpdate(EResourceListChangeType.IndexChanged);
 
+    public static ResourceListUpdate Saved = new ResourceListUpdate(EResourceListChangeType.Saved);
+
     public static ResourceListUpdate RowsAdded(int startRow, int endRow) {
         ResourceListUpdate resourceListUpdate = new ResourceListUpdate(EResourceListChangeType.RowsAdded);
         resourceListUpdate.startRow = startRow;

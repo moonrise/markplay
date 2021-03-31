@@ -2,8 +2,6 @@ package com.mark.io;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mark.Log;
-import com.mark.resource.Resource;
 
 
 public class GsonHandler {
@@ -16,9 +14,7 @@ public class GsonHandler {
         gson = builder.create();
     }
 
-    public static String toJsonString(Resource resource) {
-        String jsonString = gson.toJson(resource);
-        //Log.log("json string: %s", jsonString);
-        return jsonString;
+    public static Gson getHandler() {
+        return gson;
     }
 }

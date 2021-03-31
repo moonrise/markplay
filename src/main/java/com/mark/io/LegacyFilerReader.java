@@ -6,13 +6,11 @@ import com.mark.resource.Resource;
 import com.mark.resource.ResourceList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
-import java.io.File;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.File;
 import java.util.Date;
 
 public class LegacyFilerReader extends DefaultHandler {
@@ -128,15 +126,6 @@ public class LegacyFilerReader extends DefaultHandler {
         super.endDocument();
         resourceList.clearModified();
         // resourceList.dump();
-
-        /*
-        String json = GsonHandler.toJsonString(this.resource);
-
-        // write to string
-        StringWriter writer = new StringWriter();
-        writer.write(json);
-        String stringValue = writer.toString();
-         */
     }
 
     @Override

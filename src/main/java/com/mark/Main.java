@@ -123,8 +123,11 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
 
     @Override
     public void exitApplication() {
-        myPlayer.release();
-        System.exit(0);
+        if (processCurrentContent()) {
+            //myPlayer.release() causes JVM error on exit
+            //myPlayer.release();
+            System.exit(0);
+        }
     }
 
     public void updateAppHeader() {
@@ -207,6 +210,30 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             resourceList.addResource(new Resource(filePath));
             selectRowTable(resourceList.size() - 1);
         }
+    }
+
+    @Override
+    public void saveCurrentResourceList(boolean saveAs) {
+        if (resourceList == null) {
+            return;     // sanity check
+        }
+
+        String filePath = resourceList.getFilePath();
+        if (saveAs || filePath == null) {
+            // TODO: In MacOS, replace prompt from FileDialog generates a warning "<NSSavePanel: 0x7fc036cff7d0> found it necessary to prepare implicitly; please prepare panels using NSSavePanel rather than NSApplication or NSWindow."
+            FileDialog dialog = new FileDialog(getAppFrame(), "Provide new file path", FileDialog.SAVE);
+            dialog.setFile("new" + ResourceList.FileExtension);
+            dialog.setVisible(true);
+
+            filePath = dialog.getFile() != null ? dialog.getDirectory() + dialog.getFile() : null;
+            //Log.log("Save to file: %s in directory: %s", dialog.getFile(), dialog.getDirectory());
+        }
+
+        if (filePath == null) {
+            return;     // SaveAs canceled by user
+        }
+
+        resourceList.saveAs(filePath);
     }
 
     private void loadResourceList(Foo resourceListGenerator) {

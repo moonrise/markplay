@@ -16,4 +16,5 @@ public interface IMain {
     void registerResourceListChangeListener(IResourceListChangeListener listener);
     void notifyResourceListChange(ResourceList resourceList, ResourceListUpdate update);
     void processFile(String filePath);
+    void saveCurrentResourceList(boolean saveAs);
 }

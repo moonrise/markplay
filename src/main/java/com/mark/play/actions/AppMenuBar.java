@@ -11,21 +11,22 @@ public class AppMenuBar extends JMenuBar {
 
     public AppMenuBar(IMain main) {
         this.main = main;
-        this.add(buildFileMenu());
-        this.add(buildViewMenu());
-        this.add(buildHelpMenu());
+        add(buildFileMenu());
+        add(buildViewMenu());
+        add(buildHelpMenu());
     }
 
     private JMenu buildFileMenu() {
         JMenu menu = new JMenu("File");
         menu.setMnemonic(KeyEvent.VK_F);
 
-        menu.add(new JMenuItem(new NewAction(this.main)));
-        menu.add(new JMenuItem(new OpenAction(this.main)));
-        menu.add(new JMenuItem(new SaveAction()));
-        menu.add(new JMenuItem(new CloseAction(this.main)));
+        menu.add(new JMenuItem(new NewAction(main)));
+        menu.add(new JMenuItem(new OpenAction(main)));
+        menu.add(new JMenuItem(new SaveAction(main)));
+        menu.add(new JMenuItem(new SaveAsAction(main)));
+        menu.add(new JMenuItem(new CloseAction(main)));
         menu.addSeparator();
-        menu.add(new JMenuItem(new ExitAction(this.main)));
+        menu.add(new JMenuItem(new ExitAction(main)));
 
         return menu;
     }
@@ -35,7 +36,7 @@ public class AppMenuBar extends JMenuBar {
         menu.setMnemonic(KeyEvent.VK_V);
 
         // [TODO] is there a way to encapsulate the initial check state with the action?
-        JCheckBoxMenuItem checkBoxMenuItem = new JCheckBoxMenuItem(new ViewNavigatorAction(this.main));
+        JCheckBoxMenuItem checkBoxMenuItem = new JCheckBoxMenuItem(new ViewNavigatorAction(main));
         checkBoxMenuItem.setState(Prefs.isNavigatorVisible());
         menu.add(checkBoxMenuItem);
 
@@ -46,9 +47,9 @@ public class AppMenuBar extends JMenuBar {
         JMenu menu = new JMenu("Help");
         menu.setMnemonic(KeyEvent.VK_H);
 
-        menu.add(new JMenuItem(new HelpAction(this.main)));
+        menu.add(new JMenuItem(new HelpAction(main)));
         menu.addSeparator();
-        menu.add(new JMenuItem(new AboutAction(this.main)));
+        menu.add(new JMenuItem(new AboutAction(main)));
 
         return menu;
     }
