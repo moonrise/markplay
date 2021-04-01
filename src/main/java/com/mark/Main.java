@@ -188,7 +188,8 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
 
     public boolean processCurrentContent() {
         String promptMessage = "Current content modified. Do you want to lose the change and continue?";
-        if (resourceList.isDirty() && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(getAppFrame(), promptMessage, "Confirm", JOptionPane.YES_NO_OPTION)) {
+        if (Prefs.isModifiedConfirmOnClose() && resourceList.isDirty() &&
+            JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(getAppFrame(), promptMessage, "Confirm", JOptionPane.YES_NO_OPTION)) {
             return false;
         }
 

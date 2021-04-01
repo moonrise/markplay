@@ -44,8 +44,8 @@ public class Prefs {
         userPrefs.putInt("dividerX", x);
     }
 
-    public static void setNavigatorVisible(boolean visible) {
-        userPrefs.putBoolean("navigatorVisible", visible);
+    public static void setNavigatorVisible(boolean x) {
+        userPrefs.putBoolean("navigatorVisible", x);
     }
 
     public static boolean isNavigatorVisible() {
@@ -62,8 +62,8 @@ public class Prefs {
         //dumpAll();
     }
 
-    public static void setMute(boolean visible) {
-        userPrefs.putBoolean("mute", visible);
+    public static void setMute(boolean x) {
+        userPrefs.putBoolean("mute", x);
     }
 
     public static boolean isMute() {
@@ -132,5 +132,13 @@ public class Prefs {
 
     public static void setMaxRecentFiles(int x) {
         userPrefs.putInt("maxRecentFiles", x);
+    }
+
+    public static void setModifiedConfirmOnClose(boolean x) {
+        userPrefs.putBoolean("modifiedConfirm", x);
+    }
+
+    public static boolean isModifiedConfirmOnClose() {
+        return userPrefs.getBoolean("modifiedConfirm", false);
     }
 }
