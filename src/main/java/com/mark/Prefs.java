@@ -1,10 +1,14 @@
 package com.mark;
 
 import java.awt.*;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.prefs.Preferences;
 
 public class Prefs {
     private static Preferences userPrefs;
+    private static ArrayList<String> recentFiles;
 
     static {
         userPrefs = Preferences.userNodeForPackage(Prefs.class);
@@ -72,5 +76,56 @@ public class Prefs {
 
     public static void setVolume(int x) {
         userPrefs.putInt("volume", x);
+    }
+
+    public static void setRecentFile(String recentFile) {
+        if (recentFile == null) {
+            return;
+        }
+
+        if (recentFiles == null) {
+            recentFiles = new ArrayList<String>();
+        }
+
+        if (recentFiles.indexOf(recentFile) >= 0) {
+            return;     // already there
+        }
+
+        recentFiles.add(0, recentFile);
+
+        // enforce the max list size
+        if (recentFiles.size() > getMaxRecentFiles()) {
+            recentFiles.remove(recentFiles.size()-1);
+        }
+
+        StringWriter writer = new StringWriter();
+        int recentFilesSize = recentFiles.size();
+        for (int i=0; i<recentFilesSize; i++) {
+            writer.write(recentFiles.get(i));
+            if (i < recentFilesSize-1) {
+                writer.write(";");
+            }
+        }
+
+        userPrefs.put("recentFiles", writer.toString());
+    }
+
+    public static String[] getRecentFiles() {
+        if (recentFiles == null) {
+            recentFiles = new ArrayList(Arrays.asList(userPrefs.get("recentFiles", "").split(";")));
+            if (recentFiles.get(0).trim().isEmpty()) {
+                recentFiles = new ArrayList<>();
+            }
+
+        }
+        return recentFiles.toArray(new String[] {});
+    }
+
+    public static int getMaxRecentFiles() {
+        return userPrefs.getInt("maxRecentFiles", 12);
+    }
+
+    public static void setMaxRecentFiles(int x) {
+        userPrefs.putInt("maxRecentFiles", x);
     }
 }

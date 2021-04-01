@@ -202,9 +202,11 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         }
         else if (ResourceList.isFileExtensionMatch(filePath)) {
             loadResourceList(() -> new ResourceList(this, filePath));
+            Prefs.setRecentFile(filePath);
         }
         else if (LegacyFilerReader.isFileExtensionMatch(filePath)) {    // old xml files
             loadResourceList(() -> new LegacyFilerReader().read(this, new File(filePath)));
+            Prefs.setRecentFile(filePath);
         }
         else {                                                          // assume media files for all else
             resourceList.addResource(new Resource(filePath));
@@ -226,6 +228,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             dialog.setVisible(true);
 
             filePath = dialog.getFile() != null ? dialog.getDirectory() + dialog.getFile() : null;
+            Prefs.setRecentFile(filePath);
             //Log.log("Save to file: %s in directory: %s", dialog.getFile(), dialog.getDirectory());
         }
 
