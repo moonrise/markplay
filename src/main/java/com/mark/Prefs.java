@@ -121,6 +121,11 @@ public class Prefs {
         return recentFiles.toArray(new String[] {});
     }
 
+    public static void clearRecentFiles() {
+        recentFiles = null;
+        userPrefs.put("recentFiles", "");
+    }
+
     public static int getMaxRecentFiles() {
         return userPrefs.getInt("maxRecentFiles", 12);
     }

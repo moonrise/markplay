@@ -29,6 +29,7 @@ public class AppMenuBar extends JMenuBar {
         menu.add(new CloseAction(main));
         menu.addSeparator();
         menu.add(buildRecentFilesMenu());
+        menu.add(new ClearRecentFilesAction(main));
         menu.addSeparator();
         menu.add(new ExitAction(main));
 
