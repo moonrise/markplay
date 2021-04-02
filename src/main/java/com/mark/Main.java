@@ -254,7 +254,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
 
     private void selectRowTable(int rowIndex) {
         if (resourceList.size() > rowIndex) {
-            table.setRowSelectionInterval(0, 0);
+            table.setRowSelectionInterval(rowIndex, rowIndex);
         }
     }
 }
