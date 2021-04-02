@@ -21,7 +21,7 @@ public class ResourceTableModel extends AbstractTableModel implements IResourceL
 
     @Override
     public int getRowCount() {
-        return resourceList.getResources().size();
+        return resourceList.size();
     }
 
     @Override

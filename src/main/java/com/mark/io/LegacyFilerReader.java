@@ -43,13 +43,18 @@ public class LegacyFilerReader extends DefaultHandler {
 
     public ResourceList read(IMain main, File xmlFile) {
         try {
-            resourceList = new ResourceList(main);
+            resourceList = new ResourceList(main, null);
+            resourceList.setSilentMode(true);
+
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
             saxParser.parse(xmlFile, this);
+
+            resourceList.setSilentMode(false);
             return resourceList;
         } catch (Exception e) {
             e.printStackTrace();
+            main.displayErrorMessage("LegacyFileReader error: " + e.toString());
             return null;
         }
     }
@@ -57,30 +62,6 @@ public class LegacyFilerReader extends DefaultHandler {
     @Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		//Log.log("start element : %s", qName);
-
-		/*
-		if (qName.equalsIgnoreCase("Employee")) {
-			// create a new Employee and put it in Map
-			String id = attributes.getValue("id");
-			// initialize Employee object and set id attribute
-			emp = new Employee();
-			emp.setId(Integer.parseInt(id));
-			// initialize list
-			if (empList == null)
-				empList = new ArrayList<>();
-		} else if (qName.equalsIgnoreCase("name")) {
-			// set boolean values for fields, will be used in setting Employee variables
-			bName = true;
-		} else if (qName.equalsIgnoreCase("age")) {
-			bAge = true;
-		} else if (qName.equalsIgnoreCase("gender")) {
-			bGender = true;
-		} else if (qName.equalsIgnoreCase("role")) {
-			bRole = true;
-		}
-		*/
-
-		// create the data container
 		data = new StringBuilder();
 	}
 
@@ -90,6 +71,7 @@ public class LegacyFilerReader extends DefaultHandler {
 
 		if (qName.equals("Path")) {
 		    resource = new Resource(data.toString());
+		    resource.setSilentMode(true);       // un-silenced by resourceList when all resources are read
 		}
         else if (qName.equals("Rating")) {
             resource.rating = Integer.parseInt(data.toString());

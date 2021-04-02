@@ -19,6 +19,9 @@ public class ResourceList {
     private transient String filePath;
     private transient boolean modified;
 
+    // silence change notifications (like when deserializing or batch processing)
+    private transient boolean silentMode;
+
 
     public static void main(String[] args) {
         if (args.length > 0) {
@@ -143,7 +146,7 @@ public class ResourceList {
     }
 
     private void notifyResourceListChange(ResourceListUpdate update) {
-        if (main != null) {
+        if (main != null && !silentMode) {
             main.notifyResourceListChange(this, update);
         }
     }
@@ -152,6 +155,17 @@ public class ResourceList {
         int n = 0;
         for (Resource resource : resources) {
             Log.log("[%d] %s", ++n, resource.toString());
+        }
+    }
+
+    public boolean isSilentMode() {
+        return silentMode;
+    }
+
+    public void setSilentMode(boolean silentMode) {
+        this.silentMode = silentMode;
+        for (Resource resource : resources) {
+            resource.setSilentMode(silentMode);
         }
     }
 }

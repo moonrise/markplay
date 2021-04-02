@@ -16,6 +16,9 @@ public class Resource {
 
     private transient ArrayList<IResourceChangeListener> resourceChangeListeners;
 
+    // silence change notifications (like when deserializing or batch processing)
+    private transient boolean silentMode;
+
     public Resource(String path) {
         this.path = path;
     }
@@ -35,6 +38,10 @@ public class Resource {
     }
 
     private void notifyChangeListeners(EResourceChangeType changeType) {
+        if (silentMode) {
+            return;
+        }
+
         for (IResourceChangeListener listener : this.resourceChangeListeners) {
             listener.onResourceChange(this, changeType);
         }
@@ -45,10 +52,6 @@ public class Resource {
         notifyChangeListeners(EResourceChangeType.MarkerAdded);
     }
 
-    /**
-     * used only from legacy XML Sax parser
-     * @param select
-     */
     public void setMarkerSelect(boolean select) {
         if (markers.size() > 0) {
             markers.get(markers.size()-1).select = select;
@@ -63,5 +66,13 @@ public class Resource {
 
         return String.format("path: %s, rating: %d, checked: %b, duration %.2f, fileSize: %d, modified: %s, accessed: %s\n%s\n",
                              path, rating, checked, duration, fileSize, modifiedTime, accessedTime, builder.toString());
+    }
+
+    public boolean isSilentMode() {
+        return silentMode;
+    }
+
+    public void setSilentMode(boolean silentMode) {
+        this.silentMode = silentMode;
     }
 }
