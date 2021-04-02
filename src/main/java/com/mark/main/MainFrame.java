@@ -7,14 +7,22 @@ import com.mark.play.actions.AppMenuBar;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.util.List;
 
-public class MainFrame extends JFrame implements ComponentListener {
+public class MainFrame extends JFrame implements ComponentListener, DropTargetListener {
+    private IMain main;
+
     public MainFrame(IMain main) throws HeadlessException {
         super(Utils.AppName);
+        this.main = main;
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setJMenuBar(new AppMenuBar(main));
@@ -27,6 +35,8 @@ public class MainFrame extends JFrame implements ComponentListener {
         });
 
         addComponentListener(this);
+
+        new DropTarget(this, DnDConstants.ACTION_NONE, this);
     }
 
     public void display() {
@@ -120,5 +130,55 @@ public class MainFrame extends JFrame implements ComponentListener {
 
     @Override
     public void componentHidden(ComponentEvent componentEvent) {
+    }
+
+    @Override
+    public void dragEnter(DropTargetDragEvent event) {
+        //Log.log("drag enter");
+        event.acceptDrag(DnDConstants.ACTION_COPY);
+    }
+
+    @Override
+    public void dragOver(DropTargetDragEvent event) {
+        //Log.log("drag over");
+        event.acceptDrag(DnDConstants.ACTION_COPY);
+    }
+
+    @Override
+    public void dropActionChanged(DropTargetDragEvent event) {
+        //Log.log("drop action changed");
+    }
+
+    @Override
+    public void dragExit(DropTargetEvent dte) {
+        //Log.log("drag exit");
+    }
+
+    @Override
+    public void drop(DropTargetDropEvent event) {
+        Log.log("dropped: " + event.getSource());
+
+        event.acceptDrop(DnDConstants.ACTION_COPY);
+
+        Transferable transferable = event.getTransferable();
+        DataFlavor[] flavors = event.getTransferable().getTransferDataFlavors();
+
+        for (DataFlavor flavor : flavors) {
+            try {
+                if (flavor.isFlavorJavaFileListType()) {
+                    List<File> files = (List) transferable.getTransferData(flavor);
+                    for (File file : files) {
+                        Log.log("Drop file: %s", file.getPath());
+                        main.processFile(file.getPath());
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                main.displayErrorMessage(e.toString());
+            }
+        }
+
+        // Inform that the drop is complete
+        event.dropComplete(true);
     }
 }
