@@ -62,6 +62,14 @@ public class Prefs {
         //dumpAll();
     }
 
+    public static void setPlayOnLoad(boolean x) {
+        userPrefs.putBoolean("playOnLoad", x);
+    }
+
+    public static boolean isPlayOnLoad() {
+        return userPrefs.getBoolean("playOnLoad", false);
+    }
+
     public static void setMute(boolean x) {
         userPrefs.putBoolean("mute", x);
     }

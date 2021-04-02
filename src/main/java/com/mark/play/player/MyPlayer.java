@@ -180,7 +180,14 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     public void play(String mrl) {
         mediaPlayer.media().prepare(mrl);
         mediaPlayer.media().parsing().parse();
-        mediaPlayer.media().play(mrl);
+
+        if (Prefs.isPlayOnLoad()) {
+            mediaPlayer.media().play(mrl);
+            // mediaPlayer.media().start(mrl); // not sure how play is different from start
+        }
+        else {
+            mediaPlayer.media().startPaused(mrl);
+        }
     }
 
     public void setFocus() {
