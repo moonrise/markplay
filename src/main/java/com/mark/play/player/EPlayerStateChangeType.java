@@ -4,7 +4,7 @@ public enum EPlayerStateChangeType {
     MediaLoaded,
     MediaUnloaded,
     MediaParsed,
-    MediaParsedFailed,
+    MediaParseFailed,
     PlayStarted,
     PlayPaused,
     PlayResumed,

@@ -18,14 +18,19 @@ import java.io.File;
 import java.util.List;
 
 public class MainFrame extends JFrame implements ComponentListener, DropTargetListener {
-    private IMain main;
+    private final IMain main;
+    private final StatusBar statusBar;
 
     public MainFrame(IMain main) throws HeadlessException {
         super(Utils.AppName);
         this.main = main;
+        this.statusBar = new StatusBar();
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setJMenuBar(new AppMenuBar(main));
+
+        setLayout(new BorderLayout());
+        add(statusBar, BorderLayout.SOUTH);
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -156,7 +161,7 @@ public class MainFrame extends JFrame implements ComponentListener, DropTargetLi
 
     @Override
     public void drop(DropTargetDropEvent event) {
-        Log.log("dropped: " + event.getSource());
+        //Log.log("dropped: " + event.getSource());
 
         event.acceptDrop(DnDConstants.ACTION_COPY);
 
@@ -168,7 +173,7 @@ public class MainFrame extends JFrame implements ComponentListener, DropTargetLi
                 if (flavor.isFlavorJavaFileListType()) {
                     List<File> files = (List) transferable.getTransferData(flavor);
                     for (File file : files) {
-                        Log.log("Drop file: %s", file.getPath());
+                        //Log.log("Drop file: %s", file.getPath());
                         main.processFile(file.getPath());
                     }
                 }
@@ -180,5 +185,9 @@ public class MainFrame extends JFrame implements ComponentListener, DropTargetLi
 
         // Inform that the drop is complete
         event.dropComplete(true);
+    }
+
+    public StatusBar getStatusBar() {
+        return statusBar;
     }
 }

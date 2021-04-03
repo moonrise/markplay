@@ -45,7 +45,7 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
         return this.media;
     }
 
-    public void registerStateChangeListener(IMyPlayerStateChangeListener listener) {
+    public void registerPlayerStateChangeListener(IMyPlayerStateChangeListener listener) {
         this.stateChangeListeners.add(listener);
     }
 
@@ -63,31 +63,57 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
     public void onResourceChange(Resource resource, EResourceChangeType type) {
     }
 
+    public int videoWidth;
+    public int videoHeight;
+    public int videoSampleAspectRatio;
+    public int videoSampleAspectRatioBase;
+    public String videoCodecName;
+    public String videoCodecDesc;
+
+    public int audioBitRate;
+    public int audioChannels;
+    public int audioRate;
+    public String audioCodecName;
+    public String audioCodecDesc;
+
     public void mediaParsed(Media media, MediaParsedStatus newStatus) {
         this.media = media;
 
         if (newStatus == MediaParsedStatus.DONE) {
-            this.notifyStateChangeListeners(EPlayerStateChangeType.MediaParsed);
-
             final InfoApi info = media.info();
-            Log.log("media duration: %d", info.duration());
+            //Log.log("media duration: %s", Utils.getTimelineFormatted(info.duration(), false));
 
             for (VideoTrackInfo videoTrack : info.videoTracks()) {
-                Log.log("media video track width/height: %d x %d", videoTrack.width(), videoTrack.height());
-                Log.log("media video track aspect ratio: %d / %d", videoTrack.sampleAspectRatio(), videoTrack.sampleAspectRatioBase());
-                Log.log("media video track codec: %s (%s)", videoTrack.codecName(), videoTrack.codecDescription());
+                videoWidth = videoTrack.width();
+                videoHeight = videoTrack.height();
+                videoSampleAspectRatio = videoTrack.sampleAspectRatio();
+                videoSampleAspectRatioBase = videoTrack.sampleAspectRatioBase();
+                videoCodecName = videoTrack.codecName();
+                videoCodecDesc = videoTrack.codecDescription();
+                //Log.log("media video track width/height: %d x %d", videoTrack.width(), videoTrack.height());
+                //Log.log("media video track aspect ratio: %d / %d", videoTrack.sampleAspectRatio(), videoTrack.sampleAspectRatioBase());
+                //Log.log("media video track codec: %s (%s)", videoTrack.codecName(), videoTrack.codecDescription());
                 //Log.log("media video track : %s\n", videoTrack);
+                break;
             }
 
             for (AudioTrackInfo audioTrack : info.audioTracks()) {
-                Log.log("media audio track codec: %s (%s)", audioTrack.codecName(), audioTrack.codecDescription());
-                Log.log("media audio track bitrate: %d, channels/rate: (%d:%d)", audioTrack.bitRate(), audioTrack.channels(), audioTrack.rate());
+                audioBitRate = audioTrack.bitRate();
+                audioChannels = audioTrack.channels();
+                audioRate = audioTrack.rate();
+                audioCodecName = audioTrack.codecName();
+                audioCodecDesc = audioTrack.codecDescription();
+                //Log.log("media audio track codec: %s (%s)", audioTrack.codecName(), audioTrack.codecDescription());
+                //Log.log("media audio track bitrate: %d, channels/rate: (%d:%d)", audioTrack.bitRate(), audioTrack.channels(), audioTrack.rate());
                 //Log.log("media audio track : %s", audioTrack);
+                break;
             }
+
+            this.notifyStateChangeListeners(EPlayerStateChangeType.MediaParsed);
         } else {
             Log.err("media parsed with error: %s", newStatus.toString());
-            this.notifyStateChangeListeners(EPlayerStateChangeType.MediaParsedFailed);
             this.errorMessage = newStatus.toString();
+            this.notifyStateChangeListeners(EPlayerStateChangeType.MediaParseFailed);
         }
     }
 

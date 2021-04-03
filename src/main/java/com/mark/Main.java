@@ -54,9 +54,8 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
                     processFile(givenFile.getPath());
                 }
             });
-            Log.log("Given file: %s", givenFile);
-        }
-        else {
+            //Log.log("Given file: %s", givenFile);
+        } else {
             displayErrorMessage(String.format("Given file: '%s' does not exist.", givenFile));
         }
     }
@@ -92,6 +91,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         table.setFillsViewportHeight(true);
 
         myPlayer = new MyPlayer(this, playerContainer);
+        myPlayer.registerPlayerStateChangeListener(getAppFrame().getStatusBar());
 
         frame.add(splitPane);
         frame.display();
@@ -106,7 +106,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     }
 
     @Override
-    public JFrame getAppFrame() {
+    public MainFrame getAppFrame() {
         return this.frame;
     }
 
@@ -132,12 +132,12 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
 
     public void updateAppHeader() {
         String resourceListInfo = String.format("%s%s",
-           resourceList == null ? Utils.NoName : resourceList.getName(),
-           resourceList == null ? "" : resourceList.isDirty() ? " *" : "");
+                resourceList == null ? Utils.NoName : resourceList.getName(),
+                resourceList == null ? "" : resourceList.isDirty() ? " *" : "");
 
         String currentIndex = "";
         if (resourceList != null && resourceList.size() > 0) {
-            currentIndex = String.format(" (%d/%d)", resourceList.getCurrentIndex()+1, resourceList.size());
+            currentIndex = String.format(" (%d/%d)", resourceList.getCurrentIndex() + 1, resourceList.size());
         }
 
         frame.setTitle(String.format("%s - %s%s", Utils.AppName, resourceListInfo, currentIndex));
@@ -168,12 +168,10 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     public void onResourceListChange(ResourceList resourceList, ResourceListUpdate update) {
         if (update.type == EResourceListChangeType.Loaded) {
             table.getSelectionModel().addListSelectionListener(this);
-        }
-        else if (update.type == EResourceListChangeType.Unloaded) {
+        } else if (update.type == EResourceListChangeType.Unloaded) {
             table.getSelectionModel().removeListSelectionListener(this);
             myPlayer.playResource(null);
-        }
-        else if (update.type == EResourceListChangeType.IndexChanged) {
+        } else if (update.type == EResourceListChangeType.IndexChanged) {
             //myPlayer.setLogo(Utils.getResourcePath("/icons/crown.png"));
             myPlayer.playResource(resourceList.getCurrent());
         }
@@ -189,7 +187,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     public boolean processCurrentContent() {
         String promptMessage = "Current content modified. Do you want to lose the change and continue?";
         if (Prefs.isModifiedConfirmOnClose() && resourceList.isDirty() &&
-            JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(getAppFrame(), promptMessage, "Confirm", JOptionPane.YES_NO_OPTION)) {
+                JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(getAppFrame(), promptMessage, "Confirm", JOptionPane.YES_NO_OPTION)) {
             return false;
         }
 
@@ -200,16 +198,13 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     public void processFile(String filePath) {
         if (filePath == null) {                                         // new file request
             loadResourceList(() -> new ResourceList(this));
-        }
-        else if (ResourceList.isFileExtensionMatch(filePath)) {
+        } else if (ResourceList.isFileExtensionMatch(filePath)) {
             loadResourceList(() -> new ResourceList(this, filePath));
             Prefs.setRecentFile(filePath);
-        }
-        else if (LegacyFilerReader.isFileExtensionMatch(filePath)) {    // old xml files
+        } else if (LegacyFilerReader.isFileExtensionMatch(filePath)) {    // old xml files
             loadResourceList(() -> new LegacyFilerReader().read(this, new File(filePath)));
             Prefs.setRecentFile(filePath);
-        }
-        else {                                                          // assume media files for all else
+        } else {                                                          // assume media files for all else
             resourceList.addResource(new Resource(filePath));
             selectRowTable(resourceList.size() - 1);
         }

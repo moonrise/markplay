@@ -1,6 +1,7 @@
 package com.mark.play.player;
 
 import com.mark.Utils;
+import com.mark.main.IMain;
 import com.mark.resource.EResourceChangeType;
 import com.mark.resource.IResourceChangeListener;
 import com.mark.resource.Marker;
@@ -11,6 +12,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IResourceChangeListener {
+    final IMain main;
     final int height = 50;
     final int middle = 30;
 
@@ -20,10 +22,11 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
 
     private MyPlayerState playerState;
 
-    public Timeline(MyPlayerState playerState) {
+    public Timeline(MyPlayerState playerState, IMain main) {
         super(true);
         this.playerState = playerState;
-        this.playerState.registerStateChangeListener(this);
+        this.playerState.registerPlayerStateChangeListener(this);
+        this.main = main;
 
         setBorder(new LineBorder(Color.LIGHT_GRAY));
         setPreferredSize(new Dimension(0, this.height));

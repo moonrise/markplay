@@ -23,7 +23,15 @@
       "duration": 0.0,
       "fileSize": 0,
       "markers": []
+    },
+    {
+      "path": "/Users/bjeong/IdeaProjects/markplay/media/hydroid.mp4",
+      "rating": 0,
+      "checked": false,
+      "duration": 0.0,
+      "fileSize": 0,
+      "markers": []
     }
   ],
-  "currentIndex": 2
+  "currentIndex": 3
 }

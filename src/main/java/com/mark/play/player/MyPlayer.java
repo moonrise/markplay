@@ -74,7 +74,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         videoSurface = mediaPlayerComponent.videoSurfaceComponent();
 
         this.playerState = new MyPlayerState(mediaPlayer);
-        this.playerState.registerStateChangeListener(this);
+        this.registerPlayerStateChangeListener(this);
 
         MouseListener mouseListener = new MouseAdapter() {
             @Override
@@ -94,12 +94,16 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         videoSurface.addMouseWheelListener(mouseWheelListener);
     }
 
+    public void registerPlayerStateChangeListener(IMyPlayerStateChangeListener listener) {
+        this.playerState.registerPlayerStateChangeListener(listener);
+    }
+
     private JPanel buildControlPanel() {
         JPanel container = new JPanel();
         container.setLayout(new BorderLayout());
 
 
-        timeline = new Timeline(this.playerState);
+        timeline = new Timeline(this.playerState, main);
         container.add(timeline, BorderLayout.NORTH);
         container.add(buildButtonPanel(), BorderLayout.SOUTH);
 
