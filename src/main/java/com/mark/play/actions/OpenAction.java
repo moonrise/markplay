@@ -1,6 +1,7 @@
 package com.mark.play.actions;
 
 import com.mark.Log;
+import com.mark.Utils;
 import com.mark.main.IMain;
 
 import javax.swing.*;
@@ -12,7 +13,7 @@ public class OpenAction extends AbstractAction {
     private IMain main;
 
     public OpenAction(IMain main) {
-        super("Open");
+        super("Open...");
         putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 
         this.main = main;

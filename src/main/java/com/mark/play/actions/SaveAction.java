@@ -1,5 +1,6 @@
 package com.mark.play.actions;
 
+import com.mark.Utils;
 import com.mark.main.IMain;
 
 import javax.swing.*;
@@ -11,6 +12,8 @@ public class SaveAction extends AbstractAction {
 
     public SaveAction(IMain main) {
         super("Save");
+        // TODO: icon version will need a tooltip
+        //super("Save", new ImageIcon(Utils.getResourcePath("/icons/disk.png"), "Save"));
         putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 
         this.main = main;

@@ -19,17 +19,20 @@ import java.util.List;
 
 public class MainFrame extends JFrame implements ComponentListener, DropTargetListener {
     private final IMain main;
+    private final ToolBar toolBar;
     private final StatusBar statusBar;
 
     public MainFrame(IMain main) throws HeadlessException {
         super(Utils.AppName);
         this.main = main;
+        this.toolBar = new ToolBar(main);
         this.statusBar = new StatusBar();
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setJMenuBar(new AppMenuBar(main));
 
         setLayout(new BorderLayout());
+        add(toolBar, BorderLayout.NORTH);
         add(statusBar, BorderLayout.SOUTH);
 
         addWindowListener(new WindowAdapter() {
