@@ -1,9 +1,6 @@
 package com.mark.main;
 
-import com.mark.play.actions.ExitAction;
-import com.mark.play.actions.HelpAction;
-import com.mark.play.actions.OpenAction;
-import com.mark.play.actions.SaveAction;
+import com.mark.play.actions.*;
 
 import javax.swing.*;
 
@@ -17,5 +14,8 @@ public class ToolBar extends JToolBar {
         add(new OpenAction(main));
         add(new SaveAction(main));
         add(new HelpAction(main));
+        // TODO: binary toolbar
+        //add(new Separator());
+        //add(new PlayOnLoadAction(main));
     }
 }
