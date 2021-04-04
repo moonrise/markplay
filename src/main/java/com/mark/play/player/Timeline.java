@@ -1,5 +1,6 @@
 package com.mark.play.player;
 
+import com.mark.Log;
 import com.mark.Utils;
 import com.mark.main.IMain;
 import com.mark.resource.EResourceChangeType;
@@ -148,15 +149,19 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
     public void onPlayerStateChange(MyPlayerState playerState, EPlayerStateChangeType stateChangeType) {
         if (stateChangeType == EPlayerStateChangeType.MediaLoaded) {
             playerState.getResource().registerChangeListener(this);
+            //Log.log("time line: media loaded event handler");
             repaint();
         }
         else if (stateChangeType == EPlayerStateChangeType.MediaParsed) {
+            //Log.log("time line: media parsed event handler");
             repaint();
         }
         else if (stateChangeType == EPlayerStateChangeType.PlayTime) {
+            //Log.log("time line: play time change event handler");
             repaint();
         }
         else if (stateChangeType == EPlayerStateChangeType.MediaUnloaded) {
+            //Log.log("time line: media unloaded event handler");
             playerState.getResource().unRegisterChangeListener(this);
             repaint();
         }

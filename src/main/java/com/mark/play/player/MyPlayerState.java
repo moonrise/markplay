@@ -79,6 +79,9 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
     public void mediaParsed(Media media, MediaParsedStatus newStatus) {
         this.media = media;
 
+        // new media -> reset the playtime
+        this.playTime = 0;
+
         if (newStatus == MediaParsedStatus.DONE) {
             final InfoApi info = media.info();
             //Log.log("media duration: %s", Utils.getTimelineFormatted(info.duration(), false));
