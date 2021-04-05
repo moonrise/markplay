@@ -231,6 +231,11 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     }
 
     @Override
+    public MyPlayerState getPlayerState() {
+        return playerState;
+    }
+
+    @Override
     public void onApplicationExitRequest() {
         this.main.exitApplication();
     }
