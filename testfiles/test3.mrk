@@ -6,7 +6,16 @@
       "checked": false,
       "duration": 0.0,
       "fileSize": 0,
-      "markers": []
+      "markers": [
+        {
+          "position": 151.681,
+          "select": false
+        },
+        {
+          "position": 243.137,
+          "select": false
+        }
+      ]
     },
     {
       "path": "/Users/bjeong/Downloads/rabbit.mpg",

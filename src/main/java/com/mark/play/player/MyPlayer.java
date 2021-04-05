@@ -6,10 +6,7 @@ import com.mark.Log;
 import com.mark.resource.Resource;
 import com.mark.Utils;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
-import uk.co.caprica.vlcj.player.base.Logo;
-import uk.co.caprica.vlcj.player.base.LogoPosition;
-import uk.co.caprica.vlcj.player.base.Marquee;
-import uk.co.caprica.vlcj.player.base.MarqueePosition;
+import uk.co.caprica.vlcj.player.base.*;
 import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
@@ -231,11 +228,6 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     }
 
     @Override
-    public MyPlayerState getPlayerState() {
-        return playerState;
-    }
-
-    @Override
     public void onApplicationExitRequest() {
         this.main.exitApplication();
     }
@@ -250,6 +242,42 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     @Override
     public void onError(String errorMessage) {
         main.displayErrorMessage(errorMessage);
+    }
+
+    @Override
+    public void setTime(long time) {
+        mediaPlayer.controls().setTime(trimTime(time));
+        if (mediaPlayer.status().state() == State.PAUSED) {
+            playerState.updatePlayTime();
+        }
+    }
+
+    @Override
+    public void skipTime(long delta) {
+        setTime(playerState.getPlayTime() + delta);
+    }
+
+    @Override
+    public void nextFrame() {
+        mediaPlayer.controls().nextFrame();
+        if (mediaPlayer.status().state() == State.PAUSED) {
+            playerState.updatePlayTime();
+        }
+    }
+
+    @Override
+    public void seekMarker(boolean forward) {
+        long referenceTime = playerState.getPlayTime();
+        if (!forward && mediaPlayer.status().state() == State.PLAYING) {
+            // backward seeking needs a bit of slack because the play head is moving forward, but only not in pause
+            referenceTime -= 500;
+        }
+
+        long markerTime = resource.getMarkerTime(referenceTime, forward);
+        if (markerTime < 0) {
+            markerTime = forward ? playerState.getMediaDuration() : 0;
+        }
+        setTime(markerTime);
     }
 
     @Override
@@ -272,5 +300,17 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
                 }
             });
         }
+    }
+
+    private long trimTime(long time) {
+        if (time < 0) {
+            return 0;
+        }
+
+        if (time > playerState.getMediaDuration()) {
+            return playerState.getMediaDuration();
+        }
+
+        return time;
     }
 }

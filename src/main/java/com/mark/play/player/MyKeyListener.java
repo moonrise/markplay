@@ -1,8 +1,6 @@
 package com.mark.play.player;
 
-import com.mark.Log;
 import com.mark.Prefs;
-import uk.co.caprica.vlcj.player.base.State;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 import java.awt.event.KeyAdapter;
@@ -23,10 +21,10 @@ public class MyKeyListener extends KeyAdapter  {
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT:
-                skipTime(-Prefs.getSkipTimeMed());
+                myPlayer.skipTime(-Prefs.getSkipTimeMed());
                 break;
             case KeyEvent.VK_RIGHT:
-                skipTime(Prefs.getSkipTimeMed());
+                myPlayer.skipTime(Prefs.getSkipTimeMed());
                 break;
             case KeyEvent.VK_UP:
                 mediaPlayer.audio().setVolume(Math.min(200, mediaPlayer.audio().volume() + 2)); // 0-200
@@ -45,32 +43,38 @@ public class MyKeyListener extends KeyAdapter  {
         }
 
         switch (e.getKeyChar()) {
+            case 'e':
+                myPlayer.seekMarker(true);
+                break;
+            case 'w':
+                myPlayer.seekMarker(false);
+                break;
             case 'A':
-                skipTime(-Prefs.getSkipTimeLarge());
+                myPlayer.skipTime(-Prefs.getSkipTimeLarge());
                 break;
             case 'a':
-                skipTime(-Prefs.getSkipTimeMed());
+                myPlayer.skipTime(-Prefs.getSkipTimeMed());
                 break;
             case 's':
-                skipTime(-Prefs.getSkipTimeSmall());
+                myPlayer.skipTime(-Prefs.getSkipTimeSmall());
                 break;
             case 'S':
-                skipTime(-Prefs.getSkipTimeTiny());
+                myPlayer.skipTime(-Prefs.getSkipTimeTiny());
                 break;
             case 'D':
-                skipTime(Prefs.getSkipTimeTiny());
+                myPlayer.skipTime(Prefs.getSkipTimeTiny());
                 break;
             case 'd':
-                skipTime(Prefs.getSkipTimeSmall());
+                myPlayer.skipTime(Prefs.getSkipTimeSmall());
                 break;
             case 'f':
-                skipTime(Prefs.getSkipTimeMed());
+                myPlayer.skipTime(Prefs.getSkipTimeMed());
                 break;
             case 'F':
-                skipTime(Prefs.getSkipTimeLarge());
+                myPlayer.skipTime(Prefs.getSkipTimeLarge());
                 break;
             case 'g':
-                mediaPlayer.controls().nextFrame();
+                myPlayer.nextFrame();
                 break;
             case 'k':
             case 'K':
@@ -82,13 +86,6 @@ public class MyKeyListener extends KeyAdapter  {
             case KeyEvent.VK_ESCAPE:
                 mediaPlayer.fullScreen().toggle();
                 break;
-        }
-    }
-
-    private void skipTime(long delta) {
-        mediaPlayer.controls().skipTime(delta);
-        if (mediaPlayer.status().state() == State.PAUSED) {
-            myPlayer.getPlayerState().updatePlayTime();
         }
     }
 }

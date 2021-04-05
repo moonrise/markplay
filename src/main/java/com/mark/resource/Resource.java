@@ -75,4 +75,26 @@ public class Resource {
     public void setSilentMode(boolean silentMode) {
         this.silentMode = silentMode;
     }
+
+    public long getMarkerTime(long currentTime, boolean forward) {
+        float refTime = currentTime/1000F;
+
+        if (forward) {
+            for (Marker marker : markers) {
+                if (marker.position > refTime) {
+                    return (int) (marker.position * 1000);
+                }
+            }
+        }
+        else {
+            for (int i=markers.size()-1; i>=0; i--) {
+                Marker marker = markers.get(i);
+                if (marker.position < refTime) {
+                    return (int) (marker.position * 1000);
+                }
+            }
+        }
+
+        return -1;
+    }
 }
