@@ -79,7 +79,8 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         MouseListener mouseListener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                mediaPlayer.controls().pause();
+                Log.log("Player: mouse clicked");
+                setFocus();
             }
         };
 
@@ -195,8 +196,8 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     }
 
     public void setFocus() {
-        videoSurface.requestFocus();
-        //videoSurface().requestFocusInWindow();    // this may work better under certain cases?
+        //videoSurface.requestFocus();          // key event listener does not seem to work (at least in MacOS)
+        videoSurface.requestFocusInWindow();    // this variation seems to work better (at least in MacOS)
     }
 
     public void updateMarquee(boolean init) {

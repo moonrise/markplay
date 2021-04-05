@@ -150,4 +150,37 @@ public class Prefs {
     public static boolean isModifiedConfirmOnClose() {
         return userPrefs.getBoolean("modifiedConfirm", false);
     }
+
+    public static int getSkipTimeTiny() {
+        return userPrefs.getInt("skipTimeTiny", 1000);
+    }
+
+    public static void setSkipTimeTiny(int x) {
+        userPrefs.putInt("skipTimeTiny", x);
+    }
+
+    public static int getSkipTimeSmall() {
+        return userPrefs.getInt("skipTimeSmall", 5000);
+    }
+
+    public static void setSkipTimeSmall(int x) {
+        userPrefs.putInt("skipTimeSmall", x);
+    }
+
+    public static int getSkipTimeMed() {
+        return userPrefs.getInt("skipTimeMed", 30000);
+    }
+
+    public static void setSkipTimeMed(int x) {
+        userPrefs.putInt("skipTimeMed", x);
+    }
+
+    public static int getSkipTimeLarge() {
+        return userPrefs.getInt("skipTimeLarge", 300000);
+    }
+
+    public static void setSkipTimeLarge(int x) {
+        userPrefs.putInt("skipTimeLarge", x);
+    }
+
 }
