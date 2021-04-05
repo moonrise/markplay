@@ -163,12 +163,12 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         mediaPlayer.controls().setRate(rate);
     }
 
-    public void playResource(Resource resource) {
+    public void startResource(Resource resource) {
         this.resource = resource;
         playerState.setResource(resource);
 
         if (resource != null) {
-            play(resource.path);
+            startMedia(resource.path);
         }
         else {
             // TODO: unload the media  (not quite; the current media still visible)
@@ -181,7 +181,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         }
     }
 
-    public void play(String mrl) {
+    public void startMedia(String mrl) {
         mediaPlayer.media().prepare(mrl);
         mediaPlayer.media().parsing().parse();
 
@@ -199,10 +199,10 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         //videoSurface().requestFocusInWindow();    // this may work better under certain cases?
     }
 
-    public void updateMarquee() {
-        String marguee = String.format("%s %d %s",
+    public void updateMarquee(boolean init) {
+        String marguee = String.format("%s V%d%s",
                 Utils.getTimelineFormatted(playerState.getPlayTime(), false),
-                playerState.getVolume(),
+                init ? (Prefs.getVolume()+200)/2 : playerState.getVolume(),
                 playerState.isMute() ? "M":"");
         setMarquee(marguee);
     }
@@ -249,10 +249,13 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     @Override
     public void onPlayerStateChange(MyPlayerState playerState, EPlayerStateChangeType stateChangeType) {
         if (stateChangeType == EPlayerStateChangeType.PlayTime) {
-            updateMarquee();
+            updateMarquee(false);
         }
         else if (stateChangeType == EPlayerStateChangeType.Volume) {
-            updateMarquee();
+            updateMarquee(false);
+        }
+        else if (stateChangeType == EPlayerStateChangeType.MediaParsed) {
+            updateMarquee(true);
         }
         else if (stateChangeType == EPlayerStateChangeType.PlayFinished) {
             // repeat?

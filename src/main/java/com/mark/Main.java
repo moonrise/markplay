@@ -168,12 +168,13 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     public void onResourceListChange(ResourceList resourceList, ResourceListUpdate update) {
         if (update.type == EResourceListChangeType.Loaded) {
             table.getSelectionModel().addListSelectionListener(this);
+            myPlayer.startResource(resourceList.getCurrent());
         } else if (update.type == EResourceListChangeType.Unloaded) {
             table.getSelectionModel().removeListSelectionListener(this);
-            myPlayer.playResource(null);
+            myPlayer.startResource(null);
         } else if (update.type == EResourceListChangeType.IndexChanged) {
             //myPlayer.setLogo(Utils.getResourcePath("/icons/crown.png"));
-            myPlayer.playResource(resourceList.getCurrent());
+            myPlayer.startResource(resourceList.getCurrent());
         }
 
         updateAppHeader();
@@ -238,8 +239,8 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     private void loadResourceList(Foo resourceListGenerator) {
         if (processCurrentContent()) {
             resourceList = resourceListGenerator.generateResourceList();
-            notifyResourceListChange(resourceList, ResourceListUpdate.Loaded);
             tableModel.setResourceList(resourceList);
+            notifyResourceListChange(resourceList, ResourceListUpdate.Loaded);
 
             if (resourceList.size() > 0) {
                 selectRowTable(0);

@@ -78,6 +78,7 @@ public class Prefs {
         return userPrefs.getBoolean("mute", false);
     }
 
+    // TODO: volume normalization is very messy through out
     public static int getVolume() {
         return userPrefs.getInt("volume", 100);
     }
