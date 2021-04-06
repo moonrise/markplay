@@ -10,7 +10,7 @@ public class PlayOnLoadAction extends AbstractAction {
     private IMain main;
 
     public PlayOnLoadAction(IMain main) {
-        super("Plan On Load") ;
+        super("Play On Load") ;
         this.main = main;
     }
 

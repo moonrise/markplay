@@ -9,6 +9,7 @@ public enum EPlayerStateChangeType {
     PlayPaused,
     PlayResumed,
     PlayStopped,
+    PlaySelected,
     PlayFinished,
     PlayTime,
     Volume,

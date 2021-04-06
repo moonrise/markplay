@@ -76,7 +76,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         MouseListener mouseListener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Log.log("Player: mouse clicked");
+                //Log.log("Player: mouse clicked");
                 setFocus();
             }
         };
@@ -286,9 +286,18 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     }
 
     @Override
+    public void toggleSelect() {
+        Prefs.setPlaySelectedMarkers(!Prefs.isPlaySelectedMarkers());
+
+    }
+
+    @Override
     public void onPlayerStateChange(MyPlayerState playerState, EPlayerStateChangeType stateChangeType) {
         if (stateChangeType == EPlayerStateChangeType.PlayTime) {
             updateMarquee(false);
+            if (Prefs.isPlaySelectedMarkers()) {
+
+            }
         }
         else if (stateChangeType == EPlayerStateChangeType.Volume) {
             updateMarquee(false);

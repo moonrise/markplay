@@ -183,4 +183,11 @@ public class Prefs {
         userPrefs.putInt("skipTimeLarge", x);
     }
 
+    public static void setPlaySelectedMarkers(boolean x) {
+        userPrefs.putBoolean("playSelected", x);
+    }
+
+    public static boolean isPlaySelectedMarkers() {
+        return userPrefs.getBoolean("playSelected", false);
+    }
 }

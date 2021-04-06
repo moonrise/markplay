@@ -1,6 +1,7 @@
 package com.mark.play.player;
 
 import com.mark.Log;
+import com.mark.Prefs;
 import com.mark.Utils;
 import com.mark.main.IMain;
 import com.mark.resource.EResourceChangeType;
@@ -15,8 +16,8 @@ import java.util.ArrayList;
 
 public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IResourceChangeListener {
     final IMain main;
-    final int height = 50;
-    final int middle = 30;
+    final int middle = 30;      // mid point between timeline and the bottom bar
+    final int height = 50;      // bottom bar height
 
     private Font font = new Font("helvetica", Font.PLAIN, 12);
     private boolean graphicsSet = false;
@@ -112,7 +113,6 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
                 this.drawMarkerAt(g, markerAt);
 
                 if (marker.select) {
-                    g.setColor(Color.RED);
                     this.drawMarkerSelectAt(g, markerAt, markers.get(i+1).time / (float)duration);
                 }
             }
@@ -131,9 +131,10 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
     }
 
     private void drawMarkerSelectAt(Graphics g, double ratio1, double ratio2) {
+        g.setColor(Prefs.isPlaySelectedMarkers() ? Color.ORANGE : Color.LIGHT_GRAY);
         int marker1 = timeX(getWidth(), ratio1);
         int marker2 = timeX(getWidth(), ratio2);
-        g.fillRect(marker1+1, this.middle/2+5, marker2-marker1, 10);
+        g.fillRect(marker1+1, this.middle-8, marker2-marker1, 8);
     }
 
     private void drawRect(Graphics g, Rectangle rect) {
@@ -173,6 +174,10 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
         }
         else if (stateChangeType == EPlayerStateChangeType.PlayTime) {
             //Log.log("time line: play time change event handler");
+            repaint();
+        }
+        else if (stateChangeType == EPlayerStateChangeType.PlaySelected) {
+            //Log.log("time line: play selected change event handler");
             repaint();
         }
         else if (stateChangeType == EPlayerStateChangeType.MediaUnloaded) {

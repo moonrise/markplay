@@ -9,4 +9,5 @@ public interface IMyPlayer {
     void addMarker();
     void seekMarker(boolean forward);
     void toggleMarker();
+    void toggleSelect();
 }
