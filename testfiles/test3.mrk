@@ -9,7 +9,7 @@
       "markers": [
         {
           "time": 60000,
-          "select": false
+          "select": true
         },
         {
           "time": 212971,
@@ -25,7 +25,7 @@
         },
         {
           "time": 1395695,
-          "select": false
+          "select": true
         },
         {
           "time": 1415695,

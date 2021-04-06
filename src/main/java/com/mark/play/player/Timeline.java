@@ -11,6 +11,7 @@ import com.mark.resource.Resource;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IResourceChangeListener {
     final IMain main;
@@ -102,10 +103,18 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
         // markers
         Resource resource = this.playerState.getResource();
         if (resource != null) {
-            g.setColor(Color.BLACK);
-            for (Marker marker : resource.markers) {
+            ArrayList<Marker> markers = resource.markers;
+            for (int i=0; i<markers.size(); i++) {
+                Marker marker = markers.get(i);
                 float markerAt = marker.time / (float)duration;
+
+                g.setColor(Color.BLACK);
                 this.drawMarkerAt(g, markerAt);
+
+                if (marker.select) {
+                    g.setColor(Color.RED);
+                    this.drawMarkerSelectAt(g, markerAt, markers.get(i+1).time / (float)duration);
+                }
             }
         }
     }
@@ -119,6 +128,12 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
     private void drawMarkerAt(Graphics g, double ratio) {
         int marker = timeX(getWidth(), ratio);
         g.drawLine(marker, this.middle/2+1, marker, this.middle-1);
+    }
+
+    private void drawMarkerSelectAt(Graphics g, double ratio1, double ratio2) {
+        int marker1 = timeX(getWidth(), ratio1);
+        int marker2 = timeX(getWidth(), ratio2);
+        g.fillRect(marker1+1, this.middle/2+5, marker2-marker1, 10);
     }
 
     private void drawRect(Graphics g, Rectangle rect) {
