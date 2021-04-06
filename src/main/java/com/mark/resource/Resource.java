@@ -97,4 +97,14 @@ public class Resource {
 
         return -1;
     }
+
+    public void toggleMarker(long currentTime) {
+        for (int i=markers.size()-1; i>=0; i--) {
+            Marker marker = markers.get(i);
+            if (marker.position < currentTime) {
+                marker.select = !marker.select;
+                break;
+            }
+        }
+    }
 }

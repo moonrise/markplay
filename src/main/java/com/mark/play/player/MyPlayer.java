@@ -233,13 +233,6 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     }
 
     @Override
-    public void onAddMarkerRequest() {
-        long currentTime = playerState.getPlayTime();
-        this.resource.addMarker(currentTime/1000F);
-        //Log.log("add marker at %d", currentTime);
-    }
-
-    @Override
     public void onError(String errorMessage) {
         main.displayErrorMessage(errorMessage);
     }
@@ -266,6 +259,13 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     }
 
     @Override
+    public void addMarker() {
+        long currentTime = playerState.getPlayTime();
+        this.resource.addMarker(currentTime/1000F);
+        //Log.log("add marker at %d", currentTime);
+    }
+
+    @Override
     public void seekMarker(boolean forward) {
         long referenceTime = playerState.getPlayTime();
         if (!forward && mediaPlayer.status().state() == State.PLAYING) {
@@ -278,6 +278,11 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
             markerTime = forward ? playerState.getMediaDuration() : 0;
         }
         setTime(markerTime);
+    }
+
+    @Override
+    public void toggleMarker() {
+        resource.toggleMarker(playerState.getPlayTime());
     }
 
     @Override
