@@ -1,6 +1,7 @@
 package com.mark.resource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 public class Resource {
@@ -49,6 +50,7 @@ public class Resource {
 
     public void addMarker(float position) {
         markers.add(new Marker(position));
+        Collections.sort(markers);
         notifyChangeListeners(EResourceChangeType.MarkerAdded);
     }
 

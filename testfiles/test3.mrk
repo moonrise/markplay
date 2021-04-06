@@ -8,36 +8,19 @@
       "fileSize": 0,
       "markers": [
         {
-          "position": 151.681,
+          "position": 60.59,
+          "time": 60000,
           "select": false
         },
         {
-          "position": 243.137,
+          "position": 499.226,
+          "time": 499000,
           "select": false
         },
         {
-          "position": 1266.363,
+          "position": 632.726,
+          "time": 632000,
           "select": false
-        },
-        {
-          "position": 1287.178,
-          "select": false
-        },
-        {
-          "position": 1784.779,
-          "select": false
-        },
-        {
-          "position": 1276.363,
-          "select": false
-        },
-        {
-          "position": 1282.178,
-          "select": false
-        },
-        {
-          "position": 1282.178,
-          "select": true
         }
       ]
     },
