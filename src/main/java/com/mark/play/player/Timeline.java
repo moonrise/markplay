@@ -113,7 +113,8 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
                 this.drawMarkerAt(g, markerAt);
 
                 if (marker.select) {
-                    this.drawMarkerSelectAt(g, markerAt, markers.get(i+1).time / (float)duration);
+                    float markerNext = i < markers.size()-1 ? markers.get(i+1).time / (float)duration : duration;
+                    this.drawMarkerSelectAt(g, markerAt, markerNext);
                 }
             }
         }

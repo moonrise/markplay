@@ -288,7 +288,6 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     @Override
     public void toggleSelect() {
         Prefs.setPlaySelectedMarkers(!Prefs.isPlaySelectedMarkers());
-
     }
 
     @Override
@@ -296,7 +295,10 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         if (stateChangeType == EPlayerStateChangeType.PlayTime) {
             updateMarquee(false);
             if (Prefs.isPlaySelectedMarkers()) {
-
+                long nextSelected = resource.getSelectedMarkerTime(playerState.getPlayTime());
+                if (nextSelected >= 0) {
+                    setTime(nextSelected);
+                }
             }
         }
         else if (stateChangeType == EPlayerStateChangeType.Volume) {

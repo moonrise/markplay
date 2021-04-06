@@ -1,5 +1,7 @@
 package com.mark.resource;
 
+import com.mark.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -106,5 +108,43 @@ public class Resource {
                 break;
             }
         }
+    }
+
+    // marker time to jump to if only selected markers are being played
+    public long getSelectedMarkerTime(long currentTime) {
+        return -1;
+    }
+
+    public long getSelectedMarkerTime_work_in_progress(long currentTime) {
+        int index = Collections.binarySearch(markers, new Marker(currentTime));
+        if (index > 0) {        // right on the marker, so we ignore it
+            return -1;
+        }
+
+        Log.log("Marker binary search: %d, %d", index, currentTime);
+        index = -index - 1;
+        Log.log("Marker binary search - : %d", index);
+
+        /*
+        if (index == 0) {       // TODO: take care of 0/boundary condition
+            if (markers.size() > 0) {
+                return markers.get(0).time;
+            }
+        }
+         */
+        if (index > 0){
+            Marker currentMarker = markers.get(--index);
+            if (!currentMarker.select) {
+                for (int i=index; i<markers.size(); i++) {
+                    Marker marker = markers.get(i);
+                    if (marker.select) {
+                        Log.log("Marker binary search ==> : %d, %d", i, marker.time);
+                        return marker.time;
+                    }
+                }
+            }
+        }
+
+        return markers.size() > 0 ? markers.get(0).time : -1;
     }
 }
