@@ -104,7 +104,7 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
         if (resource != null) {
             g.setColor(Color.BLACK);
             for (Marker marker : resource.markers) {
-                float markerAt = marker.position * 1000 / duration;
+                float markerAt = marker.time / (float)duration;
                 this.drawMarkerAt(g, markerAt);
             }
         }

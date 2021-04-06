@@ -1,13 +1,11 @@
 package com.mark.resource;
 
 public class Marker implements Comparable<Marker> {
-    public  float position;     // in seconds
-    public  long time;          // in milliseconds
+    public  long time;     // in milliseconds
     public  boolean select;
 
-    public Marker(float position) {
-        this.position = position;
-        this.time = (long)position*1000;
+    public Marker(long time) {
+        this.time = time;
     }
 
     @Override

@@ -48,7 +48,7 @@ public class Resource {
         }
     }
 
-    public void addMarker(float position) {
+    public void addMarker(long position) {
         markers.add(new Marker(position));
         Collections.sort(markers);
         notifyChangeListeners(EResourceChangeType.MarkerAdded);
@@ -63,7 +63,7 @@ public class Resource {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (Marker marker : markers) {
-            builder.append(String.format("marker: %.2f, %b\n", marker.position, marker.select));
+            builder.append(String.format("marker: %d, %b\n", marker.time, marker.select));
         }
 
         return String.format("path: %s, rating: %d, checked: %b, duration %.2f, fileSize: %d, modified: %s, accessed: %s\n%s\n",
@@ -79,20 +79,18 @@ public class Resource {
     }
 
     public long getMarkerTime(long currentTime, boolean forward) {
-        float refTime = currentTime/1000F;
-
         if (forward) {
             for (Marker marker : markers) {
-                if (marker.position > refTime) {
-                    return (int) (marker.position * 1000);
+                if (marker.time > currentTime) {
+                    return marker.time;
                 }
             }
         }
         else {
             for (int i=markers.size()-1; i>=0; i--) {
                 Marker marker = markers.get(i);
-                if (marker.position < refTime) {
-                    return (int) (marker.position * 1000);
+                if (marker.time < currentTime) {
+                    return marker.time;
                 }
             }
         }
@@ -103,7 +101,7 @@ public class Resource {
     public void toggleMarker(long currentTime) {
         for (int i=markers.size()-1; i>=0; i--) {
             Marker marker = markers.get(i);
-            if (marker.position < currentTime) {
+            if (marker.time < currentTime) {
                 marker.select = !marker.select;
                 break;
             }

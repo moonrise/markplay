@@ -261,7 +261,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     @Override
     public void addMarker() {
         long currentTime = playerState.getPlayTime();
-        this.resource.addMarker(currentTime/1000F);
+        this.resource.addMarker(currentTime);
         //Log.log("add marker at %d", currentTime);
     }
 
