@@ -19,21 +19,6 @@ public class MyKeyListener extends KeyAdapter  {
     public void keyPressed(KeyEvent e) {
         //System.out.printf("key code: %d, key char: %c, shift: %s (%s)\n", e.getKeyCode(), e.getKeyChar(), e.isShiftDown(), KeyEvent.getKeyText(e.getKeyCode()));
 
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_LEFT:
-                myPlayer.skipTime(-Prefs.getSkipTimeMed());
-                break;
-            case KeyEvent.VK_RIGHT:
-                myPlayer.skipTime(Prefs.getSkipTimeMed());
-                break;
-            case KeyEvent.VK_UP:
-                mediaPlayer.audio().setVolume(Math.min(200, mediaPlayer.audio().volume() + 2)); // 0-200
-                break;
-            case KeyEvent.VK_DOWN:
-                mediaPlayer.audio().setVolume(mediaPlayer.audio().volume() - 2);    // lower bound guarded already
-                break;
-        }
-
         switch (e.getKeyChar()) {
             case 'e':
                 myPlayer.seekMarker(true);
@@ -87,6 +72,18 @@ public class MyKeyListener extends KeyAdapter  {
                 break;
             case KeyEvent.VK_SPACE:
                 mediaPlayer.controls().pause();
+                break;
+            case KeyEvent.VK_LEFT:
+                myPlayer.skipTime(-Prefs.getSkipTimeMed());
+                break;
+            case KeyEvent.VK_RIGHT:
+                myPlayer.skipTime(Prefs.getSkipTimeMed());
+                break;
+            case KeyEvent.VK_UP:
+                mediaPlayer.audio().setVolume(Math.min(200, mediaPlayer.audio().volume() + 2)); // 0-200
+                break;
+            case KeyEvent.VK_DOWN:
+                mediaPlayer.audio().setVolume(mediaPlayer.audio().volume() - 2);    // lower bound guarded already
                 break;
             case KeyEvent.VK_ESCAPE:
                 mediaPlayer.fullScreen().toggle();
