@@ -8,6 +8,7 @@ public interface IMyPlayer {
     void nextFrame();
     void addMarker();
     void seekMarker(boolean forward);
+    void seek10th(float rate10th);
     void toggleMarkerSelection();
     void toggleSelectionPlay();
 }

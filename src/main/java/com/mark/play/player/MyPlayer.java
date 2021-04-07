@@ -284,6 +284,11 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     }
 
     @Override
+    public void seek10th(float rate10th) {
+        setTime((long)(playerState.getMediaDuration()*rate10th));
+    }
+
+    @Override
     public void toggleMarkerSelection() {
         resource.toggleMarkerSelection(playerState.getPlayTime());
         updateOnPause();

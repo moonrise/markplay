@@ -1,5 +1,6 @@
 package com.mark.play.player;
 
+import com.mark.Log;
 import com.mark.Prefs;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
@@ -15,9 +16,32 @@ public class MyKeyListener extends KeyAdapter  {
         this.mediaPlayer = mediaPlayer;
     }
 
+    private void processTildaToZero(int keyCode) {
+        float rate10th = 0;
+
+        if (keyCode == 192) {
+            rate10th = 0;
+        }
+        else if (keyCode == 48) {
+            rate10th = 1;
+        }
+        else {
+            rate10th = (keyCode - 48)/10F;
+        }
+
+        //Log.log("KeyCode: %d, rate: %.1f", keyCode, rate10th);
+        myPlayer.seek10th(rate10th);
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         //System.out.printf("key code: %d, key char: %c, shift: %s (%s)\n", e.getKeyCode(), e.getKeyChar(), e.isShiftDown(), KeyEvent.getKeyText(e.getKeyCode()));
+
+        int keyCode = e.getKeyCode();
+        if (keyCode >= 48 /* 0 */ && keyCode <=57 /* 9 */ || keyCode == 192 /* ` */) {
+            processTildaToZero(keyCode);
+            return;
+        }
 
         switch (e.getKeyChar()) {
             case 'e':
