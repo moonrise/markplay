@@ -10,6 +10,7 @@ import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceChangeListener {
@@ -50,9 +51,19 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
     }
 
     private void notifyStateChangeListeners(EPlayerStateChangeType changeType) {
-        for (IMyPlayerStateChangeListener listener : this.stateChangeListeners) {
-            listener.onPlayerStateChange(this, changeType);
-        }
+        notifyStateChangeListeners_(changeType, this);
+    }
+
+    private void notifyStateChangeListeners_(EPlayerStateChangeType changeType, MyPlayerState playerState) {
+        // strange thing can happen without this invokeLater
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                for (IMyPlayerStateChangeListener listener : playerState.stateChangeListeners) {
+                    listener.onPlayerStateChange(playerState, changeType);
+                }
+            }
+        });
     }
 
     public Resource getResource() {
