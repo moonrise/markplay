@@ -14,4 +14,5 @@ public interface IMain {
     void notifyResourceListChange(ResourceList resourceList, ResourceListUpdate update);
     void processFile(String filePath);
     void saveCurrentResourceList(boolean saveAs);
+    void navigateResourceList(boolean forward, boolean favorite);
 }

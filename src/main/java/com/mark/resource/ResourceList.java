@@ -168,4 +168,24 @@ public class ResourceList {
             resource.setSilentMode(silentMode);
         }
     }
+
+    public void navigate(boolean forward, boolean favorite) {
+        if (resources.size() <= 1) {
+            return;
+        }
+
+        if (favorite) {
+
+        }
+        else {
+            int newIndex = currentIndex + (forward ? 1 : -1);
+            if (newIndex < 0) {
+                newIndex = resources.size() - 1;
+            }
+            else if (newIndex >= resources.size()) {
+                newIndex = 0;
+            }
+            setCurrentIndex(newIndex);
+        }
+    }
 }

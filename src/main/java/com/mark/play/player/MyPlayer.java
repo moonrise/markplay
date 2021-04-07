@@ -87,7 +87,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
             }
         };
 
-        videoSurface.addKeyListener(new MyKeyListener(this, mediaPlayer));
+        videoSurface.addKeyListener(new MyKeyListener(main, this, mediaPlayer));
         videoSurface.addMouseListener(mouseListener);
         videoSurface.addMouseWheelListener(mouseWheelListener);
     }

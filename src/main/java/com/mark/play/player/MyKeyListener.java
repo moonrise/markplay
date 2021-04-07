@@ -2,16 +2,19 @@ package com.mark.play.player;
 
 import com.mark.Log;
 import com.mark.Prefs;
+import com.mark.main.IMain;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class MyKeyListener extends KeyAdapter  {
+    private IMain main;
     private IMyPlayer myPlayer;
     private EmbeddedMediaPlayer mediaPlayer;
 
-    public MyKeyListener(IMyPlayer myPlayer, EmbeddedMediaPlayer mediaPlayer) {
+    public MyKeyListener(IMain main, IMyPlayer myPlayer, EmbeddedMediaPlayer mediaPlayer) {
+        this.main = main;
         this.myPlayer = myPlayer;
         this.mediaPlayer = mediaPlayer;
     }
@@ -44,6 +47,18 @@ public class MyKeyListener extends KeyAdapter  {
         }
 
         switch (e.getKeyChar()) {
+            case 'c':
+                main.navigateResourceList(true, false);
+                return;
+            case 'x':
+                main.navigateResourceList(false, false);
+                return;
+            case 'v':
+                main.navigateResourceList(true, true);
+                return;
+            case 'z':
+                main.navigateResourceList(false, true);
+                return;
             case 'e':
                 myPlayer.seekMarker(true);
                 return;

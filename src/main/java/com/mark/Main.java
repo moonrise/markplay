@@ -238,6 +238,11 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         resourceList.saveAs(filePath);
     }
 
+    @Override
+    public void navigateResourceList(boolean forward, boolean favorite) {
+        resourceList.navigate(forward, favorite);
+    }
+
     private void loadResourceList(Foo resourceListGenerator) {
         if (processCurrentContent()) {
             resourceList = resourceListGenerator.generateResourceList();
