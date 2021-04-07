@@ -47,7 +47,12 @@
       "checked": false,
       "duration": 0.0,
       "fileSize": 0,
-      "markers": []
+      "markers": [
+        {
+          "time": 0,
+          "select": false
+        }
+      ]
     },
     {
       "path": "/Users/bjeong/Downloads/cloud.wmv",
@@ -55,7 +60,12 @@
       "checked": false,
       "duration": 0.0,
       "fileSize": 0,
-      "markers": []
+      "markers": [
+        {
+          "time": 0,
+          "select": false
+        }
+      ]
     },
     {
       "path": "/Users/bjeong/IdeaProjects/markplay/media/hydroid.mp4",
@@ -63,8 +73,13 @@
       "checked": false,
       "duration": 0.0,
       "fileSize": 0,
-      "markers": []
+      "markers": [
+        {
+          "time": 0,
+          "select": false
+        }
+      ]
     }
   ],
-  "currentIndex": 0
+  "currentIndex": 1
 }

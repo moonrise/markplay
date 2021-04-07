@@ -92,7 +92,7 @@ public class Resource {
     // note that the most left timer marker is always zero and is guaranteed to be there.
     public int getMarkerSpanIndex(long currentTime) {
         int index = Collections.binarySearch(markers, new Marker(currentTime));
-        return index >= 0 ? index : -index-1;
+        return index >= 0 ? index : -index-2;
     }
 
     public long getAdjacentMarkerTime(long currentTime, boolean forward) {
