@@ -24,6 +24,10 @@ public class Resource {
 
     public Resource(String path) {
         this.path = path;
+
+        // one marker at the starting point always to support the selected span play for the first segment.
+        // subsequently added markers will dictate the segment to the right.
+        markers.add(new Marker(0));
     }
 
     public void registerChangeListener(IResourceChangeListener listener) {
@@ -80,7 +84,21 @@ public class Resource {
         this.silentMode = silentMode;
     }
 
-    public long getMarkerTime(long currentTime, boolean forward) {
+    // marker span index is the marker index to the left of the current time inclusive.
+    // For example, consider the marker array [0, 50, 120, 3000, 6700]. Current time to index maps like this:
+    //  0 -> 0, 1 -> 0, 49 -> 0
+    //  120 -> 2, 500 -> 2
+    //  6700 -> 4, 9000 -> 4
+    // note that the most left timer marker is always zero and is guaranteed to be there.
+    public int getMarkerSpanIndex(long currentTime) {
+        int index = Collections.binarySearch(markers, new Marker(currentTime));
+        return index >= 0 ? index : -index-1;
+    }
+
+    public long getAdjacentMarkerTime(long currentTime, boolean forward) {
+        return getAdjacentMarkerTime_old(currentTime, forward);
+    }
+    public long getAdjacentMarkerTime_old(long currentTime, boolean forward) {
         if (forward) {
             for (Marker marker : markers) {
                 if (marker.time > currentTime) {

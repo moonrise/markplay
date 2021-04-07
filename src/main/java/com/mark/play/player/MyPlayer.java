@@ -273,7 +273,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
             referenceTime -= 500;
         }
 
-        long markerTime = resource.getMarkerTime(referenceTime, forward);
+        long markerTime = resource.getAdjacentMarkerTime(referenceTime, forward);
         if (markerTime < 0) {
             markerTime = forward ? playerState.getMediaDuration() : 0;
         }

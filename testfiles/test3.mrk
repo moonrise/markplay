@@ -8,6 +8,10 @@
       "fileSize": 0,
       "markers": [
         {
+          "time": 0,
+          "select": true
+        },
+        {
           "time": 60000,
           "select": true
         },
