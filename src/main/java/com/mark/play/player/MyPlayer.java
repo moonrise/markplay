@@ -204,10 +204,10 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         videoSurface.requestFocusInWindow();    // this variation seems to work better (at least in MacOS)
     }
 
-    public void updateMarquee(boolean init) {
+    public void updateMarquee() {
         String marguee = String.format("%s V%d%s",
                 Utils.getTimelineFormatted(playerState.getPlayTime(), false),
-                init ? (Prefs.getVolume()+200)/2 : playerState.getVolume(),
+                playerState.getVolume(),
                 playerState.isMute() ? "M":"");
         setMarquee(marguee);
     }
@@ -316,7 +316,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     @Override
     public void onPlayerStateChange(MyPlayerState playerState, EPlayerStateChangeType stateChangeType) {
         if (stateChangeType == EPlayerStateChangeType.PlayTime) {
-            updateMarquee(false);
+            updateMarquee();
             if (Prefs.isPlaySelectedMarkers()) {
                 long nextSelected = resource.getSelectedMarkerTime(playerState.getPlayTime());
                 if (nextSelected >= 0) {
@@ -325,10 +325,10 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
             }
         }
         else if (stateChangeType == EPlayerStateChangeType.Volume) {
-            updateMarquee(false);
+            updateMarquee();
         }
         else if (stateChangeType == EPlayerStateChangeType.MediaParsed) {
-            updateMarquee(true);
+            updateMarquee();
         }
         else if (stateChangeType == EPlayerStateChangeType.PlayFinished) {
             // repeat?
