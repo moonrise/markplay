@@ -46,72 +46,75 @@ public class MyKeyListener extends KeyAdapter  {
         switch (e.getKeyChar()) {
             case 'e':
                 myPlayer.seekMarker(true);
-                break;
+                return;
             case 'w':
                 myPlayer.seekMarker(false);
-                break;
+                return;
             case 'A':
                 myPlayer.skipTime(-Prefs.getSkipTimeLarge());
-                break;
+                return;
             case 'a':
                 myPlayer.skipTime(-Prefs.getSkipTimeMed());
-                break;
+                return;
             case 's':
                 myPlayer.skipTime(-Prefs.getSkipTimeSmall());
-                break;
+                return;
             case 'S':
                 myPlayer.skipTime(-Prefs.getSkipTimeTiny());
-                break;
+                return;
             case 'D':
                 myPlayer.skipTime(Prefs.getSkipTimeTiny());
-                break;
+                return;
             case 'd':
                 myPlayer.skipTime(Prefs.getSkipTimeSmall());
-                break;
+                return;
             case 'f':
                 myPlayer.skipTime(Prefs.getSkipTimeMed());
-                break;
+                return;
             case 'F':
                 myPlayer.skipTime(Prefs.getSkipTimeLarge());
-                break;
+                return;
             case 'g':
                 myPlayer.nextFrame();
-                break;
+                return;
             case't':
                 myPlayer.addMarker();
-                break;
+                return;
             case'r':
                 myPlayer.toggleMarkerSelection();
-                break;
+                return;
             case'q':
                 myPlayer.toggleSelectionPlay();
-                break;
+                return;
             case 'k':
             case 'K':
                 myPlayer.onApplicationExitRequest();
-                break;
+                return;
             case'm':
             case'M':
-                mediaPlayer.audio().setMute(!mediaPlayer.audio().isMute());
-                break;
-            case KeyEvent.VK_SPACE:
-                mediaPlayer.controls().pause();
-                break;
+                myPlayer.setMute(!mediaPlayer.audio().isMute());
+                return;
+        }
+
+        switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT:
                 myPlayer.skipTime(-Prefs.getSkipTimeMed());
-                break;
+                return;
             case KeyEvent.VK_RIGHT:
                 myPlayer.skipTime(Prefs.getSkipTimeMed());
-                break;
+                return;
             case KeyEvent.VK_UP:
-                mediaPlayer.audio().setVolume(Math.min(200, mediaPlayer.audio().volume() + 2)); // 0-200
-                break;
+                myPlayer.setVolume(Math.min(200, mediaPlayer.audio().volume() + 2)); // 0-200
+                return;
             case KeyEvent.VK_DOWN:
-                mediaPlayer.audio().setVolume(mediaPlayer.audio().volume() - 2);    // lower bound guarded already
-                break;
+                myPlayer.setVolume(mediaPlayer.audio().volume() - 2);    // lower bound guarded already
+                return;
+            case KeyEvent.VK_SPACE:
+                mediaPlayer.controls().pause();
+                return;
             case KeyEvent.VK_ESCAPE:
                 mediaPlayer.fullScreen().toggle();
-                break;
+                return;
         }
     }
 }

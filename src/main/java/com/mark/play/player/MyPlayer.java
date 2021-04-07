@@ -151,14 +151,17 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
 
     public void setVolume(int volume) {     // percentage of 0-200?
         mediaPlayer.audio().setVolume(volume);
+        updateOnPause();
     }
 
     public void setMute(boolean mute) {
         mediaPlayer.audio().setMute(mute);
+        updateOnPause();
     }
 
     public void setRate(float rate) {
         mediaPlayer.controls().setRate(rate);
+        updateOnPause();
     }
 
     public void startResource(Resource resource) {
@@ -190,6 +193,10 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         else {
             mediaPlayer.media().startPaused(mrl);
         }
+
+        // TODO: should the player keyboard actions be serviced from the whole frame as well?
+        // give the focus to player for keyboard events to be received, but then the table loses the focus
+         setFocus();
     }
 
     public void setFocus() {
@@ -251,7 +258,14 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
 
     @Override
     public void skipTime(long delta) {
-        setTime(playerState.getPlayTime() + delta);
+        long target = playerState.getPlayTime() + delta;
+        if (target < 0) {
+            target = 0;
+        }
+        else if (target > playerState.getMediaDuration()) {
+            target = playerState.getMediaDuration();
+        }
+        setTime(target);
     }
 
     @Override
