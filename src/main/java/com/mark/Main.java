@@ -76,6 +76,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
 
         // TODO: do more with the column widths
         TableColumn column = null;
+        /*
         for (int i = 0; i < 3; i++) {
             column = table.getColumnModel().getColumn(i);
             if (i == 1) {
@@ -86,6 +87,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
                 column.setMinWidth(50); //third column is bigger
             }
         }
+         */
 
         splitPane = new MainSplitPane(new JScrollPane(table), playerContainer);
         table.setFillsViewportHeight(true);
