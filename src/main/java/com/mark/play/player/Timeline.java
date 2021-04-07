@@ -98,12 +98,14 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
         Rectangle timeRect = new Rectangle(this.getWidth()/2 - timeWidth/2, this.middle, timeWidth, this.getHeight()-this.middle);
         g.setColor(Color.LIGHT_GRAY);
         this.drawRect(g, timeRect);
-        g.setColor(Color.BLACK);
-        this.drawCenteredString(g, Utils.getTimelineFormatted(playTime, true), timeRect, font);
 
-        // markers
-        Resource resource = this.playerState.getResource();
+        Resource resource = playerState.getResource();
         if (resource != null) {
+            g.setColor(Color.BLACK);
+            String timeText = String.format("%s [%d]", Utils.getTimelineFormatted(playTime, true), resource.getMarkerSpanIndex(playTime));
+            this.drawCenteredString(g, timeText, timeRect, font);
+
+            // markers
             ArrayList<Marker> markers = resource.markers;
             for (int i=0; i<markers.size(); i++) {
                 Marker marker = markers.get(i);

@@ -214,7 +214,13 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
                 .position(MarqueePosition.BOTTOM_RIGHT)
                 .opacity(0.8f)
                 .enable();
-        mediaPlayer.marquee().set(marquee);
+
+        mediaPlayer.submit(new Runnable() {
+            @Override
+            public void run() {
+                mediaPlayer.marquee().set(marquee);
+            }
+        });
     }
 
     public void setLogo(String imageFilePath) {
@@ -240,9 +246,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     @Override
     public void setTime(long time) {
         mediaPlayer.controls().setTime(trimTime(time));
-        if (mediaPlayer.status().state() == State.PAUSED) {
-            playerState.updatePlayTime();
-        }
+        updateOnPause();
     }
 
     @Override
@@ -253,15 +257,14 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     @Override
     public void nextFrame() {
         mediaPlayer.controls().nextFrame();
-        if (mediaPlayer.status().state() == State.PAUSED) {
-            playerState.updatePlayTime();
-        }
+        updateOnPause();
     }
 
     @Override
     public void addMarker() {
         long currentTime = playerState.getPlayTime();
         this.resource.addMarker(currentTime);
+        updateOnPause();
         //Log.log("add marker at %d", currentTime);
     }
 
@@ -281,12 +284,13 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     }
 
     @Override
-    public void toggleMarker() {
-        resource.toggleMarker(playerState.getPlayTime());
+    public void toggleMarkerSelection() {
+        resource.toggleMarkerSelection(playerState.getPlayTime());
+        updateOnPause();
     }
 
     @Override
-    public void toggleSelect() {
+    public void toggleSelectionPlay() {
         Prefs.setPlaySelectedMarkers(!Prefs.isPlaySelectedMarkers());
     }
 
@@ -315,6 +319,13 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
                     mediaPlayer.media().play(resource.path);
                 }
             });
+        }
+    }
+
+    // trigger update if paused as the time change event does not come in from the underlying library
+    private void updateOnPause() {
+        if (mediaPlayer.status().state() == State.PAUSED) {
+            playerState.updatePlayTime();   // playtime update will do (an arbitrary choice as it is in a paused state)
         }
     }
 

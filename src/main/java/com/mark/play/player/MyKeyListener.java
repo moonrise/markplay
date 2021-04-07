@@ -72,10 +72,10 @@ public class MyKeyListener extends KeyAdapter  {
                 myPlayer.addMarker();
                 break;
             case'r':
-                myPlayer.toggleMarker();
+                myPlayer.toggleMarkerSelection();
                 break;
             case'q':
-                myPlayer.toggleSelect();
+                myPlayer.toggleSelectionPlay();
                 break;
             case 'k':
             case 'K':
