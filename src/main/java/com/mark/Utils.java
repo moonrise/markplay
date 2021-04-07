@@ -51,4 +51,15 @@ public class Utils {
     public static String rectToString(Rectangle rect) {
         return String.format("%d,%d,%d,%d", rect.x, rect.y, rect.width, rect.height);
     }
+
+    /**
+     * circular mod (modulo)
+     * @param a
+     * @param b (divisor)
+     * @return
+     */
+    public static int mod(int a, int b) {
+        int m = a % b;
+        return m < 0 ? m + b : m;
+    }
 }

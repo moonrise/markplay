@@ -174,18 +174,18 @@ public class ResourceList {
             return;
         }
 
-        if (favorite) {
+        int step = forward ? 1 : -1;
 
+        if (favorite) {
+            for (int i = Utils.mod(currentIndex + step, resources.size()); i != currentIndex; i = Utils.mod(i+step, resources.size())) {
+                if (resources.get(i).checked) {
+                    setCurrentIndex(i);
+                    break;
+                }
+            }
         }
         else {
-            int newIndex = currentIndex + (forward ? 1 : -1);
-            if (newIndex < 0) {
-                newIndex = resources.size() - 1;
-            }
-            else if (newIndex >= resources.size()) {
-                newIndex = 0;
-            }
-            setCurrentIndex(newIndex);
+            setCurrentIndex(Utils.mod(currentIndex + step, resources.size()));
         }
     }
 }
