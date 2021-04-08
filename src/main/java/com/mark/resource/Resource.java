@@ -19,6 +19,7 @@ public class Resource {
 
     public ArrayList<Marker> markers = new ArrayList<>();
 
+    private static long MinForwardDelta = 50;      // milli seconds
     private transient ArrayList<IResourceChangeListener> resourceChangeListeners;
 
     // silence change notifications (like when deserializing or batch processing)
@@ -171,8 +172,6 @@ public class Resource {
 
     // marker time to jump to if only selected markers are being played
     public long getSelectedMarkerTime(long currentTime, boolean backwardHint) {
-        //Log.log("selected marker detection: %d", currentTime);
-
         if (markers.size() <= 1) {
             return -1;
         }
@@ -180,20 +179,38 @@ public class Resource {
         int spanIndex = getMarkerSpanIndex(currentTime);
         Marker marker = markers.get(spanIndex);
 
+        //Log.log("selected marker processor - direction:%s, time:%d, span:%d, select:%s", backwardHint ? "<":">", currentTime, spanIndex, marker.select?"x":"");
         if (marker.select) {
-            if (backwardHint && currentTime - marker.time < Prefs.getTimeFuzzyFactor()) {
+            if (backwardHint && (currentTime - marker.time < Prefs.getTimeFuzzyFactor())) {
                 for (int i = Utils.mod(spanIndex - 1, markers.size()); i != spanIndex; i = Utils.mod(i-1, markers.size())) {
                     if (markers.get(i).select) {
+                        //Log.log("selected marker processor - jump back:%d,%d", i, markers.get(i).time);
                         return markers.get(i).time;
                     }
                 }
             }
+            //Log.log("selected marker processor - do nothing");
             return -1;      // do not bother as the play head in the selected marker
         }
 
         for (int i = (spanIndex + 1) % markers.size(); i != spanIndex; i = (i+1) % markers.size()) {
             if (markers.get(i).select) {
-                return markers.get(i).time;
+                //Log.log("selected marker processor - jump:%d,%d", i, markers.get(i).time);
+
+                // if the jump target is too close from the current time, the playback can reverse and create a loop
+                // because while we're processing all these, the play head is moving forward.
+                long jumpTo = markers.get(i).time;
+                long forwardDelta = Math.abs(jumpTo - currentTime);
+
+                // one solution is ensuring the minimum jump like 50-100 milli seconds. This tends to have disruption
+                // in playback either as if it skips a few frames (not a good solution - 'minimum forward delta').
+                //return forwardDelta < MinForwardDelta ? (jumpTo + MinForwardDelta - forwardDelta) : jumpTo;
+
+
+                // other solution is if the jump target is very close from the current time, simply ignore it and let
+                // it play. This seems to work better. MinForwardDelta will determine how quickly/accurately it reaches
+                // the target when the current time is away from it - needs to experiment for the best value.
+                return forwardDelta < MinForwardDelta ? -1 : jumpTo;
             }
         }
 
