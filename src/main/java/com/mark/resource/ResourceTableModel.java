@@ -4,7 +4,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class ResourceTableModel extends AbstractTableModel implements IResourceListChangeListener {
     private ResourceList resourceList;
-    private String[] columnNames = {"Select", "Path", "Rating"};
+    private String[] columnNames = {"row", "Select", "Path", "Rating"};
 
     public ResourceTableModel(ResourceList resourceList) {
         this.resourceList = resourceList;
@@ -39,10 +39,12 @@ public class ResourceTableModel extends AbstractTableModel implements IResourceL
         Resource resource = resourceList.getResources().get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return resource.checked;
+                return rowIndex + 1;
             case 1:
-                return resource.path;
+                return resource.checked ? "*" : "";
             case 2:
+                return resource.path;
+            case 3:
                 return resource.rating;
         }
         return null;
