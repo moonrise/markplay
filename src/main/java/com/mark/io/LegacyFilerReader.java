@@ -4,6 +4,7 @@ import com.mark.Log;
 import com.mark.main.IMain;
 import com.mark.resource.Resource;
 import com.mark.resource.ResourceList;
+import org.apache.commons.io.FilenameUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -38,7 +39,7 @@ public class LegacyFilerReader extends DefaultHandler {
     }
 
     public static boolean isFileExtensionMatch(String filePath) {
-        return filePath.endsWith(FileExtension);
+        return FileExtension.equalsIgnoreCase("."+FilenameUtils.getExtension(filePath));
     }
 
     public ResourceList read(IMain main, File xmlFile) {

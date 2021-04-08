@@ -34,7 +34,7 @@ public class ResourceList {
     }
 
     public static boolean isFileExtensionMatch(String filePath) {
-        return filePath.endsWith(FileExtension);
+        return FileExtension.equalsIgnoreCase("."+FilenameUtils.getExtension(filePath));
     }
 
     public ResourceList(IMain main) {
@@ -55,7 +55,8 @@ public class ResourceList {
     }
 
     public String getName() {
-        return filePath == null ? Utils.NoName : FilenameUtils.getBaseName(filePath);
+        //return filePath == null ? Utils.NoName : FilenameUtils.getName(filePath);
+        return filePath == null ? Utils.NoName : filePath;
     }
 
     public boolean isDirty() {
@@ -100,6 +101,10 @@ public class ResourceList {
     }
 
     public void saveAs(String filePath) {
+        if (!isFileExtensionMatch(filePath)) {
+            filePath += FileExtension;
+        }
+
         File file = new File(filePath);
 
         try {
