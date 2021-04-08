@@ -104,9 +104,11 @@ public class MyKeyListener extends KeyAdapter  {
             case 'K':
                 myPlayer.onApplicationExitRequest();
                 return;
-            case'm':
-            case'M':
+            case'b':
+            case'B':
                 myPlayer.setMute(!mediaPlayer.audio().isMute());
+            case'm':
+                myPlayer.getResource().toggleFavorite();
                 return;
         }
 

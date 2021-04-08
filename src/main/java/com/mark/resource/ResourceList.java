@@ -47,6 +47,11 @@ public class ResourceList {
 
         if (filePath != null) {
             read();
+
+            // establish the child to parent link when deserialized
+            for (Resource resource : resources) {
+                resource.setParentList(this);
+            }
         }
     }
 
@@ -199,5 +204,12 @@ public class ResourceList {
         else {
             setCurrentIndex(Utils.mod(currentIndex + step, resources.size()));
         }
+    }
+
+    // this is the direct communication from the child (one of the resource list members)
+    // Resource change is notified by listener notification from Resource, but the parent does not listen to it.
+    public void onChildResourceChange(Resource resource, EResourceChangeType changeType) {
+        modified = true;
+        notifyResourceListChange(ResourceListUpdate.ChildResourceChanged(resource, changeType));
     }
 }

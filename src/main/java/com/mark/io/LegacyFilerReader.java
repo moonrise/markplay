@@ -71,7 +71,7 @@ public class LegacyFilerReader extends DefaultHandler {
     	//Log.log("end element : %s, %s", qName, data.toString());
 
 		if (qName.equals("Path")) {
-		    resource = new Resource(data.toString());
+		    resource = new Resource(data.toString(), resourceList);
 		    resource.setSilentMode(true);       // un-silenced by resourceList when all resources are read
 		}
         else if (qName.equals("Rating")) {

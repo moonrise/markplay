@@ -219,7 +219,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             loadResourceList(() -> new LegacyFilerReader().read(this, new File(filePath)));
             Prefs.setRecentFile(filePath);
         } else {                                                          // assume media files for all else
-            resourceList.addResource(new Resource(filePath));
+            resourceList.addResource(new Resource(filePath, resourceList));
             selectRowTable(resourceList.size() - 1);
         }
     }

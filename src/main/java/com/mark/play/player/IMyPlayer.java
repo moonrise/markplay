@@ -1,6 +1,9 @@
 package com.mark.play.player;
 
+import com.mark.resource.Resource;
+
 public interface IMyPlayer {
+    Resource getResource();
     void onApplicationExitRequest();
     void onError(String errorMessage);
     void setMute(boolean mute);

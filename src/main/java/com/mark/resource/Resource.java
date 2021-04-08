@@ -21,16 +21,27 @@ public class Resource {
 
     private static long MinForwardDelta = 50;      // milli seconds
     private transient ArrayList<IResourceChangeListener> resourceChangeListeners;
+    private transient ResourceList parentList;
 
     // silence change notifications (like when deserializing or batch processing)
     private transient boolean silentMode;
 
-    public Resource(String path) {
+    public Resource(String path, ResourceList parentList) {
         this.path = path;
+        this.parentList = parentList;
 
         // one marker at the starting point always to support the selected span play for the first segment.
         // subsequently added markers will dictate the segment to the right.
         markers.add(new Marker(0));
+    }
+
+    public ResourceList getParentList() {
+        return parentList;
+    }
+
+    // we need this when the parent list file is deserialized to establish the child to parent link
+    public void setParentList(ResourceList parentList) {
+        this.parentList = parentList;
     }
 
     public void registerChangeListener(IResourceChangeListener listener) {
@@ -52,6 +63,10 @@ public class Resource {
             return;
         }
 
+        // change notification to the parent is direct
+        parentList.onChildResourceChange(this, changeType);
+
+        // notify all others who are registered
         for (IResourceChangeListener listener : this.resourceChangeListeners) {
             listener.onResourceChange(this, changeType);
         }
@@ -96,13 +111,18 @@ public class Resource {
         int spanIndex = getMarkerSpanIndex(currentTime);
         if (currentTime - markers.get(spanIndex).time < timeFuzzyFactor*1.5) {
             markers.remove(spanIndex);
+            notifyChangeListeners(EResourceChangeType.MarkerRemoved);
         }
         else {
             markers.add(new Marker(currentTime));
             Collections.sort(markers);
+            notifyChangeListeners(EResourceChangeType.MarkerAdded);
         }
+    }
 
-        notifyChangeListeners(EResourceChangeType.MarkerAdded);
+    public void toggleFavorite() {
+        this.checked = !this.checked;
+        notifyChangeListeners(EResourceChangeType.FavoriteToggled);
     }
 
     public String toString() {
@@ -168,6 +188,7 @@ public class Resource {
     public void toggleMarkerSelection(long currentTime) {
         Marker marker = markers.get(getMarkerSpanIndex(currentTime));
         marker.select = !marker.select;
+        notifyChangeListeners(EResourceChangeType.MarkerSelectionToggled);
     }
 
     // marker time to jump to if only selected markers are being played
@@ -215,38 +236,5 @@ public class Resource {
         }
 
         return -1;
-    }
-
-    public long getSelectedMarkerTime_work_in_progress(long currentTime) {
-        int index = Collections.binarySearch(markers, new Marker(currentTime));
-        if (index > 0) {        // right on the marker, so we ignore it
-            return -1;
-        }
-
-        Log.log("Marker binary search: %d, %d", index, currentTime);
-        index = -index - 1;
-        Log.log("Marker binary search - : %d", index);
-
-        /*
-        if (index == 0) {       // TODO: take care of 0/boundary condition
-            if (markers.size() > 0) {
-                return markers.get(0).time;
-            }
-        }
-         */
-        if (index > 0){
-            Marker currentMarker = markers.get(--index);
-            if (!currentMarker.select) {
-                for (int i=index; i<markers.size(); i++) {
-                    Marker marker = markers.get(i);
-                    if (marker.select) {
-                        Log.log("Marker binary search ==> : %d, %d", i, marker.time);
-                        return marker.time;
-                    }
-                }
-            }
-        }
-
-        return markers.size() > 0 ? markers.get(0).time : -1;
     }
 }

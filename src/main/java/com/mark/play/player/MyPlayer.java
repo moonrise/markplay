@@ -323,6 +323,11 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     }
 
     @Override
+    public Resource getResource() {
+        return resource;
+    }
+
+    @Override
     public void onPlayerStateChange(MyPlayerState playerState, EPlayerStateChangeType stateChangeType) {
         if (stateChangeType == EPlayerStateChangeType.PlayTime) {
             updateMarquee();
