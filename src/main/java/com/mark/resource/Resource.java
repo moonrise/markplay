@@ -2,6 +2,7 @@ package com.mark.resource;
 
 import com.mark.Log;
 import com.mark.Prefs;
+import com.mark.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -133,7 +134,33 @@ public class Resource {
     }
 
     // marker time to jump to if only selected markers are being played
-    public long getSelectedMarkerTime(long currentTime) {
+    public long getSelectedMarkerTime(long currentTime, boolean backwardHint) {
+        //Log.log("selected marker detection: %d", currentTime);
+
+        if (markers.size() <= 1) {
+            return -1;
+        }
+
+        int spanIndex = getMarkerSpanIndex(currentTime);
+        Marker marker = markers.get(spanIndex);
+
+        if (marker.select) {
+            if (backwardHint && currentTime - marker.time < Prefs.getTimeFuzzyFactor()) {
+                for (int i = Utils.mod(spanIndex - 1, markers.size()); i != spanIndex; i = Utils.mod(i-1, markers.size())) {
+                    if (markers.get(i).select) {
+                        return markers.get(i).time;
+                    }
+                }
+            }
+            return -1;      // do not bother as the play head in the selected marker
+        }
+
+        for (int i = (spanIndex + 1) % markers.size(); i != spanIndex; i = (i+1) % markers.size()) {
+            if (markers.get(i).select) {
+                return markers.get(i).time;
+            }
+        }
+
         return -1;
     }
 

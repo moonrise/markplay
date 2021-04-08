@@ -13,7 +13,7 @@
         },
         {
           "time": 60000,
-          "select": true
+          "select": false
         },
         {
           "time": 212971,
@@ -36,8 +36,16 @@
           "select": false
         },
         {
-          "time": 1802457,
+          "time": 1486881,
+          "select": true
+        },
+        {
+          "time": 1497691,
           "select": false
+        },
+        {
+          "time": 1802457,
+          "select": true
         }
       ]
     },
@@ -64,6 +72,18 @@
         {
           "time": 0,
           "select": false
+        },
+        {
+          "time": 8401,
+          "select": true
+        },
+        {
+          "time": 9937,
+          "select": false
+        },
+        {
+          "time": 10804,
+          "select": false
         }
       ]
     },
@@ -77,9 +97,17 @@
         {
           "time": 0,
           "select": false
+        },
+        {
+          "time": 2405,
+          "select": true
+        },
+        {
+          "time": 4905,
+          "select": false
         }
       ]
     }
   ],
-  "currentIndex": 1
+  "currentIndex": 3
 }

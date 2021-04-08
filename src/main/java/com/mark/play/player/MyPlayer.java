@@ -284,6 +284,14 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
 
     @Override
     public void seekMarker(boolean forward) {
+        if (!forward && Prefs.isPlaySelectedMarkers()) {
+            long nextSelected = resource.getSelectedMarkerTime(playerState.getPlayTime(), true);
+            if (nextSelected >= 0) {
+                setTime(nextSelected);
+                return;
+            }
+        }
+
         setTime(resource.getAdjacentMarkerTime(playerState.getPlayTime(), playerState.getMediaDuration(), forward, isPaused()));
     }
 
@@ -308,7 +316,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         if (stateChangeType == EPlayerStateChangeType.PlayTime) {
             updateMarquee();
             if (Prefs.isPlaySelectedMarkers()) {
-                long nextSelected = resource.getSelectedMarkerTime(playerState.getPlayTime());
+                long nextSelected = resource.getSelectedMarkerTime(playerState.getPlayTime(), false);
                 if (nextSelected >= 0) {
                     setTime(nextSelected);
                 }
