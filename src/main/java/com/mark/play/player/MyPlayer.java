@@ -284,11 +284,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
 
     @Override
     public void seekMarker(boolean forward) {
-        long markerTime = resource.getAdjacentMarkerTime(playerState.getPlayTime(), playerState.getMediaDuration(), forward, isPaused());
-        if (markerTime < 0) {
-            markerTime = forward ? playerState.getMediaDuration() : 0;
-        }
-        setTime(markerTime);
+        setTime(resource.getAdjacentMarkerTime(playerState.getPlayTime(), playerState.getMediaDuration(), forward, isPaused()));
     }
 
     @Override
