@@ -80,7 +80,7 @@ public class LegacyFilerReader extends DefaultHandler {
             resource.checked = Boolean.parseBoolean(data.toString());
         }
         else if (qName.equals("Duration")) {
-            resource.duration = Float.parseFloat(data.toString());
+            resource.duration = (long)(Float.parseFloat(data.toString())*1000F);
         }
         else if (qName.equals("FileSize")) {
             resource.fileSize = Long.parseLong(data.toString());
@@ -96,7 +96,7 @@ public class LegacyFilerReader extends DefaultHandler {
             resourceList.addResource(resource);
         }
         else if (qName.equals("Position")) {
-            resource.toggleMarker((long)(Float.parseFloat(data.toString())*1000F));
+            resource.addMarker((long)(Float.parseFloat(data.toString())*1000F));
         }
         else if (qName.equals("Select")) {
             resource.setMarkerSelect(Boolean.parseBoolean(data.toString()));

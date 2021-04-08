@@ -12,7 +12,7 @@ public class Resource {
     public String path;
     public int rating;
     public boolean checked;
-    public float duration;
+    public long duration;
     public long fileSize;
     public Date modifiedTime;
     public Date accessedTime;
@@ -56,6 +56,24 @@ public class Resource {
         }
     }
 
+    // used only by LegacyFileReader
+    public void addMarker(long time) {
+        if (markers.size() == 1 && time == duration) {
+            // the first marker entry should be ignored (a marker with the duration time - no purpose in the new format)
+            Log.log("The first marker entry should have the time equal to duration, which should be ignored", time);
+        }
+        else {
+            markers.add(new Marker(time));
+        }
+    }
+
+    // used only by LegacyFileReader right after addMarker call
+    public void setMarkerSelect(boolean select) {
+        if (markers.size() > 0) {
+            markers.get(markers.size()-1).select = select;      // set it to the last marker as it is jsut added
+        }
+    }
+
     public void toggleMarker(long currentTime) {
         int timeFuzzyFactor = Prefs.getTimeFuzzyFactor();
 
@@ -75,19 +93,13 @@ public class Resource {
         notifyChangeListeners(EResourceChangeType.MarkerAdded);
     }
 
-    public void setMarkerSelect(boolean select) {
-        if (markers.size() > 0) {
-            markers.get(markers.size()-1).select = select;
-        }
-    }
-
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (Marker marker : markers) {
             builder.append(String.format("marker: %d, %b\n", marker.time, marker.select));
         }
 
-        return String.format("path: %s, rating: %d, checked: %b, duration %.2f, fileSize: %d, modified: %s, accessed: %s\n%s\n",
+        return String.format("path: %s, rating: %d, checked: %b, duration %d, fileSize: %d, modified: %s, accessed: %s\n%s\n",
                              path, rating, checked, duration, fileSize, modifiedTime, accessedTime, builder.toString());
     }
 
