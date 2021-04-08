@@ -126,6 +126,12 @@ public class ResourceList {
         notifyResourceListChange(ResourceListUpdate.RowsAdded(rowIndex, rowIndex));
     }
 
+
+    public void addLegacyResource(Resource resource) {
+        resource.postProcessLegacyResource();
+        resources.add(resource);
+    }
+
     public void setCurrentIndex(int index) {
         if (index != currentIndex) {
             currentIndex = index;

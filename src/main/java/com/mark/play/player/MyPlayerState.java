@@ -167,7 +167,7 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
 
     @Override
     public void error(MediaPlayer mediaPlayer) {
-        this.errorMessage = "Failed to play media";
+        this.errorMessage = String.format("Failed to play media: %s", resource.path);
         this.notifyStateChangeListeners(EPlayerStateChangeType.Error);
     }
 

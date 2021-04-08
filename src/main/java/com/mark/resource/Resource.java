@@ -58,14 +58,25 @@ public class Resource {
 
     // used only by LegacyFileReader
     public void addMarker(long time) {
-        if (markers.size() == 1 && time == duration) {
-            // the first marker entry should be ignored (a marker with the duration time - no purpose in the new format)
-            Log.log("The first marker entry should have the time equal to duration, which should be ignored", time);
-        }
-        else {
-            markers.add(new Marker(time));
-        }
+        markers.add(new Marker(time));
     }
+
+    // used only by LegacyFileReader
+    public void postProcessLegacyResource() {
+        if (markers.size() <= 1) {
+            return;     // no markers were transferred from the legacy source
+        }
+
+        // legacy source has the marker selection to the left while the new format the selection is to the right.
+        Collections.sort(markers);
+        for (int i=1; i<markers.size(); i++) {
+            markers.get(i-1).select = markers.get(i).select;
+        }
+
+        // the ending marker should be dropped as the new format has the beginning marker (at zero index always)
+        markers.remove(markers.size()-1);
+    }
+
 
     // used only by LegacyFileReader right after addMarker call
     public void setMarkerSelect(boolean select) {

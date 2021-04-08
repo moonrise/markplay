@@ -93,7 +93,7 @@ public class LegacyFilerReader extends DefaultHandler {
         }
         else if (qName.equals("CResourceItem")) {
             //Log.log("resource: %s", resource.toString());
-            resourceList.addResource(resource);
+            resourceList.addLegacyResource(resource);
         }
         else if (qName.equals("Position")) {
             resource.addMarker((long)(Float.parseFloat(data.toString())*1000F));
