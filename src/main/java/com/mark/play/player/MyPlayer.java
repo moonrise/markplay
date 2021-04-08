@@ -284,13 +284,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
 
     @Override
     public void seekMarker(boolean forward) {
-        long referenceTime = playerState.getPlayTime();
-        if (!forward && mediaPlayer.status().state() == State.PLAYING) {
-            // backward seeking needs a bit of slack because the play head is moving forward, but only not in pause
-            referenceTime -= 500;
-        }
-
-        long markerTime = resource.getAdjacentMarkerTime(referenceTime, forward);
+        long markerTime = resource.getAdjacentMarkerTime(playerState.getPlayTime(), playerState.getMediaDuration(), forward, isPaused());
         if (markerTime < 0) {
             markerTime = forward ? playerState.getMediaDuration() : 0;
         }
@@ -341,9 +335,17 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         }
     }
 
+    private boolean isPaused() {
+        return  mediaPlayer.status().state() == State.PAUSED;
+    }
+
+    private boolean isPlaying() {
+        return  mediaPlayer.status().state() == State.PLAYING;
+    }
+
     // trigger update if paused as the time change event does not come in from the underlying library
     private void updateOnPause() {
-        if (mediaPlayer.status().state() == State.PAUSED) {
+        if (isPaused()) {
             playerState.updatePlayTime();   // playtime update will do (an arbitrary choice as it is in a paused state)
         }
     }

@@ -190,4 +190,13 @@ public class Prefs {
     public static boolean isPlaySelectedMarkers() {
         return userPrefs.getBoolean("playSelected", false);
     }
+
+    // playtime fuzzy factor in millis to manage forward playing time (marker time search in the vicinity, etc...)
+    public static int getTimeFuzzyFactor() {
+        return userPrefs.getInt("timeFuzzyFactor", 500);
+    }
+
+    public static void setTimeFuzzyFactor(int x) {
+        userPrefs.putInt("timeFuzzyFactor", x);
+    }
 }

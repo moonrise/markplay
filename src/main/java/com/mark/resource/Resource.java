@@ -1,6 +1,7 @@
 package com.mark.resource;
 
 import com.mark.Log;
+import com.mark.Prefs;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -95,27 +96,35 @@ public class Resource {
         return index >= 0 ? index : -index-2;
     }
 
-    public long getAdjacentMarkerTime(long currentTime, boolean forward) {
-        return getAdjacentMarkerTime_old(currentTime, forward);
-    }
-    public long getAdjacentMarkerTime_old(long currentTime, boolean forward) {
-        if (forward) {
-            for (Marker marker : markers) {
-                if (marker.time > currentTime) {
-                    return marker.time;
-                }
-            }
-        }
-        else {
-            for (int i=markers.size()-1; i>=0; i--) {
-                Marker marker = markers.get(i);
-                if (marker.time < currentTime) {
-                    return marker.time;
-                }
-            }
-        }
+    // the marker time to the left (forward) or to the right (!forward)
+    public long getAdjacentMarkerTime(long currentTime, long duration, boolean forward, boolean paused) {
+        final long fuzzyFactor = Prefs.getTimeFuzzyFactor();
+        final int spanIndex = getMarkerSpanIndex(currentTime);
+        final int markersSize = markers.size();
+        final boolean lastSpan = spanIndex == markersSize - 1;
 
-        return -1;
+        if (forward) {
+            if (paused && currentTime == duration) {
+                return 0;               // wrap to the beginning
+            }
+            if (lastSpan) {
+                return duration;        // to the end
+            }
+            return markers.get(spanIndex + 1).time;
+        }
+        else {  // backward
+            long markerTime = markers.get(spanIndex).time;
+            if (paused && currentTime == 0) {
+                return duration;        // wrap to the end
+            }
+            else if (paused && currentTime == markerTime) {
+                return markers.get(spanIndex - 1).time;
+            }
+            else if (spanIndex == 0) {
+                return currentTime - markerTime < fuzzyFactor ? duration - fuzzyFactor*2 : markerTime;
+            }
+            return currentTime - markerTime < fuzzyFactor ? markers.get(spanIndex - 1).time : markerTime;
+        }
     }
 
     public void toggleMarkerSelection(long currentTime) {
