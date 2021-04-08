@@ -171,15 +171,26 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         if (update.type == EResourceListChangeType.Loaded) {
             table.getSelectionModel().addListSelectionListener(this);
             myPlayer.startResource(resourceList.getCurrent());
+            updateTableRowSelection(resourceList.getCurrentIndex());
         } else if (update.type == EResourceListChangeType.Unloaded) {
             table.getSelectionModel().removeListSelectionListener(this);
             myPlayer.startResource(null);
         } else if (update.type == EResourceListChangeType.IndexChanged) {
             //myPlayer.setLogo(Utils.getResourcePath("/icons/crown.png"));
             myPlayer.startResource(resourceList.getCurrent());
+            updateTableRowSelection(resourceList.getCurrentIndex());
         }
 
         updateAppHeader();
+    }
+
+    private void updateTableRowSelection(int newIndex) {
+        int selectedRows[] = table.getSelectedRows();
+        int tableSelectionIndex = selectedRows.length > 0 ? selectedRows[0] : -1;
+
+        if (newIndex != tableSelectionIndex) {
+            table.setRowSelectionInterval(newIndex, newIndex);
+        }
     }
 
     @Override
