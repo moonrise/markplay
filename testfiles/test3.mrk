@@ -4,7 +4,7 @@
       "path": "./media/WhatIsMyth.wmv",
       "rating": 0,
       "checked": false,
-      "duration": 0.0,
+      "duration": 0,
       "fileSize": 0,
       "markers": [
         {
@@ -53,7 +53,7 @@
       "path": "/Users/bjeong/Downloads/rabbit.mpg",
       "rating": 0,
       "checked": false,
-      "duration": 0.0,
+      "duration": 0,
       "fileSize": 0,
       "markers": [
         {
@@ -66,7 +66,7 @@
       "path": "/Users/bjeong/Downloads/cloud.wmv",
       "rating": 0,
       "checked": false,
-      "duration": 0.0,
+      "duration": 0,
       "fileSize": 0,
       "markers": [
         {
@@ -91,7 +91,7 @@
       "path": "/Users/bjeong/IdeaProjects/markplay/media/hydroid.mp4",
       "rating": 0,
       "checked": false,
-      "duration": 0.0,
+      "duration": 0,
       "fileSize": 0,
       "markers": [
         {
@@ -109,5 +109,5 @@
       ]
     }
   ],
-  "currentIndex": 3
+  "currentIndex": 0
 }
