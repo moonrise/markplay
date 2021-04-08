@@ -1,6 +1,5 @@
 package com.mark.play.player;
 
-import com.mark.Log;
 import com.mark.Prefs;
 import com.mark.main.IMain;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
@@ -93,7 +92,7 @@ public class MyKeyListener extends KeyAdapter  {
                 myPlayer.nextFrame();
                 return;
             case't':
-                myPlayer.addMarker();
+                myPlayer.toggleMarker();
                 return;
             case'r':
                 myPlayer.toggleMarkerSelection();

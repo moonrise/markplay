@@ -9,7 +9,7 @@ public interface IMyPlayer {
     void setTime(long time);
     void skipTime(long delta);
     void nextFrame();
-    void addMarker();
+    void toggleMarker();
     void seekMarker(boolean forward);
     void seek10th(float rate10th);
     void toggleMarkerSelection();

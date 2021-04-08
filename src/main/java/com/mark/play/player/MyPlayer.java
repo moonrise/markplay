@@ -275,11 +275,11 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     }
 
     @Override
-    public void addMarker() {
+    public void toggleMarker() {
         long currentTime = playerState.getPlayTime();
-        this.resource.addMarker(currentTime);
+        this.resource.toggleMarker(currentTime);
         updateOnPause();
-        //Log.log("add marker at %d", currentTime);
+        //Log.log("toggle marker at %d", currentTime);
     }
 
     @Override

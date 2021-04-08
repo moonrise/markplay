@@ -56,9 +56,22 @@ public class Resource {
         }
     }
 
-    public void addMarker(long position) {
-        markers.add(new Marker(position));
-        Collections.sort(markers);
+    public void toggleMarker(long currentTime) {
+        int timeFuzzyFactor = Prefs.getTimeFuzzyFactor();
+
+        if (currentTime < timeFuzzyFactor*2) {
+            return;     // the first marker is not editable (should be there always)
+        }
+
+        int spanIndex = getMarkerSpanIndex(currentTime);
+        if (currentTime - markers.get(spanIndex).time < timeFuzzyFactor*1.5) {
+            markers.remove(spanIndex);
+        }
+        else {
+            markers.add(new Marker(currentTime));
+            Collections.sort(markers);
+        }
+
         notifyChangeListeners(EResourceChangeType.MarkerAdded);
     }
 
@@ -99,10 +112,10 @@ public class Resource {
 
     // the marker time to the left (forward) or to the right (!forward)
     public long getAdjacentMarkerTime(long currentTime, long duration, boolean forward, boolean paused) {
-        final long fuzzyFactor = Prefs.getTimeFuzzyFactor();
-        final int spanIndex = getMarkerSpanIndex(currentTime);
-        final int markersSize = markers.size();
-        final boolean lastSpan = spanIndex == markersSize - 1;
+        long fuzzyFactor = Prefs.getTimeFuzzyFactor();
+        int spanIndex = getMarkerSpanIndex(currentTime);
+        int markersSize = markers.size();
+        boolean lastSpan = spanIndex == markersSize - 1;
 
         if (forward) {
             if (paused && currentTime == duration) {

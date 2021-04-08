@@ -96,7 +96,7 @@ public class LegacyFilerReader extends DefaultHandler {
             resourceList.addResource(resource);
         }
         else if (qName.equals("Position")) {
-            resource.addMarker((long)(Float.parseFloat(data.toString())*1000F));
+            resource.toggleMarker((long)(Float.parseFloat(data.toString())*1000F));
         }
         else if (qName.equals("Select")) {
             resource.setMarkerSelect(Boolean.parseBoolean(data.toString()));
