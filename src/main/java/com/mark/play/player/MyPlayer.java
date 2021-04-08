@@ -15,6 +15,7 @@ import uk.co.caprica.vlcj.player.embedded.fullscreen.adaptive.AdaptiveFullScreen
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 
 public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateChangeListener {
     private IMain main;
@@ -165,21 +166,31 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     }
 
     public void startResource(Resource resource) {
+        if (resource == null) {
+            clearMedia();
+            return;
+        }
+
+        File file = new File((resource.path));
+        if (!file.exists()) {
+            clearMedia();
+            onError(String.format("File '%s' does not exist.", resource.path));
+            return;
+        }
+
         this.resource = resource;
         playerState.setResource(resource);
+        startMedia(resource.path);
+    }
 
-        if (resource != null) {
-            startMedia(resource.path);
+    private void clearMedia() {
+        // TODO: unload the media  (not quite; the current media still visible)
+        /*
+        if (mediaPlayer.media().isValid()) {
+            mediaPlayer.controls().stop();
+            mediaPlayer.release();
         }
-        else {
-            // TODO: unload the media  (not quite; the current media still visible)
-            /*
-            if (mediaPlayer.media().isValid()) {
-                mediaPlayer.controls().stop();
-                mediaPlayer.release();
-            }
-            */
-        }
+        */
     }
 
     public void startMedia(String mrl) {

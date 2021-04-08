@@ -248,16 +248,12 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             resourceList = resourceListGenerator.generateResourceList();
             tableModel.setResourceList(resourceList);
             notifyResourceListChange(resourceList, ResourceListUpdate.Loaded);
-
-            if (resourceList.size() > 0) {
-                selectRowTable(0);
-            }
         }
     }
 
     private void selectRowTable(int rowIndex) {
         if (resourceList.size() > rowIndex) {
-            table.setRowSelectionInterval(rowIndex, rowIndex);
+            resourceList.setCurrentIndex(rowIndex);
         }
     }
 }
