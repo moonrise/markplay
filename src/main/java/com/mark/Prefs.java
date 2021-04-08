@@ -12,6 +12,7 @@ public class Prefs {
 
     static {
         userPrefs = Preferences.userNodeForPackage(Prefs.class);
+        Prefs.getRecentFiles();
     }
 
     public static void dumpAll() {
