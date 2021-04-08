@@ -128,13 +128,8 @@ public class Resource {
     }
 
     public void toggleMarkerSelection(long currentTime) {
-        for (int i=markers.size()-1; i>=0; i--) {
-            Marker marker = markers.get(i);
-            if (marker.time < currentTime) {
-                marker.select = !marker.select;
-                break;
-            }
-        }
+        Marker marker = markers.get(getMarkerSpanIndex(currentTime));
+        marker.select = !marker.select;
     }
 
     // marker time to jump to if only selected markers are being played
