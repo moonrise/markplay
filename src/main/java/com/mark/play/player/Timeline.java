@@ -115,8 +115,9 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
                 this.drawMarkerAt(g, markerAt);
 
                 if (marker.select) {
-                    float markerNext = i < markers.size()-1 ? markers.get(i+1).time / (float)duration : duration;
-                    this.drawMarkerSelectAt(g, markerAt, markerNext);
+                    boolean lastMarker = (i == markers.size() - 1);
+                    float markerNext = lastMarker ? 1 : markers.get(i+1).time / (float)duration;
+                    this.drawMarkerSelectAt(g, markerAt, markerNext, lastMarker);
                 }
             }
         }
@@ -133,10 +134,10 @@ public class Timeline extends JPanel implements IMyPlayerStateChangeListener, IR
         g.drawLine(marker, this.middle/2+1, marker, this.middle-1);
     }
 
-    private void drawMarkerSelectAt(Graphics g, double ratio1, double ratio2) {
+    private void drawMarkerSelectAt(Graphics g, double ratio1, double ratio2, boolean ratio2IsEnd) {
         g.setColor(Prefs.isPlaySelectedMarkers() ? Color.ORANGE : Color.LIGHT_GRAY);
         int marker1 = timeX(getWidth(), ratio1);
-        int marker2 = timeX(getWidth(), ratio2);
+        int marker2 = timeX(getWidth(), ratio2) - (ratio2IsEnd ? 1 : 0);
         g.fillRect(marker1+1, this.middle-8, marker2-marker1, 8);
     }
 
