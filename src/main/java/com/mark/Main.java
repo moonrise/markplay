@@ -1,6 +1,7 @@
 package com.mark;
 
 import com.mark.io.LegacyFilerReader;
+import com.mark.main.MyTable;
 import com.mark.resource.*;
 import com.mark.main.IMain;
 import com.mark.main.MainFrame;
@@ -10,7 +11,6 @@ import com.mark.play.player.MyPlayer;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -29,8 +29,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     private ArrayList<IResourceListChangeListener> resourceListChangeListeners = new ArrayList<>();
     private ResourceList resourceList;
 
-    private JTable table;
-    private ResourceTableModel tableModel;
+    private MyTable table;
 
     private MyPlayer myPlayer;
 
@@ -67,14 +66,11 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         playerContainer.setLayout(new BorderLayout());
 
         resourceList = new ResourceList(this);
-        tableModel = new ResourceTableModel(resourceList);
-        registerResourceListChangeListener(tableModel);
 
-        table = new JTable(tableModel);
-        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        table.setRowSelectionAllowed(true);
-
+        table = new MyTable(this, resourceList);
         splitPane = new MainSplitPane(new JScrollPane(table), playerContainer);
+
+        // TODO: can it be moved to MyTable?
         table.setFillsViewportHeight(true);
 
         myPlayer = new MyPlayer(this, playerContainer);
@@ -137,21 +133,11 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     }
 
     private boolean tableInitialized = false;
-    private void setTableColumnWidths() {
-        //table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        for (int i = 0; i < tableModel.getColumnCount(); i++) {
-            TableColumn column = table.getColumnModel().getColumn(i);
-            int width = tableModel.getColumnWidth(i);
-            column.setPreferredWidth(width);
-            column.setMinWidth(width);
-        }
-    }
-
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!tableInitialized) {
             // TODO: poor and desperate man's table init hook for now (this is the only way I can get column width set)
-            setTableColumnWidths();
+            table.setTableColumnWidths();
         }
 
         if (e.getValueIsAdjusting() == false) {
@@ -264,7 +250,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     private void loadResourceList(Foo resourceListGenerator) {
         if (processCurrentContent()) {
             resourceList = resourceListGenerator.generateResourceList();
-            tableModel.setResourceList(resourceList);
+            table.updateResourceList(resourceList);
             notifyResourceListChange(resourceList, ResourceListUpdate.Loaded);
         }
     }
