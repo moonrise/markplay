@@ -28,6 +28,18 @@
           "select": false
         },
         {
+          "time": 986982,
+          "select": false
+        },
+        {
+          "time": 1006982,
+          "select": false
+        },
+        {
+          "time": 1066982,
+          "select": false
+        },
+        {
           "time": 1395695,
           "select": true
         },
@@ -54,7 +66,7 @@
       "rating": 0,
       "checked": false,
       "duration": 0,
-      "fileSize": 0,
+      "fileSize": 5918720,
       "markers": [
         {
           "time": 0,
@@ -66,8 +78,8 @@
       "path": "/Users/bjeong/Downloads/cloud.wmv",
       "rating": 0,
       "checked": false,
-      "duration": 0,
-      "fileSize": 0,
+      "duration": 52213,
+      "fileSize": 14177345,
       "markers": [
         {
           "time": 0,
@@ -91,8 +103,8 @@
       "path": "/Users/bjeong/IdeaProjects/markplay/media/hydroid.mp4",
       "rating": 0,
       "checked": false,
-      "duration": 0,
-      "fileSize": 0,
+      "duration": 8405,
+      "fileSize": 677016,
       "markers": [
         {
           "time": 0,

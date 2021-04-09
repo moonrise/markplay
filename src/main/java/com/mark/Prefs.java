@@ -200,4 +200,23 @@ public class Prefs {
     public static void setTimeFuzzyFactor(int x) {
         userPrefs.putInt("timeFuzzyFactor", x);
     }
+
+    public static String[] getRootPrefixes() {
+        String prefValue = userPrefs.get("roots", "");
+        if (prefValue.isEmpty()) {
+            return new String[]{};
+        }
+        return prefValue.split(";");
+    }
+
+    public static void setRootPrefixes(String[] prefixes) {
+        StringWriter writer = new StringWriter();
+        for (int i=0; i<prefixes.length; i++) {
+            writer.write(prefixes[i]);
+            if (i < prefixes.length-1) {
+                writer.write(";");
+            }
+        }
+        userPrefs.put("roots", writer.toString());
+    }
 }

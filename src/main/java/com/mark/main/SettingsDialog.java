@@ -1,79 +1,154 @@
 package com.mark.main;
 
+import com.mark.Log;
+
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-public class SettingsDialog extends JDialog implements ActionListener {
-    private String[] data;
-    private JTextField descBox;
-    private JComboBox<String> colorList;
-    private JButton btnOk;
-    private JButton btnCancel;
+public class SettingsDialog extends JDialog {
+    static class RootPref {
+        String pref;
+        String path;
+
+        public RootPref(String pref, String path) {
+            this.pref = pref;
+            this.path = path;
+        }
+
+        public RootPref(String prefAndPath) {
+            String[] pair = prefAndPath.split(":");
+            this.pref = pair[0];
+            this.path = pair[1];
+        }
+
+        public String toString() {
+            return String.format("%s:%s", pref, path);
+        }
+    }
+
+    static class RootTableModel  extends AbstractTableModel {
+        private String[] columnNames = {"Prefix", "Path"};
+        private int[] columnWidths = {50, 200};
+        private ArrayList<RootPref> data = new ArrayList<>();
+
+        public RootTableModel() {
+            data.add(new RootPref("a", "b"));
+            data.add(new RootPref("x", "y"));
+        }
+
+        @Override
+        public int getRowCount() {
+            return data.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return columnNames[column];
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            RootPref rootPref =  data.get(rowIndex);
+            return columnIndex == 0 ? rootPref.pref : rootPref.path;
+        }
+
+        public int getColumnWidth(int column) {
+            return columnWidths[column];
+        }
+    }
+
+    private RootTableModel tableModel;
 
     public SettingsDialog(Frame parent) {
-        super(parent, "Enter data", true);
-        Point loc = parent.getLocation();
-        setLocation(loc.x + 80, loc.y + 80);
-        data = new String[2]; // set to amount of data items
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 2, 2, 2);
-        JLabel descLabel = new JLabel("Description:");
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panel.add(descLabel, gbc);
-        descBox = new JTextField(30);
-        gbc.gridwidth = 2;
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        panel.add(descBox, gbc);
-        JLabel colorLabel = new JLabel("Choose color:");
-        gbc.gridwidth = 1;
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panel.add(colorLabel, gbc);
-        String[] colorStrings = {"red", "yellow", "orange", "green", "blue"};
-        colorList = new JComboBox<String>(colorStrings);
-        gbc.gridwidth = 1;
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        panel.add(colorList, gbc);
-        JLabel spacer = new JLabel(" ");
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        panel.add(spacer, gbc);
-        btnOk = new JButton("Ok");
-        btnOk.addActionListener(this);
-        gbc.gridwidth = 1;
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        panel.add(btnOk, gbc);
-        btnCancel = new JButton("Cancel");
-        btnCancel.addActionListener(this);
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        panel.add(btnCancel, gbc);
-        getContentPane().add(panel);
+        super(parent, "Settings", true, parent.getGraphicsConfiguration());
+        setMaximumSize(new Dimension(400, 200));
+
+        JPanel topPanel = new JPanel();
+        topPanel.setBorder(new EmptyBorder(15, 30, 10, 30));
+        topPanel.setLayout(new BorderLayout());
+
+        topPanel.add(getPathRootTitle(), BorderLayout.NORTH);
+        topPanel.add(new JScrollPane(getRootTable()));
+
+        topPanel.add(getDialogButtonPanel(), BorderLayout.SOUTH);
+        getContentPane().add(topPanel);
         pack();
     }
 
-    public void actionPerformed(ActionEvent ae) {
-        Object source = ae.getSource();
-        if (source == btnOk) {
-            data[0] = descBox.getText();
-            data[1] = (String) colorList.getSelectedItem();
-        } else {
-            data[0] = null;
+    private void setTableColumnWidths(JTable table, RootTableModel tableModel) {
+        for (int i = 0; i < tableModel.getColumnCount(); i++) {
+            TableColumn column = table.getColumnModel().getColumn(i);
+            int width = tableModel.getColumnWidth(i);
+            column.setPreferredWidth(width);
+            column.setMinWidth(width);
         }
-        dispose();
     }
 
-    public String[] run() {
-        this.setVisible(true);
-        return data;
+    private JLabel getPathRootTitle() {
+        JLabel label = new JLabel("Resource Path Root Prefixes");
+        label.setBorder(new EmptyBorder(0, 0, 10, 0));
+        return label;
+    }
+
+    private JScrollPane getRootTable() {
+        JTable table = new JTable();
+        table.setPreferredScrollableViewportSize(table.getPreferredSize());
+        table.setFillsViewportHeight(true);
+
+        RootTableModel tableModel = new RootTableModel();
+        table.setModel(tableModel);
+        setTableColumnWidths(table, tableModel);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setPreferredSize(new Dimension(300, 100));
+        return scrollPane;
+    }
+
+    private JPanel getDialogButtonPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.setBorder(new EmptyBorder(10, 0, 0, 0));
+        panel.add(getDialogOKButton());
+        panel.add(getDialogCancelButton());
+        return panel;
+    }
+
+    private JButton getDialogOKButton() {
+        JButton button = new JButton("OK");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+            }
+        });
+        return button;
+    }
+
+    private JButton getDialogCancelButton() {
+        JButton button = new JButton("Cancel");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+            }
+        });
+        return button;
+    }
+
+    public void display() {
+        Point parentLocation = getParent().getLocation();
+        parentLocation.translate(100, 50);
+        setLocation(parentLocation);
+        setVisible(true);
     }
 }
