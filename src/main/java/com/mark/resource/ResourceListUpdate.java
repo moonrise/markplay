@@ -23,8 +23,10 @@ public class ResourceListUpdate {
         return resourceListUpdate;
     }
 
-    public static ResourceListUpdate ChildResourceChanged(Resource childResource, EResourceChangeType childResourceChangeType) {
+    public static ResourceListUpdate ChildResourceChanged(int rowIndex, Resource childResource, EResourceChangeType childResourceChangeType) {
         ResourceListUpdate resourceListUpdate = new ResourceListUpdate(EResourceListChangeType.ChildResourceChanged);
+        resourceListUpdate.startRow = rowIndex;
+        resourceListUpdate.endRow = rowIndex;
         resourceListUpdate.childResource = childResource;
         resourceListUpdate.childResourceChangeType = childResourceChangeType;
         return resourceListUpdate;

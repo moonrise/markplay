@@ -210,6 +210,10 @@ public class ResourceList {
     // Resource change is notified by listener notification from Resource, but the parent does not listen to it.
     public void onChildResourceChange(Resource resource, EResourceChangeType changeType) {
         modified = true;
-        notifyResourceListChange(ResourceListUpdate.ChildResourceChanged(resource, changeType));
+
+        int index = resources.indexOf(resource);
+        if (index >= 0) {
+            notifyResourceListChange(ResourceListUpdate.ChildResourceChanged(index, resource, changeType));
+        }
     }
 }

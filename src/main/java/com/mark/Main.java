@@ -138,11 +138,15 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
                 resourceList == null ? "" : resourceList.isDirty() ? " *" : "");
 
         String currentIndex = "";
+        String currentResource = "";
         if (resourceList != null && resourceList.size() > 0) {
             currentIndex = String.format(" (%d/%d)", resourceList.getCurrentIndex() + 1, resourceList.size());
+
+            Resource resource = resourceList.getCurrent();
+            currentResource = String.format("  [%s%s; Markers:%d]", resource.checked ? "*** " : "", resource.getName(), resource.markers.size());
         }
 
-        frame.setTitle(String.format("%s - %s%s", Utils.AppName, resourceListInfo, currentIndex));
+        frame.setTitle(String.format("%s - %s%s%s", Utils.AppName, resourceListInfo, currentIndex, currentResource));
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.mark.resource;
 import com.mark.Log;
 import com.mark.Prefs;
 import com.mark.Utils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +43,10 @@ public class Resource {
     // we need this when the parent list file is deserialized to establish the child to parent link
     public void setParentList(ResourceList parentList) {
         this.parentList = parentList;
+    }
+
+    public String getName() {
+        return FilenameUtils.getName(path);
     }
 
     public void registerChangeListener(IResourceChangeListener listener) {

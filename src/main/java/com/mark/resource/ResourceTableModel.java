@@ -4,7 +4,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class ResourceTableModel extends AbstractTableModel implements IResourceListChangeListener {
     private ResourceList resourceList;
-    private String[] columnNames = {"row", "Select", "Path", "Rating"};
+    private String[] columnNames = {"Row", "Favorite", "Path", "Rating"};
 
     public ResourceTableModel(ResourceList resourceList) {
         this.resourceList = resourceList;
@@ -54,6 +54,9 @@ public class ResourceTableModel extends AbstractTableModel implements IResourceL
     public void onResourceListChange(ResourceList resourceList, ResourceListUpdate update) {
         if (update.type == EResourceListChangeType.RowsAdded) {
             fireTableRowsInserted(update.startRow, update.endRow);
+        }
+        else if (update.type == EResourceListChangeType.ChildResourceChanged) {
+            fireTableRowsUpdated(update.startRow, update.endRow);
         }
     }
 }
