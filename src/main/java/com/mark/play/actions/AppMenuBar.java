@@ -87,6 +87,7 @@ public class AppMenuBar extends JMenuBar {
         JCheckBoxMenuItem checkBoxMenuItem = new JCheckBoxMenuItem(new PlayOnLoadAction(main));
         checkBoxMenuItem.setState(Prefs.isPlayOnLoad());
         menu.add(checkBoxMenuItem);
+        menu.add(new SettingsAction(main));
 
         return menu;
     }
