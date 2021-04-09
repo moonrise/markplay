@@ -70,9 +70,6 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         table = new MyTable(this, resourceList);
         splitPane = new MainSplitPane(new JScrollPane(table), playerContainer);
 
-        // TODO: can it be moved to MyTable?
-        table.setFillsViewportHeight(true);
-
         myPlayer = new MyPlayer(this, playerContainer);
         myPlayer.registerPlayerStateChangeListener(getAppFrame().getStatusBar());
 

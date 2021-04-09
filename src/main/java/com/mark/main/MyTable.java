@@ -16,6 +16,7 @@ public class MyTable extends JTable {
         this.main = main;
         main.registerResourceListChangeListener(getMyModel());
 
+        setFillsViewportHeight(true);
         setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         setRowSelectionAllowed(true);
     }
