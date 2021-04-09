@@ -1,11 +1,13 @@
 package com.mark.resource;
 
+import com.mark.Utils;
+
 import javax.swing.table.AbstractTableModel;
 
 public class ResourceTableModel extends AbstractTableModel implements IResourceListChangeListener {
     private ResourceList resourceList;
-    final public String[] columnNames = {"Row", "Favorite", "Path", "Rating"};
-    private int[] columnWidths = {50, 30, 400, 50};
+    final public String[] columnNames = {"Row", "Favorite", "Rating", "Path", "Duration", "File Size"};
+    private int[] columnWidths = {30, 30, 30, 300, 30, 70};
 
     public ResourceTableModel(ResourceList resourceList) {
         this.resourceList = resourceList;
@@ -42,19 +44,37 @@ public class ResourceTableModel extends AbstractTableModel implements IResourceL
     }
 
     @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+            case 2:
+                return Integer.class;
+            case 1:
+                return Boolean.class;
+        }
+
+        return super.getColumnClass(columnIndex);
+    }
+
+    @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Resource resource = resourceList.getResources().get(rowIndex);
         switch (columnIndex) {
             case 0:
                 return rowIndex + 1;
             case 1:
-                return resource.checked ? "*" : "";
+                return resource.checked;
             case 2:
-                return resource.path;
-            case 3:
                 return resource.rating;
+            case 3:
+                return resource.path;
+            case 4:
+                return Utils.getTimelineFormatted(resource.duration, false);
+            case 5:
+                return String.format("%,d", resource.fileSize);
         }
-        return null;
+
+        return "<na>";
     }
 
     @Override
