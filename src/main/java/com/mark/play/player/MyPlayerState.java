@@ -95,6 +95,7 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
 
         if (newStatus == MediaParsedStatus.DONE) {
             final InfoApi info = media.info();
+            resource.setDuration(info.duration());
             //Log.log("media duration: %s", Utils.getTimelineFormatted(info.duration(), false));
 
             for (VideoTrackInfo videoTrack : info.videoTracks()) {
@@ -132,8 +133,8 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
     }
 
     public long getMediaDuration() {
-        if (this.media != null) {
-            return this.media.info().duration();
+        if (resource != null) {
+            return resource.duration;
         }
         return 1000;        // default 1 second (better than zero?)
     }

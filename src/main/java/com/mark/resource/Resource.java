@@ -45,6 +45,20 @@ public class Resource {
         this.parentList = parentList;
     }
 
+    public void setDuration(long duration) {
+        if (this.duration != duration) {
+            this.duration = duration;
+            notifyChangeListeners(EResourceChangeType.AttributesUpdated);
+        }
+    }
+
+    public void setFileSize(long fileSize) {
+        if (this.fileSize != fileSize) {
+            this.fileSize = fileSize;
+            notifyChangeListeners(EResourceChangeType.AttributesUpdated);
+        }
+    }
+
     public String getName() {
         return FilenameUtils.getName(path);
     }
@@ -72,8 +86,10 @@ public class Resource {
         parentList.onChildResourceChange(this, changeType);
 
         // notify all others who are registered
-        for (IResourceChangeListener listener : this.resourceChangeListeners) {
-            listener.onResourceChange(this, changeType);
+        if (resourceChangeListeners != null) {
+            for (IResourceChangeListener listener : resourceChangeListeners) {
+                listener.onResourceChange(this, changeType);
+            }
         }
     }
 
