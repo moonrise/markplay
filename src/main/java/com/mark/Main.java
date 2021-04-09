@@ -129,15 +129,8 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         frame.setTitle(String.format("%s - %s%s%s", Utils.AppName, resourceListInfo, currentIndex, currentResource));
     }
 
-    private boolean tableInitialized = false;
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (!tableInitialized) {
-            // TODO: poor and desperate man's table init hook for now (this is the only way I can get column width set)
-            table.setTableColumnWidths();
-            tableInitialized = true;
-        }
-
         if (e.getValueIsAdjusting() == false) {
             // the selection events tend to be not precise, not accurate and redundant; so takes this as a clue only.
             int selectedRows[] = table.getSelectedRows();
@@ -145,8 +138,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             resourceList.setCurrentIndex(selectedRows.length > 0 ? selectedRows[0] : -1);
         }
     }
-
-    @Override
+@Override
     public void registerResourceListChangeListener(IResourceListChangeListener listener) {
         this.resourceListChangeListeners.add(listener);
     }
@@ -160,6 +152,9 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     @Override
     public void onResourceListChange(ResourceList resourceList, ResourceListUpdate update) {
         if (update.type == EResourceListChangeType.Loaded) {
+            // TODO: table init everytime new resource list [AbstractTableModel:fireTableStructureChanged()?]
+            table.init();
+
             table.getSelectionModel().addListSelectionListener(this);
             myPlayer.startResource(resourceList.getCurrent());
             updateTableRowSelection(resourceList.getCurrentIndex());
