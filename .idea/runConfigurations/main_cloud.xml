@@ -5,7 +5,7 @@
     <option name="PROGRAM_PARAMETERS" value="./media/cloud.wmv" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.mark.resource.*" />
+        <option name="PATTERN" value="com.mark.main.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

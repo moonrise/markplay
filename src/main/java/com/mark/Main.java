@@ -1,7 +1,7 @@
 package com.mark;
 
 import com.mark.io.LegacyFilerReader;
-import com.mark.main.MyTable;
+import com.mark.main.ResourceListTable;
 import com.mark.resource.*;
 import com.mark.main.IMain;
 import com.mark.main.MainFrame;
@@ -29,7 +29,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     private ArrayList<IResourceListChangeListener> resourceListChangeListeners = new ArrayList<>();
     private ResourceList resourceList;
 
-    private MyTable table;
+    private ResourceListTable table;
 
     private MyPlayer myPlayer;
 
@@ -67,7 +67,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
 
         resourceList = new ResourceList(this);
 
-        table = new MyTable(this, resourceList);
+        table = new ResourceListTable(this, resourceList);
         splitPane = new MainSplitPane(new JScrollPane(table), playerContainer);
 
         myPlayer = new MyPlayer(this, playerContainer);

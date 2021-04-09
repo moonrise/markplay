@@ -1,7 +1,6 @@
 package com.mark.main;
 
 import com.mark.resource.ResourceList;
-import com.mark.resource.ResourceTableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -9,7 +8,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 
-public class MyTable extends JTable {
+public class ResourceListTable extends JTable {
     static class MyRenderer extends JLabel implements TableCellRenderer {
         public MyRenderer() {
             setHorizontalAlignment(SwingConstants.RIGHT);
@@ -24,14 +23,14 @@ public class MyTable extends JTable {
     }
 
     private IMain main;
-    private ResourceTableModel tableModel;
+    private ResourceListTableModel tableModel;
     private TableColumnModel columnModel;
 
-    public MyTable(IMain main, ResourceList resourceList) {
-        super(new ResourceTableModel(resourceList));
+    public ResourceListTable(IMain main, ResourceList resourceList) {
+        super(new ResourceListTableModel(resourceList));
 
         this.main = main;
-        this.tableModel = (ResourceTableModel) getModel();
+        this.tableModel = (ResourceListTableModel) getModel();
         this.columnModel = getColumnModel();
 
         main.registerResourceListChangeListener(this.tableModel);
@@ -46,7 +45,7 @@ public class MyTable extends JTable {
     }
 
     public void setRenderers() {
-        MyTable.MyRenderer mr = new MyTable.MyRenderer();
+        ResourceListTable.MyRenderer mr = new ResourceListTable.MyRenderer();
         columnModel.getColumn(4).setCellRenderer(mr);
         columnModel.getColumn(5).setCellRenderer(mr);
     }

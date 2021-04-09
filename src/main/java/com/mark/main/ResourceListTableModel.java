@@ -1,15 +1,16 @@
-package com.mark.resource;
+package com.mark.main;
 
 import com.mark.Utils;
+import com.mark.resource.*;
 
 import javax.swing.table.AbstractTableModel;
 
-public class ResourceTableModel extends AbstractTableModel implements IResourceListChangeListener {
+public class ResourceListTableModel extends AbstractTableModel implements IResourceListChangeListener {
     private ResourceList resourceList;
     final public String[] columnNames = {"Row", "Favorite", "Rating", "Path", "Duration", "File Size"};
     private int[] columnWidths = {30, 30, 30, 300, 30, 70};
 
-    public ResourceTableModel(ResourceList resourceList) {
+    public ResourceListTableModel(ResourceList resourceList) {
         this.resourceList = resourceList;
 
         fireTableStructureChanged();
