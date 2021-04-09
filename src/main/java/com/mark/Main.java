@@ -135,6 +135,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         if (!tableInitialized) {
             // TODO: poor and desperate man's table init hook for now (this is the only way I can get column width set)
             table.setTableColumnWidths();
+            tableInitialized = true;
         }
 
         if (e.getValueIsAdjusting() == false) {
