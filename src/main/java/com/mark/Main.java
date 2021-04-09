@@ -74,21 +74,6 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         table.setRowSelectionAllowed(true);
 
-        // TODO: do more with the column widths
-        TableColumn column = null;
-        /*
-        for (int i = 0; i < 3; i++) {
-            column = table.getColumnModel().getColumn(i);
-            if (i == 1) {
-                column.setPreferredWidth(100); //third column is bigger
-                column.setMinWidth(100); //third column is bigger
-            } else {
-                column.setPreferredWidth(50);
-                column.setMinWidth(50); //third column is bigger
-            }
-        }
-         */
-
         splitPane = new MainSplitPane(new JScrollPane(table), playerContainer);
         table.setFillsViewportHeight(true);
 
@@ -139,18 +124,36 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
 
         String currentIndex = "";
         String currentResource = "";
-        if (resourceList != null && resourceList.size() > 0) {
+        if (resourceList != null && resourceList.size() >= 0) {
             currentIndex = String.format(" (%d/%d)", resourceList.getCurrentIndex() + 1, resourceList.size());
 
             Resource resource = resourceList.getCurrent();
-            currentResource = String.format("  [%s%s; Markers:%d]", resource.checked ? "*** " : "", resource.getName(), resource.markers.size());
+            if (resource != null) {
+                currentResource = String.format("  [%s%s; Markers:%d]", resource.checked ? "*** " : "", resource.getName(), resource.markers.size());
+            }
         }
 
         frame.setTitle(String.format("%s - %s%s%s", Utils.AppName, resourceListInfo, currentIndex, currentResource));
     }
 
+    private boolean tableInitialized = false;
+    private void setTableColumnWidths() {
+        //table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        for (int i = 0; i < tableModel.getColumnCount(); i++) {
+            TableColumn column = table.getColumnModel().getColumn(i);
+            int width = tableModel.getColumnWidth(i);
+            column.setPreferredWidth(width);
+            column.setMinWidth(width);
+        }
+    }
+
     @Override
     public void valueChanged(ListSelectionEvent e) {
+        if (!tableInitialized) {
+            // TODO: poor and desperate man's table init hook for now (this is the only way I can get column width set)
+            setTableColumnWidths();
+        }
+
         if (e.getValueIsAdjusting() == false) {
             // the selection events tend to be not precise, not accurate and redundant; so takes this as a clue only.
             int selectedRows[] = table.getSelectedRows();

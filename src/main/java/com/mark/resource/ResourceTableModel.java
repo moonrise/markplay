@@ -4,10 +4,13 @@ import javax.swing.table.AbstractTableModel;
 
 public class ResourceTableModel extends AbstractTableModel implements IResourceListChangeListener {
     private ResourceList resourceList;
-    private String[] columnNames = {"Row", "Favorite", "Path", "Rating"};
+    final public String[] columnNames = {"Row", "Favorite", "Path", "Rating"};
+    private int[] columnWidths = {50, 30, 400, 50};
 
     public ResourceTableModel(ResourceList resourceList) {
         this.resourceList = resourceList;
+
+        fireTableStructureChanged();
     }
 
     public ResourceList getResourceList() {
@@ -32,6 +35,10 @@ public class ResourceTableModel extends AbstractTableModel implements IResourceL
     @Override
     public String getColumnName(int column) {
         return columnNames[column];
+    }
+
+    public int getColumnWidth(int column) {
+        return columnWidths[column];
     }
 
     @Override
