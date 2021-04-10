@@ -1,6 +1,6 @@
 package com.mark.main;
 
-import com.mark.Log;
+import com.mark.Prefs;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -22,9 +22,15 @@ public class SettingsDialog extends JDialog {
         }
 
         public RootPref(String prefAndPath) {
-            String[] pair = prefAndPath.split(":");
-            this.pref = pair[0];
-            this.path = pair[1];
+            if (prefAndPath == null || prefAndPath.trim().isEmpty()) {
+                this.pref = "";
+                this.path = "";
+            }
+            else {
+                String[] pair = prefAndPath.split(":");
+                this.pref = pair[0];
+                this.path = pair[1];
+            }
         }
 
         public String toString() {
@@ -38,8 +44,13 @@ public class SettingsDialog extends JDialog {
         private ArrayList<RootPref> data = new ArrayList<>();
 
         public RootTableModel() {
-            data.add(new RootPref("a", "b"));
-            data.add(new RootPref("x", "y"));
+            // initialize the data from preferences
+            for (String prefix : Prefs.getRootPrefixes()) {
+                data.add(new RootPref(prefix));
+            }
+
+            // append the last row always to support new addition
+            data.add(new RootPref(""));
         }
 
         @Override
@@ -63,8 +74,47 @@ public class SettingsDialog extends JDialog {
             return columnIndex == 0 ? rootPref.pref : rootPref.path;
         }
 
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return true;
+        }
+
+        @Override
+        public void setValueAt(Object value, int rowIndex, int columnIndex) {
+            boolean newRowAppended = false;
+            String newValue = ((String)value).trim();
+
+            RootPref rootPref =  data.get(rowIndex);
+            if (columnIndex == 0 && !newValue.isEmpty()) {
+                rootPref.pref = newValue;
+                if (rowIndex == data.size()-1) {
+                    // the last row edited for an addition. provide another empty row for add
+                    data.add(new RootPref(""));
+                    newRowAppended = true;
+                }
+            }
+            else if (columnIndex == 1) {        // Path can be empty
+                rootPref.path = newValue;
+            }
+
+            if (newRowAppended) {
+                fireTableStructureChanged();
+            }
+            else {
+                fireTableCellUpdated(rowIndex, columnIndex);
+            }
+        }
+
         public int getColumnWidth(int column) {
             return columnWidths[column];
+        }
+
+        public void save() {
+            ArrayList<String> prefs = new ArrayList<>();
+            for (SettingsDialog.RootPref rootPrf : data) {
+                prefs.add(rootPrf.toString());
+            }
+            Prefs.setRootPrefixes(prefs.toArray(new String[] {}));
         }
     }
 
@@ -86,15 +136,6 @@ public class SettingsDialog extends JDialog {
         pack();
     }
 
-    private void setTableColumnWidths(JTable table, RootTableModel tableModel) {
-        for (int i = 0; i < tableModel.getColumnCount(); i++) {
-            TableColumn column = table.getColumnModel().getColumn(i);
-            int width = tableModel.getColumnWidth(i);
-            column.setPreferredWidth(width);
-            column.setMinWidth(width);
-        }
-    }
-
     private JLabel getPathRootTitle() {
         JLabel label = new JLabel("Resource Path Root Prefixes");
         label.setBorder(new EmptyBorder(0, 0, 10, 0));
@@ -104,15 +145,28 @@ public class SettingsDialog extends JDialog {
     private JScrollPane getRootTable() {
         JTable table = new JTable();
         table.setPreferredScrollableViewportSize(table.getPreferredSize());
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setFillsViewportHeight(true);
 
-        RootTableModel tableModel = new RootTableModel();
+        tableModel = new RootTableModel();
         table.setModel(tableModel);
         setTableColumnWidths(table, tableModel);
+        if (tableModel.getRowCount() > 0) {
+            table.setRowSelectionInterval(0, 0);
+        }
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(300, 100));
         return scrollPane;
+    }
+
+    private void setTableColumnWidths(JTable table, RootTableModel tableModel) {
+        for (int i = 0; i < tableModel.getColumnCount(); i++) {
+            TableColumn column = table.getColumnModel().getColumn(i);
+            int width = tableModel.getColumnWidth(i);
+            column.setPreferredWidth(width);
+            column.setMinWidth(width);
+        }
     }
 
     private JPanel getDialogButtonPanel() {
@@ -128,6 +182,7 @@ public class SettingsDialog extends JDialog {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                tableModel.save();
                 setVisible(false);
             }
         });
