@@ -13,8 +13,8 @@ import java.util.ArrayList;
 
 public class SettingsDialog extends JDialog {
     static class RootPref {
-        String pref;
-        String path;
+        public String pref = "";
+        public String path = "";
 
         public RootPref(String pref, String path) {
             this.pref = pref;
@@ -22,13 +22,11 @@ public class SettingsDialog extends JDialog {
         }
 
         public RootPref(String prefAndPath) {
-            if (prefAndPath == null || prefAndPath.trim().isEmpty()) {
-                this.pref = "";
-                this.path = "";
-            }
-            else {
-                String[] pair = prefAndPath.split(":");
+            String[] pair = prefAndPath.split(":");
+            if (pair.length > 0) {
                 this.pref = pair[0];
+            }
+            if (pair.length > 1) {
                 this.path = pair[1];
             }
         }
@@ -112,12 +110,16 @@ public class SettingsDialog extends JDialog {
         public void save() {
             ArrayList<String> prefs = new ArrayList<>();
             for (SettingsDialog.RootPref rootPrf : data) {
-                prefs.add(rootPrf.toString());
+                // skip the empty row (the last one likely)
+                if (!rootPrf.pref.trim().isEmpty()) {
+                    prefs.add(rootPrf.toString());
+                }
             }
             Prefs.setRootPrefixes(prefs.toArray(new String[] {}));
         }
     }
 
+    private JTable table;
     private RootTableModel tableModel;
 
     public SettingsDialog(Frame parent) {
@@ -143,10 +145,11 @@ public class SettingsDialog extends JDialog {
     }
 
     private JScrollPane getRootTable() {
-        JTable table = new JTable();
+        table = new JTable();
         table.setPreferredScrollableViewportSize(table.getPreferredSize());
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setFillsViewportHeight(true);
+        table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 
         tableModel = new RootTableModel();
         table.setModel(tableModel);
@@ -182,6 +185,7 @@ public class SettingsDialog extends JDialog {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                ((JButton)e.getSource()).requestFocus();    // if the cell is still in edit mode
                 tableModel.save();
                 setVisible(false);
             }
