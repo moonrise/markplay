@@ -5,6 +5,7 @@ import com.mark.Prefs;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -37,8 +38,8 @@ public class SettingsDialog extends JDialog {
     }
 
     static class RootTableModel  extends AbstractTableModel {
-        private String[] columnNames = {"Prefix", "Path"};
-        private int[] columnWidths = {50, 200};
+        private String[] columnNames = {"B", "Prefix", "Path"};
+        private int[] columnWidths = {50, 50, 200};
         private ArrayList<RootPref> data = new ArrayList<>();
 
         public RootTableModel() {
@@ -69,7 +70,15 @@ public class SettingsDialog extends JDialog {
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             RootPref rootPref =  data.get(rowIndex);
-            return columnIndex == 0 ? rootPref.pref : rootPref.path;
+            switch (columnIndex) {
+                case 0:
+                    return "x";
+                case 1:
+                    return rootPref.pref;
+                case 2:
+                    return rootPref.path;
+            }
+            return "<na>";
         }
 
         @Override
@@ -83,7 +92,7 @@ public class SettingsDialog extends JDialog {
             String newValue = ((String)value).trim();
 
             RootPref rootPref =  data.get(rowIndex);
-            if (columnIndex == 0 && !newValue.isEmpty()) {
+            if (columnIndex == 1 && !newValue.isEmpty()) {
                 rootPref.pref = newValue;
                 if (rowIndex == data.size()-1) {
                     // the last row edited for an addition. provide another empty row for add
@@ -91,7 +100,7 @@ public class SettingsDialog extends JDialog {
                     newRowAppended = true;
                 }
             }
-            else if (columnIndex == 1) {        // Path can be empty
+            else if (columnIndex == 2) {        // Path can be empty
                 rootPref.path = newValue;
             }
 
@@ -116,6 +125,17 @@ public class SettingsDialog extends JDialog {
                 }
             }
             Prefs.setRootPrefixes(prefs.toArray(new String[] {}));
+        }
+    }
+
+    static class ButtonCellRenderer extends JButton implements TableCellRenderer {
+        public ButtonCellRenderer() {
+            super("X");
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            return this;
         }
     }
 
@@ -154,6 +174,8 @@ public class SettingsDialog extends JDialog {
         tableModel = new RootTableModel();
         table.setModel(tableModel);
         setTableColumnWidths(table, tableModel);
+        table.getColumnModel().getColumn(0).setCellRenderer(new ButtonCellRenderer());
+
         if (tableModel.getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0);
         }
