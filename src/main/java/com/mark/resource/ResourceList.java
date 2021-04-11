@@ -13,6 +13,7 @@ public class ResourceList {
     public static final String FileExtension = ".mrk";
 
     private ArrayList<Resource> resources = new ArrayList<>();
+    private String root = "";
     private int currentIndex = -1;
 
     private transient IMain main;
@@ -55,13 +56,27 @@ public class ResourceList {
         }
     }
 
+    public String getRoot() {
+        return root;
+    }
+
+    public void setRoot(String root) {
+        this.root = root;
+
+        modified = true;
+        notifyResourceListChange(ResourceListUpdate.AttributesChanged);
+    }
+
     public String getFilePath() {
         return filePath;
     }
 
     public String getName() {
-        //return filePath == null ? Utils.NoName : FilenameUtils.getName(filePath);
         return filePath == null ? Utils.NoName : filePath;
+    }
+
+    public String getShortName() {
+        return filePath == null ? Utils.NoName : FilenameUtils.getName(filePath);
     }
 
     public boolean isDirty() {

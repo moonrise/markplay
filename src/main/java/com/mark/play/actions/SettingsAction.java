@@ -17,6 +17,6 @@ public class SettingsAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         //Log.log("Settings action");
-        new SettingsDialog(main.getAppFrame()).display();
+        new SettingsDialog(main).display();
     }
 }

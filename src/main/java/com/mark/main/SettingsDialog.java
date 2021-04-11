@@ -2,11 +2,14 @@ package com.mark.main;
 
 import com.mark.Prefs;
 import com.mark.Utils;
+import com.mark.resource.ResourceList;
 import com.mark.utils.ITableCellButtonClickListener;
 import com.mark.utils.TableCellButton;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
@@ -138,12 +141,17 @@ public class SettingsDialog extends JDialog {
         }
     }
 
+    private IMain main;
     private JTable table;
     private RootTableModel tableModel;
+    private String newRootPath;
+    private JLabel newRoot;
 
-    public SettingsDialog(Frame parent) {
-        super(parent, "Settings", true, parent.getGraphicsConfiguration());
-        setMaximumSize(new Dimension(400, 200));
+    public SettingsDialog(IMain main) {
+        super(main.getAppFrame(), "Settings", true, main.getAppFrame().getGraphicsConfiguration());
+        this.main = main;
+
+        setMaximumSize(new Dimension(500, 200));
 
         JPanel topPanel = new JPanel();
         topPanel.setBorder(new EmptyBorder(15, 30, 10, 30));
@@ -157,10 +165,33 @@ public class SettingsDialog extends JDialog {
         pack();
     }
 
-    private JLabel buildPathRootTitle() {
-        JLabel label = new JLabel("Resource Path Root Prefixes");
-        label.setBorder(new EmptyBorder(0, 0, 10, 0));
-        return label;
+    private JPanel buildPathRootTitle() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(new EmptyBorder(0, 0, 14, 0));
+
+        ResourceList resourceList = main.getResourceList();
+
+        JLabel title = new JLabel(String.format("Resource Path Root (%s)", resourceList.getShortName()));
+        title.setFont(new Font("helvetica", Font.PLAIN, 13));
+        title.setBorder(new EmptyBorder(0, 0, 10, 0));
+        panel.add(title);
+
+        JLabel currentRoot = new JLabel(resourceList.getRoot().isEmpty() ? "current  : " : resourceList.getRoot());
+        currentRoot.setFont(new Font("courier", Font.PLAIN, 12));
+        currentRoot.setBorder(new EmptyBorder(0, 0, 6, 0));
+        panel.add(currentRoot);
+
+        newRoot = new JLabel(getNewRootPathFormatted(""));
+        newRoot.setFont(new Font("courier", Font.BOLD, 12));
+        newRoot.setForeground(Color.BLUE);
+        panel.add(newRoot);
+
+        return panel;
+    }
+
+    private String getNewRootPathFormatted(String newValue) {
+        return String.format("new root : %s", newValue);
     }
 
     private JScrollPane buildRootTable() {
@@ -183,9 +214,32 @@ public class SettingsDialog extends JDialog {
             }
         }));
 
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting()) {
+                    return;
+                }
+
+                //Log.log("table row selected %d - %d, %s; %d", e.getFirstIndex(), e.getLastIndex(), e.getValueIsAdjusting(), selectedRows.length > 0 ? selectedRows[0] : -1);
+                int selectedRows[] = table.getSelectedRows();
+                if (selectedRows.length < 1) {
+                    return;
+                }
+
+                newRootPath = tableModel.data.get(selectedRows[0]).path;
+                newRoot.setText(getNewRootPathFormatted(newRootPath));
+            }
+        });
+
+        // do not select any rows as it will update the new root value (we do not want that).
+        // if we select a row without setting the new value, then currently selected row cannot be assigned to the new
+        // root until re-selected by user.
+        /*
         if (tableModel.getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0);
         }
+        */
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(300, 100));
@@ -215,7 +269,15 @@ public class SettingsDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ((JButton)e.getSource()).requestFocus();    // if the cell is still in edit mode
+
+                // save the list to pref (in case edited)
                 tableModel.save();
+
+                // save new root value
+                if (!main.getResourceList().getRoot().equals(newRootPath)) {
+                    main.getResourceList().setRoot(newRootPath);
+                }
+
                 setVisible(false);
             }
         });

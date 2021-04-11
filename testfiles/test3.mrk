@@ -1,7 +1,9 @@
 {
+  "root": "",
+  "currentIndex": 0,
   "resources": [
     {
-      "path": "./media/WhatIsMyth.wmv",
+      "path": "/Users/bjeong/IdeaProjects/markplay/media/WhatIsMyth.wmv",
       "rating": 0,
       "checked": false,
       "duration": 1842457,
@@ -62,7 +64,7 @@
       ]
     },
     {
-      "path": "/Users/bjeong/Downloads/rabbit.mpg",
+      "path": "/Users/bjeong/IdeaProjects/markplay/media/rabbit.mpg",
       "rating": 0,
       "checked": false,
       "duration": 0,
@@ -75,7 +77,7 @@
       ]
     },
     {
-      "path": "/Users/bjeong/Downloads/cloud.wmv",
+      "path": "/Users/bjeong/IdeaProjects/markplay/media/cloud.wmv",
       "rating": 0,
       "checked": false,
       "duration": 52213,
@@ -120,6 +122,5 @@
         }
       ]
     }
-  ],
-  "currentIndex": 0
+  ]
 }

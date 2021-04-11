@@ -85,6 +85,10 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         registerResourceListChangeListener(this);
     }
 
+    public ResourceList getResourceList() {
+        return resourceList;
+    }
+
     @Override
     public MainFrame getAppFrame() {
         return this.frame;
@@ -126,7 +130,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             }
         }
 
-        frame.setTitle(String.format("%s - %s%s%s", Utils.AppName, resourceListInfo, currentIndex, currentResource));
+        frame.setTitle(String.format("%s - {%s} %s%s%s", Utils.AppName, resourceList.getRoot(), resourceListInfo, currentIndex, currentResource));
     }
 
     @Override
@@ -138,7 +142,8 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             resourceList.setCurrentIndex(selectedRows.length > 0 ? selectedRows[0] : -1);
         }
     }
-@Override
+
+    @Override
     public void registerResourceListChangeListener(IResourceListChangeListener listener) {
         this.resourceListChangeListeners.add(listener);
     }

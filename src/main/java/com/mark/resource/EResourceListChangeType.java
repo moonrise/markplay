@@ -6,5 +6,6 @@ public enum EResourceListChangeType {
     Saved,
     RowsAdded,
     IndexChanged,
+    AttributesChanged,
     ChildResourceChanged,
 }

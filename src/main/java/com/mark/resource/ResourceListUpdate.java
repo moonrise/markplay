@@ -14,6 +14,8 @@ public class ResourceListUpdate {
 
     public static ResourceListUpdate IndexChanged = new ResourceListUpdate(EResourceListChangeType.IndexChanged);
 
+    public static ResourceListUpdate AttributesChanged = new ResourceListUpdate(EResourceListChangeType.AttributesChanged);
+
     public static ResourceListUpdate Saved = new ResourceListUpdate(EResourceListChangeType.Saved);
 
     public static ResourceListUpdate RowsAdded(int startRow, int endRow) {

@@ -15,4 +15,5 @@ public interface IMain {
     void processFile(String filePath);
     void saveCurrentResourceList(boolean saveAs);
     void navigateResourceList(boolean forward, boolean favorite);
+    ResourceList getResourceList();
 }
