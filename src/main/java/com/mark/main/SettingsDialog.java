@@ -1,6 +1,7 @@
 package com.mark.main;
 
 import com.mark.Prefs;
+import com.mark.Utils;
 import com.mark.utils.TableCellButton;
 
 import javax.swing.*;
@@ -163,8 +164,10 @@ public class SettingsDialog extends JDialog {
         tableModel = new RootTableModel();
         table.setModel(tableModel);
         setTableColumnWidths(table, tableModel);
-        table.getColumnModel().getColumn(0).setCellRenderer(new TableCellButton());
-        table.getColumnModel().getColumn(0).setCellEditor(new TableCellButton());
+
+        ImageIcon deleteIcon = new ImageIcon(Utils.getResourcePath("/icons/cross.png"));
+        table.getColumnModel().getColumn(0).setCellRenderer(new TableCellButton(deleteIcon));
+        table.getColumnModel().getColumn(0).setCellEditor(new TableCellButton(deleteIcon));
 
         if (tableModel.getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0);
