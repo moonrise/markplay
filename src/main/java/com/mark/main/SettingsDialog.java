@@ -1,13 +1,11 @@
 package com.mark.main;
 
-import com.mark.Log;
 import com.mark.Prefs;
+import com.mark.utils.TableCellButton;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -130,52 +128,6 @@ public class SettingsDialog extends JDialog {
         }
     }
 
-    static class ButtonCellRenderer extends JButton implements TableCellRenderer {
-        public ButtonCellRenderer() {
-            super("X");
-
-            addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    int row = Integer.valueOf(e.getActionCommand());
-                    Log.log("delete row action received: %d", row);
-                }
-            });
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            return this;
-        }
-    }
-
-    static class ButtonCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
-        private JButton button;
-        private int rowIndex;
-
-        public ButtonCellEditor() {
-            button = new JButton("Y");
-            button.addActionListener(this);
-        }
-
-        @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            rowIndex = (int)value;
-            return button;
-        }
-
-        @Override
-        public Object getCellEditorValue() {
-            return "";      // not important for a button editor really
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Log.log("cell button pressed for delete: %d", rowIndex);
-            fireEditingStopped();
-        }
-    }
-
     private JTable table;
     private RootTableModel tableModel;
 
@@ -211,8 +163,8 @@ public class SettingsDialog extends JDialog {
         tableModel = new RootTableModel();
         table.setModel(tableModel);
         setTableColumnWidths(table, tableModel);
-        table.getColumnModel().getColumn(0).setCellRenderer(new ButtonCellRenderer());
-        table.getColumnModel().getColumn(0).setCellEditor(new ButtonCellEditor());
+        table.getColumnModel().getColumn(0).setCellRenderer(new TableCellButton());
+        table.getColumnModel().getColumn(0).setCellEditor(new TableCellButton());
 
         if (tableModel.getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0);
