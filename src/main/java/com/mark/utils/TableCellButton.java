@@ -12,18 +12,20 @@ import java.awt.event.ActionListener;
 public class TableCellButton extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ActionListener {
     private JButton button;
     private int rowIndex;
-    private boolean isTransparentButton = false;
+    private boolean isTransparentButton = true;
+    private ITableCellButtonClickListener buttonClickListener;
 
-    public TableCellButton(String text) {
-        this(text, null);
+    public TableCellButton(String text, ITableCellButtonClickListener listener) {
+        this(text, null, listener);
     }
 
-    public TableCellButton(ImageIcon icon) {
-        this(null, icon);
+    public TableCellButton(ImageIcon icon, ITableCellButtonClickListener listener) {
+        this(null, icon, listener);
     }
 
-    public TableCellButton(String text, ImageIcon icon) {
-        button = new JButton(text, icon);
+    public TableCellButton(String text, ImageIcon icon, ITableCellButtonClickListener listener) {
+        this.button = new JButton(text, icon);
+        this.buttonClickListener = listener;
 
         if (isTransparentButton) {
             makeTransparentButton();
@@ -69,7 +71,10 @@ public class TableCellButton extends AbstractCellEditor implements TableCellRend
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Log.log("cell button pressed for delete: %d", rowIndex);
+        //Log.log("cell button pressed for delete: %d", rowIndex);
+        if (buttonClickListener != null) {
+            buttonClickListener.onTableCellButtonClick(rowIndex);
+        }
         fireEditingStopped();
     }
 }

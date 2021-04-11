@@ -2,6 +2,7 @@ package com.mark.main;
 
 import com.mark.Prefs;
 import com.mark.Utils;
+import com.mark.utils.ITableCellButtonClickListener;
 import com.mark.utils.TableCellButton;
 
 import javax.swing.*;
@@ -84,7 +85,8 @@ public class SettingsDialog extends JDialog {
 
         @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return true;
+            // the last row (the empty row for new addition) should not be deletable
+            return !(rowIndex == data.size()-1 && columnIndex == 0);
         }
 
         @Override
@@ -105,11 +107,9 @@ public class SettingsDialog extends JDialog {
                 rootPref.path = newValue;
             }
 
+            fireTableCellUpdated(rowIndex, columnIndex);
             if (newRowAppended) {
-                fireTableStructureChanged();
-            }
-            else {
-                fireTableCellUpdated(rowIndex, columnIndex);
+                fireTableRowsInserted(data.size()-1, data.size()-1);
             }
         }
 
@@ -126,6 +126,11 @@ public class SettingsDialog extends JDialog {
                 }
             }
             Prefs.setRootPrefixes(prefs.toArray(new String[] {}));
+        }
+
+        public void deleteRow(int rowIndex) {
+            data.remove(rowIndex);
+            fireTableRowsDeleted(rowIndex, rowIndex);
         }
     }
 
@@ -166,8 +171,13 @@ public class SettingsDialog extends JDialog {
         setTableColumnWidths(table, tableModel);
 
         ImageIcon deleteIcon = new ImageIcon(Utils.getResourcePath("/icons/cross.png"));
-        table.getColumnModel().getColumn(0).setCellRenderer(new TableCellButton(deleteIcon));
-        table.getColumnModel().getColumn(0).setCellEditor(new TableCellButton(deleteIcon));
+        table.getColumnModel().getColumn(0).setCellRenderer(new TableCellButton(deleteIcon, null));
+        table.getColumnModel().getColumn(0).setCellEditor(new TableCellButton(deleteIcon, new ITableCellButtonClickListener() {
+            @Override
+            public void onTableCellButtonClick(int rowIndex) {
+                tableModel.deleteRow(rowIndex);
+            }
+        }));
 
         if (tableModel.getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0);
