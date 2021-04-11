@@ -1,10 +1,12 @@
 package com.mark.main;
 
+import com.mark.Log;
 import com.mark.Prefs;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
@@ -38,8 +40,8 @@ public class SettingsDialog extends JDialog {
     }
 
     static class RootTableModel  extends AbstractTableModel {
-        private String[] columnNames = {"B", "Prefix", "Path"};
-        private int[] columnWidths = {50, 50, 200};
+        private String[] columnNames = {"", "Prefix", "Path"};
+        private int[] columnWidths = {30, 50, 200};
         private ArrayList<RootPref> data = new ArrayList<>();
 
         public RootTableModel() {
@@ -72,7 +74,7 @@ public class SettingsDialog extends JDialog {
             RootPref rootPref =  data.get(rowIndex);
             switch (columnIndex) {
                 case 0:
-                    return "x";
+                    return rowIndex;        // delete column retains the row index as the value
                 case 1:
                     return rootPref.pref;
                 case 2:
@@ -131,11 +133,46 @@ public class SettingsDialog extends JDialog {
     static class ButtonCellRenderer extends JButton implements TableCellRenderer {
         public ButtonCellRenderer() {
             super("X");
+
+            addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int row = Integer.valueOf(e.getActionCommand());
+                    Log.log("delete row action received: %d", row);
+                }
+            });
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             return this;
+        }
+    }
+
+    static class ButtonCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
+        private JButton button;
+        private int rowIndex;
+
+        public ButtonCellEditor() {
+            button = new JButton("Y");
+            button.addActionListener(this);
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            rowIndex = (int)value;
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "";      // not important for a button editor really
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Log.log("cell button pressed for delete: %d", rowIndex);
+            fireEditingStopped();
         }
     }
 
@@ -150,21 +187,21 @@ public class SettingsDialog extends JDialog {
         topPanel.setBorder(new EmptyBorder(15, 30, 10, 30));
         topPanel.setLayout(new BorderLayout());
 
-        topPanel.add(getPathRootTitle(), BorderLayout.NORTH);
-        topPanel.add(new JScrollPane(getRootTable()));
+        topPanel.add(buildPathRootTitle(), BorderLayout.NORTH);
+        topPanel.add(new JScrollPane(buildRootTable()));
 
-        topPanel.add(getDialogButtonPanel(), BorderLayout.SOUTH);
+        topPanel.add(buildDialogButtonPanel(), BorderLayout.SOUTH);
         getContentPane().add(topPanel);
         pack();
     }
 
-    private JLabel getPathRootTitle() {
+    private JLabel buildPathRootTitle() {
         JLabel label = new JLabel("Resource Path Root Prefixes");
         label.setBorder(new EmptyBorder(0, 0, 10, 0));
         return label;
     }
 
-    private JScrollPane getRootTable() {
+    private JScrollPane buildRootTable() {
         table = new JTable();
         table.setPreferredScrollableViewportSize(table.getPreferredSize());
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -175,6 +212,7 @@ public class SettingsDialog extends JDialog {
         table.setModel(tableModel);
         setTableColumnWidths(table, tableModel);
         table.getColumnModel().getColumn(0).setCellRenderer(new ButtonCellRenderer());
+        table.getColumnModel().getColumn(0).setCellEditor(new ButtonCellEditor());
 
         if (tableModel.getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0);
@@ -194,15 +232,15 @@ public class SettingsDialog extends JDialog {
         }
     }
 
-    private JPanel getDialogButtonPanel() {
+    private JPanel buildDialogButtonPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panel.setBorder(new EmptyBorder(10, 0, 0, 0));
-        panel.add(getDialogOKButton());
-        panel.add(getDialogCancelButton());
+        panel.add(buildDialogOKButton());
+        panel.add(buildDialogCancelButton());
         return panel;
     }
 
-    private JButton getDialogOKButton() {
+    private JButton buildDialogOKButton() {
         JButton button = new JButton("OK");
         button.addActionListener(new ActionListener() {
             @Override
@@ -215,7 +253,7 @@ public class SettingsDialog extends JDialog {
         return button;
     }
 
-    private JButton getDialogCancelButton() {
+    private JButton buildDialogCancelButton() {
         JButton button = new JButton("Cancel");
         button.addActionListener(new ActionListener() {
             @Override
