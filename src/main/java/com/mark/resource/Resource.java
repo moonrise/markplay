@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.Date;
 
 public class Resource {
-    public String path;
+    private String path;
     public int rating;
     public boolean checked;
     public long duration;
@@ -43,6 +43,14 @@ public class Resource {
     // we need this when the parent list file is deserialized to establish the child to parent link
     public void setParentList(ResourceList parentList) {
         this.parentList = parentList;
+    }
+
+    public String getPath() {
+        return getParentList().getRoot() + path;
+    }
+
+    public String getPathWithNoRoot() {
+        return path;
     }
 
     public void setDuration(long duration) {

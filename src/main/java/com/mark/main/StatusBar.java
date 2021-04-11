@@ -28,7 +28,7 @@ public class StatusBar extends JPanel  implements IMyPlayerStateChangeListener {
     public void onPlayerStateChange(MyPlayerState playerState, EPlayerStateChangeType stateChangeType) {
         if (stateChangeType == EPlayerStateChangeType.MediaParsed) {
             setStatusText(String.format("%s, Length: %s, Video: %d x %d, %s (%s), Audio: %d channels, %d (sample rate), %s (%s)",
-                    playerState.getResource().path,
+                    playerState.getResource().getPath(),
                     Utils.getTimelineFormatted(playerState.getMediaDuration(), false),
                     playerState.videoWidth, playerState.videoHeight, playerState.videoCodecName, playerState.videoCodecDesc,
                     playerState.audioChannels, playerState.audioBitRate, playerState.audioCodecName, playerState.audioCodecDesc));

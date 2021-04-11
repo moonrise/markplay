@@ -171,17 +171,17 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
             return;
         }
 
-        File file = new File((resource.path));
+        File file = new File((resource.getPath()));
         if (!file.exists()) {
             clearMedia();
-            onError(String.format("File '%s' does not exist.", resource.path));
+            onError(String.format("File '%s' does not exist.", resource.getPath()));
             return;
         }
 
         this.resource = resource;
         this.resource.setFileSize(file.length());
         playerState.setResource(resource);
-        startMedia(resource.path);
+        startMedia(resource.getPath());
     }
 
     private void clearMedia() {
@@ -350,7 +350,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
             mediaPlayer.submit(new Runnable() {
                 @Override
                 public void run() {
-                    mediaPlayer.media().play(resource.path);
+                    mediaPlayer.media().play(resource.getPath());
                 }
             });
         }
