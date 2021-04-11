@@ -258,4 +258,9 @@ public class Resource {
 
         return -1;
     }
+
+    // can the newRoot be applied?
+    public boolean validateNewRoot(String newRoot) {
+        return false;
+    }
 }

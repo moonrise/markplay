@@ -60,11 +60,28 @@ public class ResourceList {
         return root;
     }
 
-    public void setRoot(String root) {
-        this.root = root;
+    public String setRoot(String newRoot) {
+        String errorMessage = setRootsForAll(newRoot);
+        if (errorMessage != null) {
+            return errorMessage;        // NOT OK
+        }
 
+        this.root = root;
         modified = true;
         notifyResourceListChange(ResourceListUpdate.AttributesChanged);
+        return null;        // OK
+    }
+
+    // returns null if set correctly, error message otherwise
+    private String setRootsForAll(String newRoot) {
+        for (Resource resource : resources) {
+            if (!resource.validateNewRoot(newRoot)) {
+                String errorMessage = String.format("Cannot re-root %s ('%s' -> '%s')", resource.getName(), root, newRoot);
+                //Log.log(errorMessage);
+                return errorMessage;
+            }
+        }
+        return null;
     }
 
     public String getFilePath() {

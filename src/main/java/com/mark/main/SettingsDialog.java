@@ -274,14 +274,24 @@ public class SettingsDialog extends JDialog {
                 tableModel.save();
 
                 // save new root value
-                if (!main.getResourceList().getRoot().equals(newRootPath)) {
-                    main.getResourceList().setRoot(newRootPath);
-                }
-
-                setVisible(false);
+                setVisible(!checkNewRootAndSave());
             }
         });
         return button;
+    }
+
+    private boolean checkNewRootAndSave() {
+        if (main.getResourceList().getRoot().equals(newRootPath)) {
+            return true;
+        }
+
+        String errorMessage = main.getResourceList().setRoot(newRootPath);
+        if (errorMessage!=null) {
+            main.displayErrorMessage(errorMessage);
+            return false;
+        }
+
+        return true;
     }
 
     private JButton buildDialogCancelButton() {
