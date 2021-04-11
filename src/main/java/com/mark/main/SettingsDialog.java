@@ -16,6 +16,10 @@ import java.util.ArrayList;
 
 public class SettingsDialog extends JDialog {
     static class RootPref {
+        // Separator should not be ":" to support Windows path like 'C:\'
+        // Separator should not be ";" as it is used for multiple value delimiters in preferences
+        final private String SEPARATOR = "=";
+
         public String pref = "";
         public String path = "";
 
@@ -25,7 +29,7 @@ public class SettingsDialog extends JDialog {
         }
 
         public RootPref(String prefAndPath) {
-            String[] pair = prefAndPath.split(":");
+            String[] pair = prefAndPath.split(SEPARATOR);
             if (pair.length > 0) {
                 this.pref = pair[0];
             }
@@ -35,7 +39,7 @@ public class SettingsDialog extends JDialog {
         }
 
         public String toString() {
-            return String.format("%s:%s", pref, path);
+            return String.format("%s%s%s", pref, SEPARATOR, path);
         }
     }
 
