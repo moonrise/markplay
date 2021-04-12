@@ -330,6 +330,11 @@ public class SettingsDialog extends JDialog {
             return true;
         }
 
+        String promptMessage = newRootPath.isEmpty() ? "Unset the root (empty root)?" : String.format("Set the root to '%s'?", newRootPath);
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(main.getAppFrame(), promptMessage, "Confirm", JOptionPane.YES_NO_OPTION)) {
+            return true;
+        }
+
         String errorMessage = main.getResourceList().setRoot(currentRootPath, newRootPath);
         if (errorMessage!=null) {
             main.displayErrorMessage(errorMessage);
