@@ -84,9 +84,14 @@ public class AppMenuBar extends JMenuBar {
         JMenu menu = new JMenu("Options");
 
         // [TODO] is there a way to encapsulate the initial check state with the action?
-        JCheckBoxMenuItem checkBoxMenuItem = new JCheckBoxMenuItem(new PlayOnLoadAction(main));
-        checkBoxMenuItem.setState(Prefs.isPlayOnLoad());
-        menu.add(checkBoxMenuItem);
+        JCheckBoxMenuItem checkBoxMenuItem1 = new JCheckBoxMenuItem(new PlayOnLoadAction(main));
+        checkBoxMenuItem1.setState(Prefs.isPlayOnLoad());
+        menu.add(checkBoxMenuItem1);
+
+        JCheckBoxMenuItem checkBoxMenuItem2 = new JCheckBoxMenuItem(new FocusOnPlayerAction(main));
+        checkBoxMenuItem2.setState(Prefs.isFocusOnPlayer());
+        menu.add(checkBoxMenuItem2);
+
         menu.add(new SettingsAction(main));
 
         return menu;

@@ -71,6 +71,14 @@ public class Prefs {
         return userPrefs.getBoolean("playOnLoad", false);
     }
 
+    public static void setFocusOnPlayer(boolean x) {
+        userPrefs.putBoolean("focusOnPlayer", x);
+    }
+
+    public static boolean isFocusOnPlayer() {
+        return userPrefs.getBoolean("focusOnPlayer", true);
+    }
+
     public static void setMute(boolean x) {
         userPrefs.putBoolean("mute", x);
     }

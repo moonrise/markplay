@@ -208,7 +208,9 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
 
         // TODO: should the player keyboard actions be serviced from the whole frame as well?
         // give the focus to player for keyboard events to be received, but then the table loses the focus
-         setFocus();
+        if (Prefs.isFocusOnPlayer()) {
+            setFocus();
+        }
     }
 
     public void setFocus() {
