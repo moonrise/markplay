@@ -72,6 +72,10 @@ public class ResourceList {
         return null;        // OK
     }
 
+    public boolean validateRoot(String filePath) {
+        return filePath.startsWith(root);
+    }
+
     // returns null if set correctly, error message otherwise
     private String setRootsForAll(String oldRoot, String newRoot) {
         // validate old root

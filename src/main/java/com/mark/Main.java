@@ -206,9 +206,18 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             loadResourceList(() -> new LegacyFilerReader().read(this, new File(filePath)));
             Prefs.setRecentFile(filePath);
         } else {                                                          // assume media files for all else
-            resourceList.addResource(new Resource(filePath, resourceList));
-            selectRowTable(resourceList.size() - 1);
+            addResourceFile(filePath);
         }
+    }
+
+    private void addResourceFile(String filePath) {
+        if (!resourceList.validateRoot(filePath)) {
+            displayErrorMessage(String.format("Cannot add '%s' because it is not compatible with the root context '%s'.", filePath, resourceList.getRoot()));
+            return;
+        }
+
+        resourceList.addResource(new Resource(filePath, resourceList));
+        selectRowTable(resourceList.size() - 1);
     }
 
     @Override
