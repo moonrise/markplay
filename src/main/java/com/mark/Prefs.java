@@ -105,8 +105,10 @@ public class Prefs {
             recentFiles = new ArrayList<String>();
         }
 
-        if (recentFiles.indexOf(recentFile) >= 0) {
-            return;     // already there
+        int index = recentFiles.indexOf(recentFile);
+        if (index >= 0) {
+            // already there, so remove it for correct ordering
+            recentFiles.remove(index);
         }
 
         recentFiles.add(0, recentFile);
