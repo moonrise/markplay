@@ -1,5 +1,7 @@
 package com.mark.main;
 
+import com.mark.Log;
+import com.mark.Utils;
 import com.mark.resource.ResourceList;
 
 import javax.swing.*;
@@ -10,14 +12,25 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 
 public class ResourceListTable extends JTable {
-    static class MyRenderer extends DefaultTableCellRenderer {
-        public MyRenderer() {
+    static class LongRenderer extends DefaultTableCellRenderer {
+        public LongRenderer() {
             setHorizontalAlignment(SwingConstants.RIGHT);
         }
 
         @Override
         protected void setValue(Object value) {
-            super.setValue(value);
+            super.setValue(String.format("%,d", (long)value));
+        }
+    }
+
+    static class DurationRenderer extends DefaultTableCellRenderer {
+        public DurationRenderer() {
+            setHorizontalAlignment(SwingConstants.RIGHT);
+        }
+
+        @Override
+        protected void setValue(Object value) {
+            super.setValue(Utils.getTimelineFormatted((long)value, false));
         }
     }
 
@@ -52,6 +65,7 @@ public class ResourceListTable extends JTable {
         setFillsViewportHeight(true);
         setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         setRowSelectionAllowed(true);
+        setAutoCreateRowSorter(true);
     }
 
     public void init() {
@@ -60,9 +74,8 @@ public class ResourceListTable extends JTable {
     }
 
     public void setRenderers() {
-        ResourceListTable.MyRenderer mr = new ResourceListTable.MyRenderer();
-        columnModel.getColumn(4).setCellRenderer(mr);
-        columnModel.getColumn(5).setCellRenderer(mr);
+        columnModel.getColumn(4).setCellRenderer(new DurationRenderer());
+        columnModel.getColumn(5).setCellRenderer(new LongRenderer());
     }
 
     private void setTableColumnWidths() {

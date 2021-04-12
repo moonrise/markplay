@@ -8,7 +8,7 @@ import javax.swing.table.AbstractTableModel;
 public class ResourceListTableModel extends AbstractTableModel implements IResourceListChangeListener {
     private ResourceList resourceList;
     private String[] columnNames = {"Row", "Favorite", "Makers", "Path", "Duration", "File Size"};
-    private int[] columnWidths = {10, 10, 10, 300, 20, 65};
+    private int[] columnWidths = {10, 10, 10, 250, 20, 65};
 
     public ResourceListTableModel(ResourceList resourceList) {
         this.resourceList = resourceList;
@@ -52,6 +52,9 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
                 return Integer.class;
             case 1:
                 return Boolean.class;
+            case 4:
+            case 5:
+                return Long.class;
         }
 
         return super.getColumnClass(columnIndex);
@@ -70,9 +73,9 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
             case 3:
                 return resource.getPathWithNoRoot();
             case 4:
-                return Utils.getTimelineFormatted(resource.duration, false);
+                return resource.duration;
             case 5:
-                return String.format("%,d", resource.fileSize);
+                return resource.fileSize;
         }
 
         return "<na>";
