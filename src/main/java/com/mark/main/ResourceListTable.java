@@ -91,4 +91,14 @@ public class ResourceListTable extends JTable {
     public void updateResourceList(ResourceList resourceList) {
         tableModel.setResourceList(resourceList);
     }
+
+    public int getCurrentViewIndex() {
+        int selectedRows[] = getSelectedRows();
+        return selectedRows.length > 0 ? selectedRows[0] : -1;
+    }
+
+    public int getCurrentModelIndex() {
+        int viewIndex = getCurrentViewIndex();
+        return viewIndex < 0 ? viewIndex : convertRowIndexToModel(viewIndex);
+    }
 }
