@@ -76,7 +76,7 @@ public class ResourceList {
     private String setRootsForAll(String oldRoot, String newRoot) {
         // validate old root
         for (Resource resource : resources) {
-            if (!resource.validateOldRoot(oldRoot)) {
+            if (!resource.validateRoot(oldRoot)) {
                 String errorMessage = String.format("Cannot re-root %s ('%s' -> '%s')", resource.getName(), oldRoot, newRoot);
                 return errorMessage;
             }
@@ -84,7 +84,7 @@ public class ResourceList {
 
         // replace old root with new one
         for (Resource resource : resources) {
-            resource.replaceRoot(oldRoot, newRoot);
+            resource.normalizePathToRoot(oldRoot);
         }
 
         // set the new root

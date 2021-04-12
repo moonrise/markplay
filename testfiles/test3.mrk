@@ -1,9 +1,7 @@
 {
-  "root": "",
-  "currentIndex": 0,
   "resources": [
     {
-      "path": "/Users/bjeong/IdeaProjects/markplay/media/WhatIsMyth.wmv",
+      "path": "media/WhatIsMyth.wmv",
       "rating": 0,
       "checked": false,
       "duration": 1842457,
@@ -64,7 +62,7 @@
       ]
     },
     {
-      "path": "/Users/bjeong/IdeaProjects/markplay/media/rabbit.mpg",
+      "path": "media/rabbit.mpg",
       "rating": 0,
       "checked": false,
       "duration": 0,
@@ -77,7 +75,7 @@
       ]
     },
     {
-      "path": "/Users/bjeong/IdeaProjects/markplay/media/cloud.wmv",
+      "path": "media/cloud.wmv",
       "rating": 0,
       "checked": false,
       "duration": 52213,
@@ -102,7 +100,7 @@
       ]
     },
     {
-      "path": "/Users/bjeong/IdeaProjects/markplay/media/hydroid.mp4",
+      "path": "media/hydroid.mp4",
       "rating": 0,
       "checked": false,
       "duration": 8405,
@@ -121,6 +119,34 @@
           "select": false
         }
       ]
+    },
+    {
+      "path": "media\\cloud.wmv",
+      "rating": 0,
+      "checked": false,
+      "duration": 52213,
+      "fileSize": 14177345,
+      "markers": [
+        {
+          "time": 0,
+          "select": false
+        }
+      ]
+    },
+    {
+      "path": "media\\hydroid.mp4",
+      "rating": 0,
+      "checked": false,
+      "duration": 8405,
+      "fileSize": 677016,
+      "markers": [
+        {
+          "time": 0,
+          "select": false
+        }
+      ]
     }
-  ]
+  ],
+  "root": "C:\\Users\\bjeon\\IdeaProjects\\markplay\\",
+  "currentIndex": 5
 }

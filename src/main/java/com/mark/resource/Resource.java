@@ -1,6 +1,5 @@
 package com.mark.resource;
 
-import com.mark.Log;
 import com.mark.Prefs;
 import com.mark.Utils;
 import org.apache.commons.io.FilenameUtils;
@@ -28,8 +27,8 @@ public class Resource {
     private transient boolean silentMode;
 
     public Resource(String path, ResourceList parentList) {
-        this.path = path;
-        this.parentList = parentList;
+        this.parentList = parentList;       // assign parentList before setting the path
+        this.path = normalizePath(path);
 
         // one marker at the starting point always to support the selected span play for the first segment.
         // subsequently added markers will dictate the segment to the right.
@@ -267,15 +266,17 @@ public class Resource {
         return -1;
     }
 
-    public boolean validateOldRoot(String oldRoot) {
-        return getPath().startsWith(oldRoot);
+    public boolean validateRoot(String root) {
+        return getPath().startsWith(root);
     }
 
-    public boolean replaceRoot(String oldRoot, String newRoot) {
-        //Log.log("replace root: '%s' -> '%s'", oldRoot, newRoot);
-        String currentPath = getPath();
-        if (currentPath.startsWith(oldRoot)) {
-            path = currentPath.substring(oldRoot.length());
+    public String normalizePath(String path) {
+        return path.substring(parentList.getRoot().length());
+    }
+
+    public boolean normalizePathToRoot(String root) {
+        if (validateRoot(root)) {
+            path = getPath().substring(root.length());
             return true;
         }
         return false;
