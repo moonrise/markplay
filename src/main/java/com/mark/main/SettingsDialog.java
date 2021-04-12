@@ -145,8 +145,8 @@ public class SettingsDialog extends JDialog {
     private IMain main;
     private JTable table;
     private RootTableModel tableModel;
-    private String currentRootPath;
-    private String newRootPath;
+    private String currentRootPath = "";
+    private String newRootPath = "";
     private JLabel currentRoot;
     private JLabel newRoot;
 

@@ -86,5 +86,8 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
         else if (update.type == EResourceListChangeType.ChildResourceChanged) {
             fireTableRowsUpdated(update.startRow, update.endRow);
         }
+        else if (update.type == EResourceListChangeType.AllRowsUpdated) {
+            fireTableRowsUpdated(0, resourceList.size()-1);
+        }
     }
 }

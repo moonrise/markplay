@@ -57,7 +57,7 @@ public class ResourceList {
     }
 
     public String getRoot() {
-        return root;
+        return root == null ? "" : root;
     }
 
     public String setRoot(String oldRoot, String newRoot) {
@@ -68,7 +68,7 @@ public class ResourceList {
 
         this.root = root;
         modified = true;
-        notifyResourceListChange(ResourceListUpdate.AttributesChanged);
+        notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
         return null;        // OK
     }
 
