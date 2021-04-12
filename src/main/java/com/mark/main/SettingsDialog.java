@@ -8,8 +8,6 @@ import com.mark.utils.TableCellButton;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
@@ -47,8 +45,8 @@ public class SettingsDialog extends JDialog {
     }
 
     static class RootTableModel  extends AbstractTableModel {
-        private String[] columnNames = {"", "Prefix", "Path"};
-        private int[] columnWidths = {30, 50, 200};
+        private String[] columnNames = {"Curr", "New", "Prefix", "Path", "Del"};
+        private int[] columnWidths = {30, 30, 50, 350, 30};
         private ArrayList<RootPref> data = new ArrayList<>();
 
         public RootTableModel() {
@@ -80,12 +78,15 @@ public class SettingsDialog extends JDialog {
         public Object getValueAt(int rowIndex, int columnIndex) {
             RootPref rootPref =  data.get(rowIndex);
             switch (columnIndex) {
-                case 0:
-                    return rowIndex;        // delete column retains the row index as the value
-                case 1:
-                    return rootPref.pref;
+                case 0:     // copy to current
+                case 1:     // copy to new
+                    return rowIndex;
                 case 2:
+                    return rootPref.pref;
+                case 3:
                     return rootPref.path;
+                case 4:     // delete row
+                    return rowIndex;
             }
             return "<na>";
         }
@@ -93,7 +94,7 @@ public class SettingsDialog extends JDialog {
         @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
             // the last row (the empty row for new addition) should not be deletable
-            return !(rowIndex == data.size()-1 && columnIndex == 0);
+            return !(rowIndex == data.size()-1 && columnIndex == 4);
         }
 
         @Override
@@ -102,7 +103,7 @@ public class SettingsDialog extends JDialog {
             String newValue = ((String)value).trim();
 
             RootPref rootPref =  data.get(rowIndex);
-            if (columnIndex == 1 && !newValue.isEmpty()) {
+            if (columnIndex == 2 && !newValue.isEmpty()) {
                 rootPref.pref = newValue;
                 if (rowIndex == data.size()-1) {
                     // the last row edited for an addition. provide another empty row for add
@@ -110,7 +111,7 @@ public class SettingsDialog extends JDialog {
                     newRowAppended = true;
                 }
             }
-            else if (columnIndex == 2) {        // Path can be empty
+            else if (columnIndex == 3) {        // Path can be empty
                 rootPref.path = newValue;
             }
 
@@ -144,14 +145,18 @@ public class SettingsDialog extends JDialog {
     private IMain main;
     private JTable table;
     private RootTableModel tableModel;
+    private String currentRootPath;
     private String newRootPath;
+    private JLabel currentRoot;
     private JLabel newRoot;
 
     public SettingsDialog(IMain main) {
         super(main.getAppFrame(), "Settings", true, main.getAppFrame().getGraphicsConfiguration());
         this.main = main;
 
-        setMaximumSize(new Dimension(500, 200));
+        setPreferredSize(new Dimension(600, 400));
+        setMaximumSize(new Dimension(800, 600));
+        setMinimumSize(new Dimension(400, 300));
 
         JPanel topPanel = new JPanel();
         topPanel.setBorder(new EmptyBorder(15, 30, 10, 30));
@@ -177,7 +182,7 @@ public class SettingsDialog extends JDialog {
         title.setBorder(new EmptyBorder(0, 0, 10, 0));
         panel.add(title);
 
-        JLabel currentRoot = new JLabel(resourceList.getRoot().isEmpty() ? "current  : " : resourceList.getRoot());
+        currentRoot = new JLabel(getCurrentRootPathFormatted(resourceList.getRoot()));
         currentRoot.setFont(new Font("courier", Font.PLAIN, 12));
         currentRoot.setBorder(new EmptyBorder(0, 0, 6, 0));
         panel.add(currentRoot);
@@ -188,6 +193,10 @@ public class SettingsDialog extends JDialog {
         panel.add(newRoot);
 
         return panel;
+    }
+
+    private String getCurrentRootPathFormatted(String newValue) {
+        return String.format("current  : %s", newValue);
     }
 
     private String getNewRootPathFormatted(String newValue) {
@@ -205,15 +214,63 @@ public class SettingsDialog extends JDialog {
         table.setModel(tableModel);
         setTableColumnWidths(table, tableModel);
 
+        buildButtonColumns();
+
+        // do not select any rows as it will update the new root value (we do not want that).
+        // if we select a row without setting the new value, then currently selected row cannot be assigned to the new
+        // root until re-selected by user.
+        /*
+        if (tableModel.getRowCount() > 0) {
+            table.setRowSelectionInterval(0, 0);
+        }
+        */
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setPreferredSize(new Dimension(300, 100));
+        return scrollPane;
+    }
+
+    private void buildButtonColumns() {
+        // copy to current field
+        ImageIcon upIcon = new ImageIcon(Utils.getResourcePath("/icons/navigation-090-white.png"));
+        table.getColumnModel().getColumn(0).setCellRenderer(new TableCellButton(upIcon, null));
+        table.getColumnModel().getColumn(0).setCellEditor(new TableCellButton(upIcon, new ITableCellButtonClickListener() {
+            @Override
+            public void onTableCellButtonClick(int rowIndex) {
+                currentRootPath = tableModel.data.get(rowIndex).path;
+                currentRoot.setText(getCurrentRootPathFormatted(currentRootPath));
+            }
+        }));
+
+        // copy to current field
+        ImageIcon upIcon2 = new ImageIcon(Utils.getResourcePath("/icons/navigation-090-button.png"));
+        table.getColumnModel().getColumn(1).setCellRenderer(new TableCellButton(upIcon2, null));
+        table.getColumnModel().getColumn(1).setCellEditor(new TableCellButton(upIcon2, new ITableCellButtonClickListener() {
+            @Override
+            public void onTableCellButtonClick(int rowIndex) {
+                newRootPath = tableModel.data.get(rowIndex).path;
+                newRoot.setText(getNewRootPathFormatted(newRootPath));
+            }
+        }));
+
+        // delete column
         ImageIcon deleteIcon = new ImageIcon(Utils.getResourcePath("/icons/cross.png"));
-        table.getColumnModel().getColumn(0).setCellRenderer(new TableCellButton(deleteIcon, null));
-        table.getColumnModel().getColumn(0).setCellEditor(new TableCellButton(deleteIcon, new ITableCellButtonClickListener() {
+        ImageIcon newIcon = new ImageIcon(Utils.getResourcePath("/icons/new.png"));
+        TableCellButton button1 = new TableCellButton(deleteIcon, null);
+        button1.setLastRowIcon(newIcon);
+        button1.setTransparentButton(true);
+        TableCellButton button2 = new TableCellButton(deleteIcon, new ITableCellButtonClickListener() {
             @Override
             public void onTableCellButtonClick(int rowIndex) {
                 tableModel.deleteRow(rowIndex);
             }
-        }));
+        });
+        button2.setLastRowIcon(newIcon);
+        button2.setTransparentButton(true);
+        table.getColumnModel().getColumn(4).setCellRenderer(button1);
+        table.getColumnModel().getColumn(4).setCellEditor(button2);
 
+        /* we have now up buttons for this with two targets
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -231,19 +288,7 @@ public class SettingsDialog extends JDialog {
                 newRoot.setText(getNewRootPathFormatted(newRootPath));
             }
         });
-
-        // do not select any rows as it will update the new root value (we do not want that).
-        // if we select a row without setting the new value, then currently selected row cannot be assigned to the new
-        // root until re-selected by user.
-        /*
-        if (tableModel.getRowCount() > 0) {
-            table.setRowSelectionInterval(0, 0);
-        }
         */
-
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setPreferredSize(new Dimension(300, 100));
-        return scrollPane;
     }
 
     private void setTableColumnWidths(JTable table, RootTableModel tableModel) {
@@ -285,7 +330,7 @@ public class SettingsDialog extends JDialog {
             return true;
         }
 
-        String errorMessage = main.getResourceList().setRoot(newRootPath);
+        String errorMessage = main.getResourceList().setRoot(currentRootPath, newRootPath);
         if (errorMessage!=null) {
             main.displayErrorMessage(errorMessage);
             return false;

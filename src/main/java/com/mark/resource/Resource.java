@@ -40,7 +40,7 @@ public class Resource {
         return parentList;
     }
 
-    // we need this when the parent list file is deserialized to establish the child to parent link
+    // we need this when the parent list file is de-serialized to establish the child to parent link
     public void setParentList(ResourceList parentList) {
         this.parentList = parentList;
     }
@@ -267,8 +267,17 @@ public class Resource {
         return -1;
     }
 
-    // can the newRoot be applied?
-    public boolean validateNewRoot(String newRoot) {
+    public boolean validateOldRoot(String oldRoot) {
+        return getPath().startsWith(oldRoot);
+    }
+
+    public boolean replaceRoot(String oldRoot, String newRoot) {
+        //Log.log("replace root: '%s' -> '%s'", oldRoot, newRoot);
+        String currentPath = getPath();
+        if (currentPath.startsWith(oldRoot)) {
+            path = currentPath.substring(oldRoot.length());
+            return true;
+        }
         return false;
     }
 }

@@ -60,8 +60,8 @@ public class ResourceList {
         return root;
     }
 
-    public String setRoot(String newRoot) {
-        String errorMessage = setRootsForAll(newRoot);
+    public String setRoot(String oldRoot, String newRoot) {
+        String errorMessage = setRootsForAll(oldRoot, newRoot);
         if (errorMessage != null) {
             return errorMessage;        // NOT OK
         }
@@ -73,14 +73,22 @@ public class ResourceList {
     }
 
     // returns null if set correctly, error message otherwise
-    private String setRootsForAll(String newRoot) {
+    private String setRootsForAll(String oldRoot, String newRoot) {
+        // validate old root
         for (Resource resource : resources) {
-            if (!resource.validateNewRoot(newRoot)) {
-                String errorMessage = String.format("Cannot re-root %s ('%s' -> '%s')", resource.getName(), root, newRoot);
-                //Log.log(errorMessage);
+            if (!resource.validateOldRoot(oldRoot)) {
+                String errorMessage = String.format("Cannot re-root %s ('%s' -> '%s')", resource.getName(), oldRoot, newRoot);
                 return errorMessage;
             }
         }
+
+        // replace old root with new one
+        for (Resource resource : resources) {
+            resource.replaceRoot(oldRoot, newRoot);
+        }
+
+        // set the new root
+        root = newRoot;
         return null;
     }
 
@@ -126,8 +134,9 @@ public class ResourceList {
     }
 
     private void cloneFrom(ResourceList source) {
-        currentIndex = source.getCurrentIndex();
+        root = source.getRoot();
         resources = source.getResources();
+        currentIndex = source.getCurrentIndex();
     }
 
     public String writeToString() {

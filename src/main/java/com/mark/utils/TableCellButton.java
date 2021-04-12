@@ -11,8 +11,10 @@ import java.awt.event.ActionListener;
 
 public class TableCellButton extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ActionListener {
     private JButton button;
+    private ImageIcon rowIcon;
+    private ImageIcon lastRowIcon;
     private int rowIndex;
-    private boolean isTransparentButton = true;
+    private boolean isTransparentButton = false;
     private ITableCellButtonClickListener buttonClickListener;
 
     public TableCellButton(String text, ITableCellButtonClickListener listener) {
@@ -24,14 +26,22 @@ public class TableCellButton extends AbstractCellEditor implements TableCellRend
     }
 
     public TableCellButton(String text, ImageIcon icon, ITableCellButtonClickListener listener) {
+        this.rowIcon = icon;
         this.button = new JButton(text, icon);
         this.buttonClickListener = listener;
 
+        button.addActionListener(this);
+    }
+
+    public void setLastRowIcon(ImageIcon lastRowIcon) {
+        this.lastRowIcon = lastRowIcon;
+    }
+
+    public void setTransparentButton(boolean transparentButton) {
+        isTransparentButton = transparentButton;
         if (isTransparentButton) {
             makeTransparentButton();
         }
-
-        button.addActionListener(this);
     }
 
     private void makeTransparentButton() {
@@ -55,6 +65,9 @@ public class TableCellButton extends AbstractCellEditor implements TableCellRend
             }
         }
 
+        if (lastRowIcon != null) {
+            button.setIcon(row == table.getModel().getRowCount() - 1 ? lastRowIcon : rowIcon);
+        }
         return button;
     }
 

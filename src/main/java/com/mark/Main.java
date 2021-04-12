@@ -126,7 +126,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
 
             Resource resource = resourceList.getCurrent();
             if (resource != null) {
-                currentResource = String.format("  [%s%s; Markers:%d]", resource.checked ? "*** " : "", resource.getName(), resource.markers.size());
+                currentResource = String.format("  [%s%s; Markers:%d]", resource.checked ? "*** " : "", resource.getName(), resource.markers.size()-1);
             }
         }
 
