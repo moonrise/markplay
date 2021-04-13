@@ -145,8 +145,47 @@
           "select": false
         }
       ]
+    },
+    {
+      "path": "media\\hydroid.mp4",
+      "rating": 0,
+      "checked": false,
+      "duration": 8405,
+      "fileSize": 677016,
+      "markers": [
+        {
+          "time": 0,
+          "select": false
+        }
+      ]
+    },
+    {
+      "path": "media\\rabbit.mpg",
+      "rating": 0,
+      "checked": false,
+      "duration": 0,
+      "fileSize": 5918720,
+      "markers": [
+        {
+          "time": 0,
+          "select": false
+        }
+      ]
+    },
+    {
+      "path": "media\\rabbit.mpg",
+      "rating": 0,
+      "checked": false,
+      "duration": 0,
+      "fileSize": 5918720,
+      "markers": [
+        {
+          "time": 0,
+          "select": false
+        }
+      ]
     }
   ],
   "root": "C:\\Users\\bjeon\\IdeaProjects\\markplay\\",
-  "currentIndex": 5
+  "currentIndex": 8
 }

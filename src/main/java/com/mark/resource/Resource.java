@@ -23,6 +23,9 @@ public class Resource {
     private transient ArrayList<IResourceChangeListener> resourceChangeListeners;
     private transient ResourceList parentList;
 
+    public transient int temp1;         // temporary work variable
+    public transient int temp2;
+
     // silence change notifications (like when deserializing or batch processing)
     private transient boolean silentMode;
 

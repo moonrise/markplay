@@ -8,6 +8,8 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ResourceList {
     public static final String FileExtension = ".mrk";
@@ -259,6 +261,53 @@ public class ResourceList {
         int index = resources.indexOf(resource);
         if (index >= 0) {
             notifyResourceListChange(ResourceListUpdate.ChildResourceChanged(index, resource, changeType));
+        }
+    }
+
+    public void findDuplicates() {
+        if (resources.size() < 2) {
+            return;     // no duplicates by definition
+        }
+
+        // clone the resources
+        ArrayList<Resource> resources = (ArrayList<Resource>)this.resources.clone();
+        for (int i=0; i<resources.size(); i++) {
+            Resource r = resources.get(i);
+            //r.temp1 = i;     // index to the base resources
+            //Log.log("cloned: %d, %s, %,d", r.temp, r.getName(), r.fileSize);
+        }
+
+        // sort the cloned resources
+        Collections.sort(resources, new Comparator<Resource>() {
+            @Override
+            public int compare(Resource o1, Resource o2) {
+                return o1.fileSize == o2.fileSize ? 0 : o1.fileSize < o2.fileSize ? - 1 : 1;
+            }
+        });
+
+        // mark duplicates
+        int duplicateTag = 1;
+        long prev = resources.get(0).fileSize;
+        for (int i=1; i<resources.size(); i++) {
+            Resource r = resources.get(i);
+            if (r.fileSize == prev) {
+                r.temp2 = duplicateTag;
+                resources.get(i-1).temp2 = duplicateTag;
+            }
+            if (prev != r.fileSize && resources.get(i-1).temp2 > 0) {
+                duplicateTag++;
+            }
+            prev = r.fileSize;
+        }
+
+        // set the duplicate tags to the base resources
+        for (Resource r : resources) {
+            //this.resources.get(r.temp1).temp1 = r.temp2;
+            //Log.log("done: %d, %s, %,d [%d]", r.temp1, r.getName(), r.fileSize, r.temp2);
+        }
+
+        for (Resource r : this.resources) {
+            Log.log("duplicates: %d, %s, %,d [%d]", r.temp1, r.getName(), r.fileSize, r.temp2);
         }
     }
 }
