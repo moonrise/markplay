@@ -7,8 +7,8 @@ import javax.swing.table.AbstractTableModel;
 
 public class ResourceListTableModel extends AbstractTableModel implements IResourceListChangeListener {
     private ResourceList resourceList;
-    private String[] columnNames = {"Row", "Favorite", "Makers", "Path", "Duration", "File Size"};
-    private int[] columnWidths = {10, 10, 10, 250, 20, 65};
+    private String[] columnNames = {"Row", "Favorite", "Makers", "Path", "Duration", "File Size", "Duplicate"};
+    private int[] columnWidths = {10, 10, 10, 250, 20, 65, 10};
 
     public ResourceListTableModel(ResourceList resourceList) {
         this.resourceList = resourceList;
@@ -49,6 +49,7 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
         switch (columnIndex) {
             case 0:
             case 2:
+            case 6:
                 return Integer.class;
             case 1:
                 return Boolean.class;
@@ -76,6 +77,8 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
                 return resource.duration;
             case 5:
                 return resource.fileSize;
+            case 6:
+                return resource.temp;
         }
 
         return "<na>";

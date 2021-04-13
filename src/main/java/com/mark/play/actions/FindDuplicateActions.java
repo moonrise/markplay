@@ -15,6 +15,7 @@ public class FindDuplicateActions extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        main.getResourceList().findDuplicates();
+        int duplicateSets = main.getResourceList().findDuplicates();
+        main.displayInfoMessage(String.format("%d duplicate entries found based on file sizes (see duplicate column).", duplicateSets));
     }
 }

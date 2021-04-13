@@ -264,20 +264,20 @@ public class ResourceList {
         }
     }
 
-    public void findDuplicates() {
+    // returns duplicate set number
+    public int findDuplicates() {
+        // reset the work variable
+        for (Resource r : this.resources) {
+            r.temp = 0;
+        }
+
+        // no duplicates by definition
         if (resources.size() < 2) {
-            return;     // no duplicates by definition
+            return 0;
         }
 
-        // clone the resources
+        // clone the resources and sort them
         ArrayList<Resource> resources = (ArrayList<Resource>)this.resources.clone();
-        for (int i=0; i<resources.size(); i++) {
-            Resource r = resources.get(i);
-            //r.temp1 = i;     // index to the base resources
-            //Log.log("cloned: %d, %s, %,d", r.temp, r.getName(), r.fileSize);
-        }
-
-        // sort the cloned resources
         Collections.sort(resources, new Comparator<Resource>() {
             @Override
             public int compare(Resource o1, Resource o2) {
@@ -291,23 +291,23 @@ public class ResourceList {
         for (int i=1; i<resources.size(); i++) {
             Resource r = resources.get(i);
             if (r.fileSize == prev) {
-                r.temp2 = duplicateTag;
-                resources.get(i-1).temp2 = duplicateTag;
+                r.temp = duplicateTag;
+                resources.get(i-1).temp = duplicateTag;
             }
-            if (prev != r.fileSize && resources.get(i-1).temp2 > 0) {
+            if (prev != r.fileSize && resources.get(i-1).temp > 0) {
                 duplicateTag++;
             }
             prev = r.fileSize;
         }
 
-        // set the duplicate tags to the base resources
-        for (Resource r : resources) {
-            //this.resources.get(r.temp1).temp1 = r.temp2;
-            //Log.log("done: %d, %s, %,d [%d]", r.temp1, r.getName(), r.fileSize, r.temp2);
-        }
-
+        // test dump
+        /*
         for (Resource r : this.resources) {
-            Log.log("duplicates: %d, %s, %,d [%d]", r.temp1, r.getName(), r.fileSize, r.temp2);
+            Log.log("duplicates?: %s, %,d [%d]", r.getName(), r.fileSize, r.temp);o
         }
+        */
+
+        notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
+        return duplicateTag-1;
     }
 }

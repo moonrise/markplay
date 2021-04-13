@@ -7,6 +7,7 @@ import com.mark.resource.ResourceListUpdate;
 public interface IMain {
     MainFrame getAppFrame();
     void updateAppHeader();
+    void displayInfoMessage(String message);
     void displayErrorMessage(String message);
     void exitApplication();
     boolean flipShowNavigator();

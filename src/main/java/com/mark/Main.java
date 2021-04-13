@@ -95,6 +95,17 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     }
 
     @Override
+    public void displayInfoMessage(String message) {
+        Log.log(message);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JOptionPane.showMessageDialog(frame, message, "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+    }
+
+    @Override
     public void displayErrorMessage(String message) {
         Log.err(message);
         SwingUtilities.invokeLater(new Runnable() {

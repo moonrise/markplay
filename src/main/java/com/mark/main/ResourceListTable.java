@@ -1,15 +1,12 @@
 package com.mark.main;
 
-import com.mark.Log;
 import com.mark.Utils;
 import com.mark.resource.ResourceList;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.awt.*;
 
 public class ResourceListTable extends JTable {
     static class LongRenderer extends DefaultTableCellRenderer {
@@ -23,6 +20,18 @@ public class ResourceListTable extends JTable {
         }
     }
 
+    static class ZeroSpaceRenderer extends DefaultTableCellRenderer {
+        public ZeroSpaceRenderer() {
+            setHorizontalAlignment(SwingConstants.RIGHT);
+        }
+
+        @Override
+        protected void setValue(Object value) {
+            int n = (int)value;
+            super.setValue(n == 0 ? "" : String.format("%,d", n));
+        }
+    }
+
     static class DurationRenderer extends DefaultTableCellRenderer {
         public DurationRenderer() {
             setHorizontalAlignment(SwingConstants.RIGHT);
@@ -31,21 +40,6 @@ public class ResourceListTable extends JTable {
         @Override
         protected void setValue(Object value) {
             super.setValue(Utils.getTimelineFormatted((long)value, false));
-        }
-    }
-
-    static class MyRenderer2 extends JLabel implements TableCellRenderer {
-        public MyRenderer2() {
-            setHorizontalAlignment(SwingConstants.RIGHT);
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setFont(new Font("helvetica", Font.PLAIN, 12));
-            setForeground(Color.DARK_GRAY);
-            setText(value.toString());
-            //setToolTipText("tooltip here");
-            return this;
         }
     }
 
@@ -76,6 +70,7 @@ public class ResourceListTable extends JTable {
     public void setRenderers() {
         columnModel.getColumn(4).setCellRenderer(new DurationRenderer());
         columnModel.getColumn(5).setCellRenderer(new LongRenderer());
+        columnModel.getColumn(6).setCellRenderer(new ZeroSpaceRenderer());
     }
 
     private void setTableColumnWidths() {
