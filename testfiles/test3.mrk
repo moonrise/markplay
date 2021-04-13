@@ -62,7 +62,7 @@
       ]
     },
     {
-      "path": "media/rabbit.mpg",
+      "path": "media/rabbit2.mpg",
       "rating": 0,
       "checked": false,
       "duration": 0,
@@ -75,7 +75,7 @@
       ]
     },
     {
-      "path": "media/cloud.wmv",
+      "path": "media/cloud2.wmv",
       "rating": 0,
       "checked": false,
       "duration": 52213,

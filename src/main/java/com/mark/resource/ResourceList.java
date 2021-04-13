@@ -268,7 +268,14 @@ public class ResourceList {
     public int findDuplicates() {
         // reset the work variable
         for (Resource r : this.resources) {
-            r.temp = 0;
+            File file = new File((r.getPath()));
+            if (file.exists()) {
+                r.fileSize = file.length();
+                r.temp = 0;
+            }
+            else {
+                r.temp = -1;
+            }
         }
 
         // no duplicates by definition
@@ -291,8 +298,12 @@ public class ResourceList {
         for (int i=1; i<resources.size(); i++) {
             Resource r = resources.get(i);
             if (r.fileSize == prev) {
-                r.temp = duplicateTag;
-                resources.get(i-1).temp = duplicateTag;
+                if (r.temp != -1) {
+                    r.temp = duplicateTag;
+                }
+                if (resources.get(i-1).temp != -1) {
+                    resources.get(i-1).temp = duplicateTag;
+                }
             }
             if (prev != r.fileSize && resources.get(i-1).temp > 0) {
                 duplicateTag++;
