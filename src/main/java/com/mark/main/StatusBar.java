@@ -6,6 +6,7 @@ import com.mark.play.player.IMyPlayerStateChangeListener;
 import com.mark.play.player.MyPlayerState;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class StatusBar extends JPanel  implements IMyPlayerStateChangeListener {
@@ -13,11 +14,12 @@ public class StatusBar extends JPanel  implements IMyPlayerStateChangeListener {
 
     public StatusBar() {
         super(new FlowLayout(FlowLayout.LEFT), true);
+        setBorder(new LineBorder(Color.LIGHT_GRAY));
 
         status.setFont(new Font("helvetica", Font.PLAIN, 12));
         status.setForeground(Color.DARK_GRAY);
         add(status);
-        setStatusText("Hello there");
+        setStatusText("Status");
     }
 
     public void setStatusText(String text) {
