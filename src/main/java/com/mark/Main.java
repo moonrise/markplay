@@ -97,7 +97,6 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
 
     @Override
     public void processPlayerKeys(KeyEvent e) {
-        // TODO: not sure if we ever get here...
         this.myPlayer.processPlayerKeys(e);
     }
 

@@ -46,6 +46,9 @@ public class MyKeyListener extends KeyAdapter  {
         }
 
         switch (e.getKeyChar()) {
+            case ' ':
+                mediaPlayer.controls().pause();
+                return;
             case 'c':
                 main.navigateResourceList(true, false);
                 return;
@@ -107,6 +110,7 @@ public class MyKeyListener extends KeyAdapter  {
             case'b':
             case'B':
                 myPlayer.setMute(!mediaPlayer.audio().isMute());
+                return;
             case'm':
                 myPlayer.getResource().toggleFavorite();
                 return;
@@ -124,9 +128,6 @@ public class MyKeyListener extends KeyAdapter  {
                 return;
             case KeyEvent.VK_DOWN:
                 myPlayer.setVolume(mediaPlayer.audio().volume() - 2);    // lower bound guarded already
-                return;
-            case KeyEvent.VK_SPACE:
-                mediaPlayer.controls().pause();
                 return;
             case KeyEvent.VK_ESCAPE:
                 mediaPlayer.fullScreen().toggle();

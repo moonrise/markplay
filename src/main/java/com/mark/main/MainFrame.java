@@ -194,6 +194,7 @@ public class MainFrame extends JFrame implements ComponentListener, DropTargetLi
 
     @Override
     public void keyPressed(KeyEvent e) {
+        // TODO: not sure if we ever get here...
         main.processPlayerKeys(e);
     }
 
