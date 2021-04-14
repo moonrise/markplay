@@ -86,6 +86,14 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
     }
 
     @Override
+    public void setValueAt(Object value, int rowIndex, int columnIndex) {
+        if (columnIndex == 1) {
+            resourceList.getResources().get(rowIndex).checked = (boolean)value;
+        }
+        super.setValueAt(value, rowIndex, columnIndex);
+    }
+
+    @Override
     public void onResourceListChange(ResourceList resourceList, ResourceListUpdate update) {
         if (update.type == EResourceListChangeType.RowsAdded) {
             fireTableRowsInserted(update.startRow, update.endRow);
