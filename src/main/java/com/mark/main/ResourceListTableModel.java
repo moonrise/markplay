@@ -1,14 +1,13 @@
 package com.mark.main;
 
-import com.mark.Utils;
 import com.mark.resource.*;
 
 import javax.swing.table.AbstractTableModel;
 
 public class ResourceListTableModel extends AbstractTableModel implements IResourceListChangeListener {
     private ResourceList resourceList;
-    private String[] columnNames = {"Row", "Favorite", "Makers", "Path", "Duration", "File Size", "Duplicate"};
-    private int[] columnWidths = {10, 10, 10, 250, 20, 65, 10};
+    private String[] columnNames = {"Row", "Favorite", "Makers", "Path", "Duration", "File Size", "Duplicate", "Delete"};
+    private int[] columnWidths = {10, 10, 10, 250, 20, 65, 10, 10};
 
     public ResourceListTableModel(ResourceList resourceList) {
         this.resourceList = resourceList;
@@ -79,6 +78,8 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
                 return resource.fileSize;
             case 6:
                 return resource.temp;
+            case 7:
+                return rowIndex;
         }
 
         return "<na>";
@@ -88,6 +89,9 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
     public void onResourceListChange(ResourceList resourceList, ResourceListUpdate update) {
         if (update.type == EResourceListChangeType.RowsAdded) {
             fireTableRowsInserted(update.startRow, update.endRow);
+        }
+        else if (update.type == EResourceListChangeType.RowsRemoved) {
+            fireTableRowsDeleted(update.startRow, update.endRow);
         }
         else if (update.type == EResourceListChangeType.ChildResourceChanged) {
             fireTableRowsUpdated(update.startRow, update.endRow);

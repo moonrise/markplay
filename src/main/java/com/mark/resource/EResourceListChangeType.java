@@ -5,6 +5,7 @@ public enum EResourceListChangeType {
     Unloaded,
     Saved,
     RowsAdded,
+    RowsRemoved,
     IndexChanged,
     AllRowsUpdated,
     ChildResourceChanged,

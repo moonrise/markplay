@@ -183,6 +183,13 @@ public class ResourceList {
         notifyResourceListChange(ResourceListUpdate.RowsAdded(rowIndex, rowIndex));
     }
 
+    public void removeResource(int modelIndex) {
+        resources.remove(modelIndex);
+        notifyResourceListChange(ResourceListUpdate.RowsRemoved(modelIndex, modelIndex));
+
+        // adjust the current index
+        setCurrentIndex(-1);
+    }
 
     public void addLegacyResource(Resource resource) {
         resource.postProcessLegacyResource();

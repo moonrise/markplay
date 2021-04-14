@@ -62,44 +62,6 @@
       ]
     },
     {
-      "path": "media/rabbit2.mpg",
-      "rating": 0,
-      "checked": false,
-      "duration": 0,
-      "fileSize": 5918720,
-      "markers": [
-        {
-          "time": 0,
-          "select": false
-        }
-      ]
-    },
-    {
-      "path": "media/cloud2.wmv",
-      "rating": 0,
-      "checked": false,
-      "duration": 52213,
-      "fileSize": 14177345,
-      "markers": [
-        {
-          "time": 0,
-          "select": false
-        },
-        {
-          "time": 8401,
-          "select": true
-        },
-        {
-          "time": 9937,
-          "select": false
-        },
-        {
-          "time": 10804,
-          "select": false
-        }
-      ]
-    },
-    {
       "path": "media/hydroid.mp4",
       "rating": 0,
       "checked": false,

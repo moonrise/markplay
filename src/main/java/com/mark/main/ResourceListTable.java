@@ -2,6 +2,8 @@ package com.mark.main;
 
 import com.mark.Utils;
 import com.mark.resource.ResourceList;
+import com.mark.utils.ITableCellButtonClickListener;
+import com.mark.utils.TableCellButton;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -66,6 +68,12 @@ public class ResourceListTable extends JTable implements KeyListener {
         addKeyListener(this);
     }
 
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        // the last row (the empty row for new addition) should not be deletable
+        return columnIndex == 7;
+    }
+
     public void init() {
         setTableColumnWidths();
         setRenderers();
@@ -75,6 +83,15 @@ public class ResourceListTable extends JTable implements KeyListener {
         columnModel.getColumn(4).setCellRenderer(new DurationRenderer());
         columnModel.getColumn(5).setCellRenderer(new LongRenderer());
         columnModel.getColumn(6).setCellRenderer(new ZeroSpaceRenderer());
+
+        ImageIcon deleteIcon = new ImageIcon(Utils.getResourcePath("/icons/cross.png"));
+        columnModel.getColumn(7).setCellRenderer(new TableCellButton(deleteIcon, null));
+        columnModel.getColumn(7).setCellEditor(new TableCellButton(deleteIcon, new ITableCellButtonClickListener() {
+            @Override
+            public void onTableCellButtonClick(int rowIndex) {
+                main.getResourceList().removeResource(rowIndex);
+            }
+        }));
     }
 
     private void setTableColumnWidths() {

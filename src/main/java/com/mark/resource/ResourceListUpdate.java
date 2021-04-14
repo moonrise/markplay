@@ -25,6 +25,13 @@ public class ResourceListUpdate {
         return resourceListUpdate;
     }
 
+    public static ResourceListUpdate RowsRemoved(int startRow, int endRow) {
+        ResourceListUpdate resourceListUpdate = new ResourceListUpdate(EResourceListChangeType.RowsRemoved);
+        resourceListUpdate.startRow = startRow;
+        resourceListUpdate.endRow = endRow;
+        return resourceListUpdate;
+    }
+
     public static ResourceListUpdate ChildResourceChanged(int rowIndex, Resource childResource, EResourceChangeType childResourceChangeType) {
         ResourceListUpdate resourceListUpdate = new ResourceListUpdate(EResourceListChangeType.ChildResourceChanged);
         resourceListUpdate.startRow = rowIndex;
