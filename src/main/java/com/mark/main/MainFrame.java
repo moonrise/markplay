@@ -10,14 +10,11 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.util.List;
 
-public class MainFrame extends JFrame implements ComponentListener, DropTargetListener {
+public class MainFrame extends JFrame implements ComponentListener, DropTargetListener, KeyListener {
     private final IMain main;
     private final ToolBar toolBar;
     private final StatusBar statusBar;
@@ -43,6 +40,7 @@ public class MainFrame extends JFrame implements ComponentListener, DropTargetLi
         });
 
         addComponentListener(this);
+        addKeyListener(this);
 
         new DropTarget(this, DnDConstants.ACTION_NONE, this);
     }
@@ -188,6 +186,19 @@ public class MainFrame extends JFrame implements ComponentListener, DropTargetLi
 
         // Inform that the drop is complete
         event.dropComplete(true);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        main.processPlayerKeys(e);
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
     }
 
     public StatusBar getStatusBar() {

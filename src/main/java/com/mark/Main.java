@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -92,6 +93,12 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     @Override
     public MainFrame getAppFrame() {
         return this.frame;
+    }
+
+    @Override
+    public void processPlayerKeys(KeyEvent e) {
+        // TODO: not sure if we ever get here...
+        this.myPlayer.processPlayerKeys(e);
     }
 
     @Override

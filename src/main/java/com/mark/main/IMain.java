@@ -4,8 +4,11 @@ import com.mark.resource.IResourceListChangeListener;
 import com.mark.resource.ResourceList;
 import com.mark.resource.ResourceListUpdate;
 
+import java.awt.event.KeyEvent;
+
 public interface IMain {
     MainFrame getAppFrame();
+    void processPlayerKeys(KeyEvent e);
     void updateAppHeader();
     void displayInfoMessage(String message);
     void displayErrorMessage(String message);

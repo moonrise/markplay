@@ -29,6 +29,8 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     private Timeline timeline;
     private MyPlayerState playerState;
 
+    private MyKeyListener keyListener;
+
 
     public MyPlayer(IMain main, JPanel container) {
         this.main = main;
@@ -88,9 +90,14 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
             }
         };
 
-        videoSurface.addKeyListener(new MyKeyListener(main, this, mediaPlayer));
+        this.keyListener = new MyKeyListener(main, this, mediaPlayer);
+        videoSurface.addKeyListener(keyListener);
         videoSurface.addMouseListener(mouseListener);
         videoSurface.addMouseWheelListener(mouseWheelListener);
+    }
+
+    public void processPlayerKeys(KeyEvent e) {
+        this.keyListener.keyPressed(e);
     }
 
     public void registerPlayerStateChangeListener(IMyPlayerStateChangeListener listener) {

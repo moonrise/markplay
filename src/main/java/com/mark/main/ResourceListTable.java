@@ -7,8 +7,10 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class ResourceListTable extends JTable {
+public class ResourceListTable extends JTable implements KeyListener {
     static class LongRenderer extends DefaultTableCellRenderer {
         public LongRenderer() {
             setHorizontalAlignment(SwingConstants.RIGHT);
@@ -60,6 +62,8 @@ public class ResourceListTable extends JTable {
         setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         setRowSelectionAllowed(true);
         setAutoCreateRowSorter(true);
+
+        addKeyListener(this);
     }
 
     public void init() {
@@ -95,5 +99,18 @@ public class ResourceListTable extends JTable {
     public int getCurrentModelIndex() {
         int viewIndex = getCurrentViewIndex();
         return viewIndex < 0 ? viewIndex : convertRowIndexToModel(viewIndex);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        main.processPlayerKeys(e);
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
     }
 }
