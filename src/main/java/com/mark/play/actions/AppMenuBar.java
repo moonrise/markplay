@@ -90,9 +90,11 @@ public class AppMenuBar extends JMenuBar {
         checkBoxMenuItem1.setState(Prefs.isPlayOnLoad());
         menu.add(checkBoxMenuItem1);
 
+        /* no longer needed; should not have it.
         JCheckBoxMenuItem checkBoxMenuItem2 = new JCheckBoxMenuItem(new FocusOnPlayerAction(main));
         checkBoxMenuItem2.setState(Prefs.isFocusOnPlayer());
         menu.add(checkBoxMenuItem2);
+        */
 
         menu.add(new SettingsAction(main));
 
