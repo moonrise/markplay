@@ -190,10 +190,16 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         updateAppHeader();
     }
 
-    private void updateTableRowSelection(int newIndex) {
-        int modelIndex = table.getCurrentModelIndex();
-        if (newIndex != modelIndex) {
-            table.setRowSelectionInterval(newIndex, newIndex);
+    private void updateTableRowSelection(int modelIndex) {
+        if (modelIndex < 0) {
+            return;
+        }
+
+        int viewIndex = table.convertRowIndexToView(modelIndex);
+        int currentViewIndex = table.getSelectionModel().getMinSelectionIndex();
+        //Log.log("model->view, current-view: %d, %d, %d", modelIndex, viewIndex, currentViewIndex);
+        if (currentViewIndex != viewIndex) {
+            table.setRowSelectionInterval(viewIndex, viewIndex);
         }
     }
 
