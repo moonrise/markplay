@@ -7,6 +7,10 @@ import com.mark.main.IMain;
 import com.mark.main.MainFrame;
 import com.mark.main.MainSplitPane;
 import com.mark.play.player.MyPlayer;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.AbstractFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -15,6 +19,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Main implements IMain, IResourceListChangeListener, ListSelectionListener {
     @FunctionalInterface
@@ -229,18 +234,55 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             loadResourceList(() -> new LegacyFilerReader().read(this, new File(filePath)));
             Prefs.setRecentFile(filePath);
         } else {                                                          // assume media files for all else
-            addResourceFile(filePath);
+            addResourceFile(filePath, false);
         }
     }
 
-    private void addResourceFile(String filePath) {
-        if (!resourceList.validateRoot(filePath)) {
-            displayErrorMessage(String.format("Cannot add '%s' because it is not compatible with the root context '%s'.", filePath, resourceList.getRoot()));
-            return;
+    public void processDirectory(String directoryPath) {
+        Iterator<File> files = FileUtils.iterateFilesAndDirs(new File(directoryPath), new AbstractFileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return !file.getName().endsWith("Thumbs.db");
+            }
+        }, TrueFileFilter.TRUE);
+
+        int n=0;
+        while (files.hasNext()) {
+            File file = files.next();
+            if (file.isFile()) {
+                if (!addResourceFile(file.getPath(), false)) {
+                    break;
+                }
+
+                String message = String.format("Scanning %d: %s", ++n, file.getPath());
+                Log.log(message);
+                this.frame.getStatusBar().setStatusText(message);
+            }
         }
 
-        resourceList.addResource(new Resource(filePath, resourceList));
-        selectRowTable(resourceList.size() - 1);
+        if (n > 0) {
+//            resourceList.setDirty(true);
+//            notifyResourceListChange(resourceList, ResourceListUpdate.Loaded);
+            //resourceList.refreshAllRows();
+            //resourceList.setCurrentIndex(0);
+        }
+    }
+
+    private boolean addResourceFile(String filePath, boolean silentMode) {
+        if (!resourceList.validateRoot(filePath)) {
+            displayErrorMessage(String.format("Cannot add '%s' because it is not compatible with the root context '%s'.", filePath, resourceList.getRoot()));
+            return false;
+        }
+
+        if (silentMode) {
+            resourceList.addResourceSilently(new Resource(filePath, resourceList));
+        }
+        else {
+            resourceList.addResource(new Resource(filePath, resourceList));
+            selectRowTable(resourceList.size() - 1);
+        }
+
+        return true;
     }
 
     @Override
@@ -257,7 +299,13 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             dialog.setVisible(true);
 
             filePath = dialog.getFile() != null ? dialog.getDirectory() + dialog.getFile() : null;
-            Prefs.setRecentFile(filePath);
+            if (filePath != null) {
+                if (!ResourceList.isFileExtensionMatch(filePath)) {
+                    filePath = FilenameUtils.removeExtension(filePath);
+                    filePath += ResourceList.FileExtension;
+                }
+                Prefs.setRecentFile(filePath);
+            }
             //Log.log("Save to file: %s in directory: %s", dialog.getFile(), dialog.getDirectory());
         }
 

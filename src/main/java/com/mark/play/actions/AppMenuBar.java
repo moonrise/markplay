@@ -25,6 +25,7 @@ public class AppMenuBar extends JMenuBar {
 
         menu.add(new NewAction(main));
         menu.add(new OpenAction(main));
+        menu.add(new ScanAction(main));
         menu.add(new SaveAction(main));
         menu.add(new SaveAsAction(main));
         menu.add(new CloseAction(main));

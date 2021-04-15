@@ -1,9 +1,11 @@
 package com.mark.play.actions;
 
+import com.mark.Prefs;
 import com.mark.main.IMain;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
 
 public class OpenRecentAction extends AbstractAction {
     private IMain main;
@@ -17,6 +19,12 @@ public class OpenRecentAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        main.processFile(path);
+        if (new File(path).exists()) {
+            main.processFile(path);
+        }
+        else {
+            main.displayInfoMessage(String.format("File '%s' does not exist", path));
+            Prefs.removeRecentFile(path);
+        }
     }
 }

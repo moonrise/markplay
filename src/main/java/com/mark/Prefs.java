@@ -96,6 +96,14 @@ public class Prefs {
         userPrefs.putInt("volume", x);
     }
 
+    public static String getRecentDirectory() {
+        return userPrefs.get("recentDirectory", "");
+    }
+
+    public static void setRecentDirectory(String path) {
+        userPrefs.put("recentDirectory", path);
+    }
+
     public static void setRecentFile(String recentFile) {
         if (recentFile == null) {
             return;
@@ -105,12 +113,8 @@ public class Prefs {
             recentFiles = new ArrayList<String>();
         }
 
-        int index = recentFiles.indexOf(recentFile);
-        if (index >= 0) {
-            // already there, so remove it for correct ordering
-            recentFiles.remove(index);
-        }
-
+        // remove and add back to get the MRU right
+        removeRecentFile(recentFile);
         recentFiles.add(0, recentFile);
 
         // enforce the max list size
@@ -139,6 +143,13 @@ public class Prefs {
 
         }
         return recentFiles.toArray(new String[] {});
+    }
+
+    public static void removeRecentFile(String path) {
+        int index = recentFiles.indexOf(path);
+        if (index >= 0) {
+            recentFiles.remove(index);
+        }
     }
 
     public static void clearRecentFiles() {

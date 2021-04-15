@@ -114,8 +114,12 @@ public class ResourceList {
         return modified;
     }
 
+    public void setDirty(boolean modified) {
+        this.modified = modified;
+    }
+
     public void clearModified() {
-        modified = false;
+        setDirty(false);
     }
 
     public ArrayList<Resource> getResources() {
@@ -175,6 +179,10 @@ public class ResourceList {
         notifyResourceListChange(ResourceListUpdate.Saved);
     }
 
+    public void addResourceSilently(Resource resource) {
+        resources.add(resource);
+    }
+
     public void addResource(Resource resource) {
         resources.add(resource);
         modified = true;
@@ -220,6 +228,10 @@ public class ResourceList {
         if (main != null && !silentMode) {
             main.notifyResourceListChange(this, update);
         }
+    }
+
+    public void refreshAllRows() {
+        notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
     }
 
     public void dump() {
