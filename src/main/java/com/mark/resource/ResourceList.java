@@ -179,16 +179,24 @@ public class ResourceList {
         notifyResourceListChange(ResourceListUpdate.Saved);
     }
 
-    public void addResourceSilently(Resource resource) {
-        resources.add(resource);
-    }
+    public void addResources(String[] filePaths) {
+        if (filePaths.length < 1) {
+            return;
+        }
 
-    public void addResource(Resource resource) {
-        resources.add(resource);
+        if (!validateRoot(filePaths[0])) {
+            main.displayErrorMessage(String.format("Cannot add '%s' because it is not compatible with the root context '%s'.", filePath, getRoot()));
+            return;      // all the rest will be likely no good
+        }
+
+        for (String path : filePaths) {
+            resources.add(new Resource(path, this));
+        }
+
         modified = true;
-
-        int rowIndex = resources.size() - 1;
-        notifyResourceListChange(ResourceListUpdate.RowsAdded(rowIndex, rowIndex));
+        int rowIndex = resources.size() - filePaths.length;
+        notifyResourceListChange(ResourceListUpdate.RowsAdded(rowIndex, resources.size()-1));
+        setCurrentIndex(rowIndex);
     }
 
     public void removeResource(int modelIndex) {
@@ -228,10 +236,6 @@ public class ResourceList {
         if (main != null && !silentMode) {
             main.notifyResourceListChange(this, update);
         }
-    }
-
-    public void refreshAllRows() {
-        notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
     }
 
     public void dump() {

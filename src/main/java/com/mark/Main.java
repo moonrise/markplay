@@ -227,15 +227,25 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     public void processFile(String filePath) {
         if (filePath == null) {                                         // new file request
             loadResourceList(() -> new ResourceList(this));
-        } else if (ResourceList.isFileExtensionMatch(filePath)) {
+        }
+        else if (new File(filePath).isDirectory()) {                                                          // assume media files for all else
+            processDirectory(filePath);
+        }
+        else if (ResourceList.isFileExtensionMatch(filePath)) {
             loadResourceList(() -> new ResourceList(this, filePath));
             Prefs.setRecentFile(filePath);
-        } else if (LegacyFilerReader.isFileExtensionMatch(filePath)) {    // old xml files
+        }
+        else if (LegacyFilerReader.isFileExtensionMatch(filePath)) {    // old xml files
             loadResourceList(() -> new LegacyFilerReader().read(this, new File(filePath)));
             Prefs.setRecentFile(filePath);
-        } else {                                                          // assume media files for all else
-            addResourceFile(filePath, false);
         }
+        else {
+            resourceList.addResources(new String[] { filePath });
+        }
+    }
+
+    public void processFiles(String[] filePaths) {
+        resourceList.addResources(filePaths);
     }
 
     public void processDirectory(String directoryPath) {
@@ -246,43 +256,19 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             }
         }, TrueFileFilter.TRUE);
 
-        int n=0;
+        ArrayList<String> paths = new ArrayList<>();
         while (files.hasNext()) {
             File file = files.next();
             if (file.isFile()) {
-                if (!addResourceFile(file.getPath(), false)) {
-                    break;
-                }
-
-                String message = String.format("Scanning %d: %s", ++n, file.getPath());
-                Log.log(message);
-                this.frame.getStatusBar().setStatusText(message);
+                paths.add(file.getPath());
+                Log.log(String.format("Scanning %d: %s", paths.size(), file.getPath()));
             }
         }
 
-        if (n > 0) {
-//            resourceList.setDirty(true);
-//            notifyResourceListChange(resourceList, ResourceListUpdate.Loaded);
-            //resourceList.refreshAllRows();
-            //resourceList.setCurrentIndex(0);
+        if (paths.size() > 0) {
+            this.frame.getStatusBar().setStatusText(String.format("Scanned %d files.", paths.size()));
+            resourceList.addResources(paths.toArray(String[]::new));
         }
-    }
-
-    private boolean addResourceFile(String filePath, boolean silentMode) {
-        if (!resourceList.validateRoot(filePath)) {
-            displayErrorMessage(String.format("Cannot add '%s' because it is not compatible with the root context '%s'.", filePath, resourceList.getRoot()));
-            return false;
-        }
-
-        if (silentMode) {
-            resourceList.addResourceSilently(new Resource(filePath, resourceList));
-        }
-        else {
-            resourceList.addResource(new Resource(filePath, resourceList));
-            selectRowTable(resourceList.size() - 1);
-        }
-
-        return true;
     }
 
     @Override

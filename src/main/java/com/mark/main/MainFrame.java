@@ -12,6 +12,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainFrame extends JFrame implements ComponentListener, DropTargetListener, KeyListener {
@@ -173,10 +174,12 @@ public class MainFrame extends JFrame implements ComponentListener, DropTargetLi
             try {
                 if (flavor.isFlavorJavaFileListType()) {
                     List<File> files = (List) transferable.getTransferData(flavor);
+                    ArrayList<String> paths = new ArrayList<>();
                     for (File file : files) {
                         //Log.log("Drop file: %s", file.getPath());
-                        main.processFile(file.getPath());
+                        paths.add(file.getPath());
                     }
+                    main.processFiles(paths.toArray(String[]::new));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
