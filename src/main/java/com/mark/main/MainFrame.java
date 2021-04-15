@@ -179,7 +179,7 @@ public class MainFrame extends JFrame implements ComponentListener, DropTargetLi
                         //Log.log("Drop file: %s", file.getPath());
                         paths.add(file.getPath());
                     }
-                    main.processFiles(paths.toArray(String[]::new));
+                    main.processPaths(paths.toArray(String[]::new));
                 }
             } catch (Exception e) {
                 e.printStackTrace();

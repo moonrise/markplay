@@ -244,8 +244,20 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         }
     }
 
-    public void processFiles(String[] filePaths) {
-        resourceList.addResources(filePaths);
+    public void processPaths(String[] paths) {
+        ArrayList<String> filePaths = new ArrayList<>();
+        for (String p: paths) {
+            if (new File(p).isDirectory()) {
+                processDirectory(p);
+            }
+            else {
+                filePaths.add(p);
+            }
+        }
+
+        if (filePaths.size() > 0) {
+            resourceList.addResources(filePaths.toArray(String[]::new));
+        }
     }
 
     public void processDirectory(String directoryPath) {
