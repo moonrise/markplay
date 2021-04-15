@@ -174,6 +174,7 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
 
     @Override
     public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
+        //Log.log("time changed: %d", newTime);
         this.playTime = newTime;
         this.notifyStateChangeListeners(EPlayerStateChangeType.PlayTime);
     }
@@ -181,6 +182,7 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
     // update required in a paused state as timeChanged event does not get triggered.
     void updatePlayTime() {
         this.playTime = mediaPlayer.status().time();
+        //Log.log("time changed (while paused): %d", this.playTime);
         this.notifyStateChangeListeners(EPlayerStateChangeType.PlayTime);
     }
 

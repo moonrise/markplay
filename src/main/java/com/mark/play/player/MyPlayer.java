@@ -279,14 +279,12 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
 
     @Override
     public void skipTime(long delta) {
+        mediaPlayer.controls().skipTime(delta);
+        /*
         long target = playerState.getPlayTime() + delta;
-        if (target < 0) {
-            target = 0;
-        }
-        else if (target > playerState.getMediaDuration()) {
-            target = playerState.getMediaDuration();
-        }
+        //Log.log("skip delta: %d, target: %d", delta, target);
         setTime(target);
+        */
     }
 
     @Override
