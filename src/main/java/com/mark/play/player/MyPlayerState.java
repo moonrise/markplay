@@ -1,6 +1,7 @@
 package com.mark.play.player;
 
 import com.mark.Prefs;
+import com.mark.Utils;
 import com.mark.resource.EResourceChangeType;
 import com.mark.resource.IResourceChangeListener;
 import com.mark.Log;
@@ -72,6 +73,7 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
 
     @Override
     public void onResourceChange(Resource resource, EResourceChangeType type) {
+        //Log.log("PlayerState - resource changed: %s", type);
     }
 
     public int videoWidth;
@@ -96,7 +98,7 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
         if (newStatus == MediaParsedStatus.DONE) {
             final InfoApi info = media.info();
             resource.setDuration(info.duration());
-            //Log.log("media duration: %s", Utils.getTimelineFormatted(info.duration(), false));
+            //Log.log("media parsed - duration: %d", media.info().duration());
 
             for (VideoTrackInfo videoTrack : info.videoTracks()) {
                 videoWidth = videoTrack.width();
@@ -130,6 +132,11 @@ public class MyPlayerState extends MediaPlayerEventAdapter implements IResourceC
             this.errorMessage = newStatus.toString();
             this.notifyStateChangeListeners(EPlayerStateChangeType.MediaParseFailed);
         }
+    }
+
+    public void mediaDurationChanged(long newDuration) {
+        // for some media, duration info is not known when media parsed, but becomes available at later time
+        resource.setDuration(newDuration);
     }
 
     public long getMediaDuration() {

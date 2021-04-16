@@ -90,11 +90,15 @@
       "path": "media\\rabbit.mpg",
       "rating": 0,
       "checked": false,
-      "duration": 0,
+      "duration": 125936,
       "fileSize": 5918720,
       "markers": [
         {
           "time": 0,
+          "select": false
+        },
+        {
+          "time": 70887,
           "select": false
         }
       ]
@@ -114,5 +118,5 @@
     }
   ],
   "root": "C:\\Users\\bjeon\\IdeaProjects\\markplay\\",
-  "currentIndex": 0
+  "currentIndex": 2
 }
