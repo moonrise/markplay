@@ -23,6 +23,8 @@ public class Resource {
 
     public ArrayList<Marker> markers = new ArrayList<>();
 
+    private static int keyBase = 0;   // ever increasing to support the key
+    public transient int key;        // runtime key that uniquely identifies this instance
     private transient ArrayList<IResourceChangeListener> resourceChangeListeners;
     private transient ResourceList parentList;
 
@@ -32,6 +34,7 @@ public class Resource {
     private transient boolean silentMode;
 
     public Resource(String path, ResourceList parentList) {
+        assignKey();
         this.parentList = parentList;       // assign parentList before setting the path
         this.path = normalizePath(path);
 
@@ -40,10 +43,17 @@ public class Resource {
         markers.add(new Marker(0));
     }
 
+    public void assignKey() {
+        if (this.key == 0) {
+            this.key = ++keyBase;
+        }
+    }
+
     @Override
     public boolean equals(Object obj) {
         Resource other = (Resource)obj;
-        return getPath().equals(other.getPath()) && fileSize == other.fileSize;
+        return key == other.key;
+        //return getPath().equals(other.getPath()) && fileSize == other.fileSize;   // not good enough
     }
 
     public ResourceList getParentList() {

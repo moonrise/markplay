@@ -136,15 +136,33 @@ public class ResourceList {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
             ResourceList resourceList = GsonHandler.getHandler().fromJson(reader, ResourceList.class);
+            resourceList.assignResourceKeys();
+
             //resourceList.dump();
             cloneFrom(resourceList);
+
+            // cloned resources have the same keys from the de-serialised instance, but it should be OK mostly.
+            /*
+            for (Resource r : resources) {
+                Log.log("resource key: %d", r.key);
+            }
+            */
         }
         catch (Exception e) {
             Log.err("File '%s' read failed with the error %s.", filePath, e.toString());
         }
     }
 
+    // explicit key assignments to the children Resources may be necessary when de-serialized
+    private void assignResourceKeys() {
+        for (Resource r : resources) {
+            r.assignKey();
+        }
+    }
+
     private void cloneFrom(ResourceList source) {
+        // cloned resources have the same keys from the de-serialised instance, but it should be OK mostly.
+        // we can always change that behavior if needed.
         root = source.getRoot();
         resources = source.getResources();
         currentIndex = source.getCurrentIndex();
