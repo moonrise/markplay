@@ -1,5 +1,6 @@
 package com.mark.resource;
 
+import com.mark.Log;
 import com.mark.Prefs;
 import com.mark.Utils;
 import org.apache.commons.io.FilenameUtils;
@@ -9,6 +10,9 @@ import java.util.Collections;
 import java.util.Date;
 
 public class Resource {
+    private static final long MinForwardDelta = 50;         // milli seconds
+    private static final long MinMarkerMergeGap = 500;      // milli seconds
+
     private String path;
     public int rating;
     public boolean checked;
@@ -19,7 +23,6 @@ public class Resource {
 
     public ArrayList<Marker> markers = new ArrayList<>();
 
-    private static long MinForwardDelta = 50;      // milli seconds
     private transient ArrayList<IResourceChangeListener> resourceChangeListeners;
     private transient ResourceList parentList;
 
@@ -35,6 +38,12 @@ public class Resource {
         // one marker at the starting point always to support the selected span play for the first segment.
         // subsequently added markers will dictate the segment to the right.
         markers.add(new Marker(0));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Resource other = (Resource)obj;
+        return getPath().equals(other.getPath()) && fileSize == other.fileSize;
     }
 
     public ResourceList getParentList() {
@@ -282,5 +291,46 @@ public class Resource {
             return true;
         }
         return false;
+    }
+
+    public void mergeWith(Resource from) {
+        if (from.checked) {     // checked-true has the precedence
+            checked = true;
+        }
+
+        if (from.markers.size() < 1) {
+            return;     // nothing to merge
+        }
+
+        // append from-markers temporarily
+        ArrayList<Marker> tempMarkers = (ArrayList<Marker>)markers.clone();
+        for (Marker marker : from.markers) {
+            marker.work = 1;        // tag the merged marker
+            tempMarkers.add(marker);
+        }
+
+        // sort them for right time sequence
+        Collections.sort(tempMarkers);
+
+
+        // add/merge sensible markers only (i.e. remove matching or close enough markers)
+        //Log.log("-------------- tag merge: %s", getName());
+        for (int i=0; i<tempMarkers.size(); i++) {
+            Marker m = tempMarkers.get(i);
+            if (m.work != 1) {
+                continue;
+            }
+
+            long prevTime = (i==0) ? 0 : tempMarkers.get(i-1).time;
+            long nextTime = (i==tempMarkers.size()-1) ? -1 : tempMarkers.get(i+1).time;
+            //Log.log("tag merge [%d]: %d(%d) <- %d -> %d(%d)", i, prevTime, m.time-prevTime, m.time, nextTime, nextTime-m.time);
+            if ((m.time - prevTime) >= MinMarkerMergeGap && (nextTime == -1 || (nextTime - m.time) >= MinMarkerMergeGap)) {
+                //Log.log(" - OK to merge -");
+                this.markers.add(m);
+            }
+        }
+
+        // final sort with the merged ones
+        Collections.sort(this.markers);
     }
 }

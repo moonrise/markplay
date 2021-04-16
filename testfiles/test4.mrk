@@ -73,16 +73,40 @@
           "select": false
         },
         {
-          "time": 6714,
-          "select": false
-        },
-        {
-          "time": 40405,
+          "time": 1701,
           "select": true
         },
         {
-          "time": 41304,
+          "time": 2901,
           "select": false
+        },
+        {
+          "time": 5600,
+          "select": true
+        },
+        {
+          "time": 6501,
+          "select": false
+        },
+        {
+          "time": 19129,
+          "select": true
+        },
+        {
+          "time": 20929,
+          "select": false
+        },
+        {
+          "time": 36804,
+          "select": true
+        },
+        {
+          "time": 38304,
+          "select": false
+        },
+        {
+          "time": 50005,
+          "select": true
         }
       ]
     },
@@ -96,23 +120,31 @@
         {
           "time": 0,
           "select": false
+        },
+        {
+          "time": 6326,
+          "select": false
         }
       ]
     },
     {
-      "path": "media\\rabbit.mpg",
+      "path": "media\\hydroid.mp4",
       "rating": 0,
       "checked": false,
-      "duration": 0,
-      "fileSize": 5918720,
+      "duration": 8405,
+      "fileSize": 677016,
       "markers": [
         {
           "time": 0,
+          "select": false
+        },
+        {
+          "time": 2901,
           "select": false
         }
       ]
     }
   ],
   "root": "C:\\Users\\bjeon\\IdeaProjects\\markplay\\",
-  "currentIndex": 0
+  "currentIndex": 3
 }

@@ -4,6 +4,8 @@ public class Marker implements Comparable<Marker> {
     public  long time;     // in milliseconds
     public  boolean select;
 
+    public transient int work;      // work variable
+
     public Marker(long time) {
         this.time = time;
     }

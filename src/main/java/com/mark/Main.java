@@ -244,19 +244,28 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         }
     }
 
+    // mostly used by drag and drop interface
     public void processPaths(String[] paths) {
-        ArrayList<String> filePaths = new ArrayList<>();
+        ArrayList<String> mediaPaths = new ArrayList<>();
         for (String p: paths) {
             if (new File(p).isDirectory()) {
                 processDirectory(p);
             }
             else {
-                filePaths.add(p);
+                if (ResourceList.isFileExtensionMatch(p)) {
+                    resourceList.mergeResources(p);
+                }
+                else if (LegacyFilerReader.isFileExtensionMatch(p)) {
+                    resourceList.mergeLegacyResources(p);
+                }
+                else {
+                    mediaPaths.add(p);
+                }
             }
         }
 
-        if (filePaths.size() > 0) {
-            resourceList.addResources(filePaths.toArray(String[]::new));
+        if (mediaPaths.size() > 0) {
+            resourceList.addResources(mediaPaths.toArray(String[]::new));
         }
     }
 

@@ -3,6 +3,7 @@ package com.mark.resource;
 import com.mark.Log;
 import com.mark.Utils;
 import com.mark.io.GsonHandler;
+import com.mark.io.LegacyFilerReader;
 import com.mark.main.IMain;
 import org.apache.commons.io.FilenameUtils;
 
@@ -207,9 +208,57 @@ public class ResourceList {
         setCurrentIndex(-1);
     }
 
+    public void mergeResources(String resourceListFilePath) {
+        mergeResources(new ResourceList(this.main, resourceListFilePath));
+    }
+
+    private void mergeResources(ResourceList source) {
+        if (!source.getRoot().equalsIgnoreCase(root)) {
+            main.displayErrorMessage(String.format("Cannot merge '%s' because it is not compatible with the root context '%s'.", source.getFilePath(), source.getRoot()));
+            return;
+        }
+
+        int merged = 0;
+        ArrayList<Resource> additions = new ArrayList<>();
+        for (Resource sourceResource : source.resources) {
+            int index = resources.indexOf(sourceResource);
+            if (index >= 0) {
+                resources.get(index).mergeWith(sourceResource);
+                merged++;
+                Log.log("merged (%d): %s", merged, sourceResource.getName());
+            }
+            else {
+                additions.add(sourceResource);
+                Log.log("added  (%d): %s", additions.size(), sourceResource.getName());
+            }
+        }
+
+        if (merged > 0) {
+            modified = true;
+            notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
+        }
+
+        if (additions.size() > 0) {
+            for (Resource r : additions) {
+                resources.add(r);
+            }
+
+            modified = true;
+            int rowIndex = resources.size() - additions.size();
+            notifyResourceListChange(ResourceListUpdate.RowsAdded(rowIndex, resources.size()-1));
+            setCurrentIndex(rowIndex);
+        }
+    }
+
     public void addLegacyResource(Resource resource) {
         resource.postProcessLegacyResource();
         resources.add(resource);
+    }
+
+    public void mergeLegacyResources(String legacyFilePath) {
+        ResourceList converted = new LegacyFilerReader().read(null, new File(legacyFilePath));
+        converted.setRoot(root, root);
+        mergeResources(converted);
     }
 
     public void setCurrentIndex(int index) {
