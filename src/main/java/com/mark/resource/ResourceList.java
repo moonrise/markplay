@@ -228,6 +228,7 @@ public class ResourceList {
                 Log.log("merged (%d): %s", merged, sourceResource.getName());
             }
             else {
+                sourceResource.setParentList(this);
                 additions.add(sourceResource);
                 Log.log("added  (%d): %s", additions.size(), sourceResource.getName());
             }

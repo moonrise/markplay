@@ -64,7 +64,7 @@ public class Resource {
     }
 
     public void setDuration(long duration) {
-        if (this.duration != duration) {
+        if (duration > 0 && this.duration != duration) {
             this.duration = duration;
             notifyChangeListeners(EResourceChangeType.AttributesUpdated);
         }
