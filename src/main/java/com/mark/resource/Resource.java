@@ -84,14 +84,15 @@ public class Resource {
 
     public void initFileSizeAndHash() {
         if (this.fileSize == 0 || this.fileHash == null || this.fileHash.isEmpty()) {
-            settFileSizeAndHash();
+            setFileSizeAndHash();
             notifyChangeListeners(EResourceChangeType.AttributesUpdated);
         }
     }
 
-    public void settFileSizeAndHash() {
+    public void setFileSizeAndHash() {
         this.fileSize = new File(getPath()).length();
         Log.log(String.format("Hashing %s...", this.getPath()));
+        //TODO: how can we update the UI immediately to show the status (without using another thread)?
         //this.parentList.getMain().getAppFrame().getStatusBar().setStatusText(String.format("Hashing %s...", this.getPath()));
         this.fileHash = Utils.computeFileHash(this.getPath());
         notifyChangeListeners(EResourceChangeType.AttributesUpdated);
