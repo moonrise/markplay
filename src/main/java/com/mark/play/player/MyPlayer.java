@@ -192,13 +192,15 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
     }
 
     private void clearMedia() {
-        // TODO: unload the media  (not quite; the current media still visible)
-        /*
         if (mediaPlayer.media().isValid()) {
             mediaPlayer.controls().stop();
-            mediaPlayer.release();
+
+            // TODO: unload the media  (not quite; the current media still visible) - for now load a blank image
+            String mrl = new File(Utils.getResourcePath("/icons/black.png")).getPath();
+            mediaPlayer.media().prepare(mrl);
+            mediaPlayer.media().parsing().parse();
+            mediaPlayer.media().startPaused(mrl);
         }
-        */
     }
 
     public void startMedia(String mrl) {
