@@ -173,6 +173,14 @@ public class Prefs {
         return userPrefs.getBoolean("modifiedConfirm", false);
     }
 
+    public static void setAllowDuplicateResourcePath(boolean x) {
+        userPrefs.putBoolean("allowDuplicateResourcePath", x);
+    }
+
+    public static boolean isAllowDuplicateResourcePath() {
+        return userPrefs.getBoolean("allowDuplicateResourcePath", false);
+    }
+
     public static int getSkipTimeTiny() {
         return userPrefs.getInt("skipTimeTiny", 1000);
     }

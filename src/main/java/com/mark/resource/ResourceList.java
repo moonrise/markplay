@@ -1,6 +1,7 @@
 package com.mark.resource;
 
 import com.mark.Log;
+import com.mark.Prefs;
 import com.mark.Utils;
 import com.mark.io.GsonHandler;
 import com.mark.io.LegacyFilerReader;
@@ -76,6 +77,10 @@ public class ResourceList {
     }
 
     public boolean validateRoot(String filePath) {
+        return filePath.startsWith(root);
+    }
+
+    public boolean checkDuplicatePaths(String filePath) {
         return filePath.startsWith(root);
     }
 
@@ -208,14 +213,45 @@ public class ResourceList {
             return;      // all the rest will be likely no good
         }
 
+        int skipped = 0;
+        int added = 0;
+        String skippedPath = "";
         for (String path : filePaths) {
+            if (!Prefs.isAllowDuplicateResourcePath() && isDuplicatePath(path)) {
+                skippedPath = path;     // only one instance works which is OK
+                skipped++;
+                continue;
+            }
+            added++;
             resources.add(new Resource(path, this));
         }
 
-        modified = true;
-        int rowIndex = resources.size() - filePaths.length;
-        notifyResourceListChange(ResourceListUpdate.RowsAdded(rowIndex, resources.size()-1));
-        setCurrentIndex(rowIndex);
+        if (added > 0) {
+            modified = true;
+            int rowIndex = resources.size() - filePaths.length;
+            notifyResourceListChange(ResourceListUpdate.RowsAdded(rowIndex, resources.size()-1));
+            setCurrentIndex(rowIndex);
+        }
+
+        if (skipped > 0) {
+            if (skipped == 1 && added == 0) {
+                main.displayInfoMessage(String.format("%s was not added because duplicate paths are not allowed (see Settings)", skippedPath));
+            }
+            else {
+                main.displayInfoMessage(String.format("%d of %d were not added because duplicate paths are not allowed (see Settings)", skipped, skipped+added));
+            }
+        }
+    }
+
+    private boolean isDuplicatePath(String path) {
+        // cannot use ArrayList.indexOf because the equals() of Resource is defined with a unique key, not path
+        String filePath = new File(path).getPath();     // normalize the path (Mac, Windows, etc...)
+        for (Resource r : resources) {
+            if (new File(r.getPath()).getPath().equals(filePath)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void removeResource(int modelIndex) {
