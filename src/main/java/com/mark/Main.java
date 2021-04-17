@@ -245,7 +245,12 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     }
 
     // mostly used by drag and drop interface
-    public void processPaths(String[] paths) {
+    public void processPaths(String[] paths, boolean dndAlternate) {
+        if (paths.length == 1 && isOpenRequest(paths[0], dndAlternate)) {
+            processFile(paths[0]);
+            return;
+        }
+
         ArrayList<String> mediaPaths = new ArrayList<>();
         for (String p: paths) {
             if (new File(p).isDirectory()) {
@@ -267,6 +272,13 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         if (mediaPaths.size() > 0) {
             resourceList.addResources(mediaPaths.toArray(String[]::new));
         }
+    }
+
+    // is it open request from drag and drop (as opposed to merge)? A single file of the resource list content is
+    // considered an open request (rather than merge) unless alternate gesture was supplied (Ctrl down)
+    private boolean isOpenRequest(String path, boolean dndAlternate) {
+        return new File(path).isFile() && !dndAlternate &&
+               (ResourceList.isFileExtensionMatch(path) || LegacyFilerReader.isFileExtensionMatch(path));
     }
 
     public void processDirectory(String directoryPath) {
