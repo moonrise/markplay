@@ -87,7 +87,7 @@ public class TableCellButton extends AbstractCellEditor implements TableCellRend
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //Log.log("cell button pressed for delete: %d", rowIndex);
+        Log.log("cell button pressed for delete: %d", rowIndex);
         if (buttonClickListener != null) {
             buttonClickListener.onTableCellButtonClick(rowIndex);
         }

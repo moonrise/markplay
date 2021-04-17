@@ -263,11 +263,9 @@ public class ResourceList {
     }
 
     public void removeResource(int modelIndex) {
+        setCurrentIndex(-1);        // remove the current index before delete
         resources.remove(modelIndex);
         notifyResourceListChange(ResourceListUpdate.RowsRemoved(modelIndex, modelIndex));
-
-        // adjust the current index
-        setCurrentIndex(-1);
     }
 
     public void mergeResources(String resourceListFilePath) {

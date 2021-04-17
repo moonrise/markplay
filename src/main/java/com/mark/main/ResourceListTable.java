@@ -71,7 +71,7 @@ public class ResourceListTable extends JTable implements KeyListener {
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         // the last row (the empty row for new addition) should not be deletable
-        return columnIndex == 1 || columnIndex == 7;
+        return columnIndex == 1 || columnIndex == 8;
     }
 
     public void init() {

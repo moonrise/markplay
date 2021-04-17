@@ -1,5 +1,6 @@
 package com.mark.main;
 
+import com.mark.Log;
 import com.mark.resource.*;
 
 import javax.swing.table.AbstractTableModel;
@@ -101,6 +102,7 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
             fireTableRowsInserted(update.startRow, update.endRow);
         }
         else if (update.type == EResourceListChangeType.RowsRemoved) {
+            //Log.log("Table model rows removed: %d->%d", update.startRow, update.endRow);
             fireTableRowsDeleted(update.startRow, update.endRow);
         }
         else if (update.type == EResourceListChangeType.ChildResourceChanged) {
