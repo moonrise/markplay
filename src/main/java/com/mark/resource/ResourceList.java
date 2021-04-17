@@ -451,4 +451,12 @@ public class ResourceList {
         notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
         return duplicates;
     }
+
+    public void clearAllFileSizesAndHashes() {
+        for (Resource r : resources) {
+            r.clearFileSizeAndHash();
+        }
+        modified = true;
+        notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
+    }
 }

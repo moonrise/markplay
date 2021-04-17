@@ -78,6 +78,7 @@ public class AppMenuBar extends JMenuBar {
         checkBoxMenuItem.setState(Prefs.isNavigatorVisible());
         menu.add(checkBoxMenuItem);
 
+        menu.add(new ClearFileSizesAndHashesAction(main));
         menu.add(new FindDuplicateActions(main));
 
         return menu;

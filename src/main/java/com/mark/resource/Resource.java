@@ -17,8 +17,8 @@ public class Resource {
     public int rating;
     public boolean checked;
     public long duration;
-    public long fileSize;
-    public String fileHash;
+    public long fileSize = 0;
+    public String fileHash = "";
     public Date modifiedTime;
     public Date accessedTime;
 
@@ -87,6 +87,11 @@ public class Resource {
             this.fileHash = Utils.computeFileHash(this.getPath());
             notifyChangeListeners(EResourceChangeType.AttributesUpdated);
         }
+    }
+
+    public void clearFileSizeAndHash() {
+        this.fileSize = 0;
+        this.fileHash = "";
     }
 
     public String getName() {
