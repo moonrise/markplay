@@ -385,15 +385,18 @@ public class ResourceList {
 
         // mark duplicates
         int duplicateTag = 1;
+        int duplicates = 0;
         long prev = resources.get(0).fileSize;
         for (int i=1; i<resources.size(); i++) {
             Resource r = resources.get(i);
             if (r.fileSize == prev) {
                 if (r.temp != -1) {
                     r.temp = duplicateTag;
+                    duplicates = duplicateTag;
                 }
                 if (resources.get(i-1).temp != -1) {
                     resources.get(i-1).temp = duplicateTag;
+                    duplicates = duplicateTag;
                 }
             }
             if (prev != r.fileSize && resources.get(i-1).temp > 0) {
@@ -410,6 +413,6 @@ public class ResourceList {
         */
 
         notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
-        return duplicateTag-1;
+        return duplicates;
     }
 }
