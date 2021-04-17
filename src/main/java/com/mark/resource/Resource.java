@@ -18,6 +18,7 @@ public class Resource {
     public boolean checked;
     public long duration;
     public long fileSize;
+    public String fileHash;
     public Date modifiedTime;
     public Date accessedTime;
 
@@ -83,6 +84,7 @@ public class Resource {
     public void setFileSize(long fileSize) {
         if (this.fileSize != fileSize) {
             this.fileSize = fileSize;
+            this.fileHash = Utils.computeFileHash(this.getPath());
             notifyChangeListeners(EResourceChangeType.AttributesUpdated);
         }
     }

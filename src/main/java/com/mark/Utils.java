@@ -1,8 +1,11 @@
 package com.mark;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import java.awt.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class Utils {
     public static final String AppName = "MarkPlay";
@@ -52,6 +55,7 @@ public class Utils {
         return String.format("%d,%d,%d,%d", rect.x, rect.y, rect.width, rect.height);
     }
 
+
     /**
      * circular mod (modulo)
      * @param a
@@ -61,5 +65,15 @@ public class Utils {
     public static int mod(int a, int b) {
         int m = a % b;
         return m < 0 ? m + b : m;
+    }
+
+    public static String computeFileHash(String filePath) {
+        String checksum = null;
+        try {
+            checksum = DigestUtils.md5Hex(new FileInputStream(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return checksum;
     }
 }

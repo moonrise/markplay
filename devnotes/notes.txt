@@ -13,3 +13,15 @@ Git large file (https://git-lfs.github.com/)
 * On Mac, brew install git-lfs, git lfs install
 
 "git lfs pull" to download the files after clone/pull
+
+
+References:
+
+JTable
+* https://docs.oracle.com/javase/tutorial/uiswing/components/table.html
+* https://tips4java.wordpress.com/2009/07/12/table-button-column/
+
+GSON
+* https://www.tutorialspoint.com/gson/index.htm
+* https://www.baeldung.com/gson-list
+
