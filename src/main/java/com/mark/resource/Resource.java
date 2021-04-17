@@ -5,6 +5,7 @@ import com.mark.Prefs;
 import com.mark.Utils;
 import org.apache.commons.io.FilenameUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -81,17 +82,28 @@ public class Resource {
         }
     }
 
-    public void setFileSize(long fileSize) {
-        if (this.fileSize != fileSize) {
-            this.fileSize = fileSize;
-            this.fileHash = Utils.computeFileHash(this.getPath());
+    public void initFileSizeAndHash() {
+        if (this.fileSize == 0 || this.fileHash.isEmpty()) {
+            settFileSizeAndHash();
             notifyChangeListeners(EResourceChangeType.AttributesUpdated);
         }
+    }
+
+    public void settFileSizeAndHash() {
+        this.fileSize = new File(getPath()).length();
+        this.fileHash = Utils.computeFileHash(this.getPath());
+        notifyChangeListeners(EResourceChangeType.AttributesUpdated);
     }
 
     public void clearFileSizeAndHash() {
         this.fileSize = 0;
         this.fileHash = "";
+    }
+
+    public boolean isFileContentEqual(Resource other) {
+        initFileSizeAndHash();      // ensure we have the file size known and hash computed
+        other.initFileSizeAndHash();
+        return fileSize == other.fileSize && fileHash.equals(other.fileHash);
     }
 
     public String getName() {

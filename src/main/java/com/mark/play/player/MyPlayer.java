@@ -186,7 +186,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         }
 
         this.resource = resource;
-        this.resource.setFileSize(file.length());
+        this.resource.initFileSizeAndHash();
         playerState.setResource(resource);
         startMedia(resource.getPath());
     }

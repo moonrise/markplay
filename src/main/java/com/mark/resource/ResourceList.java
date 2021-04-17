@@ -415,7 +415,7 @@ public class ResourceList {
         Collections.sort(resources, new Comparator<Resource>() {
             @Override
             public int compare(Resource o1, Resource o2) {
-                return o1.fileSize == o2.fileSize ? 0 : o1.fileSize < o2.fileSize ? - 1 : 1;
+                return o1.isFileContentEqual(o2) ? 0 : o1.fileSize < o2.fileSize ? - 1 : 1;
             }
         });
 
