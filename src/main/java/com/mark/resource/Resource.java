@@ -83,7 +83,7 @@ public class Resource {
     }
 
     public void initFileSizeAndHash() {
-        if (this.fileSize == 0 || this.fileHash.isEmpty()) {
+        if (this.fileSize == 0 || this.fileHash == null || this.fileHash.isEmpty()) {
             settFileSizeAndHash();
             notifyChangeListeners(EResourceChangeType.AttributesUpdated);
         }
@@ -91,6 +91,8 @@ public class Resource {
 
     public void settFileSizeAndHash() {
         this.fileSize = new File(getPath()).length();
+        Log.log(String.format("Hashing %s...", this.getPath()));
+        //this.parentList.getMain().getAppFrame().getStatusBar().setStatusText(String.format("Hashing %s...", this.getPath()));
         this.fileHash = Utils.computeFileHash(this.getPath());
         notifyChangeListeners(EResourceChangeType.AttributesUpdated);
     }

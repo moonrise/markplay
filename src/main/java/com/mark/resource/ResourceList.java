@@ -60,6 +60,14 @@ public class ResourceList {
         }
     }
 
+    public IMain getMain() {
+        return main;
+    }
+
+    public void setMain(IMain main) {
+        this.main = main;
+    }
+
     public String getRoot() {
         return root == null ? "" : root;
     }
@@ -415,30 +423,30 @@ public class ResourceList {
         Collections.sort(resources, new Comparator<Resource>() {
             @Override
             public int compare(Resource o1, Resource o2) {
-                return o1.isFileContentEqual(o2) ? 0 : o1.fileSize < o2.fileSize ? - 1 : 1;
+                return o1.fileSize == o2.fileSize ? 0 : o1.fileSize > o2.fileSize ? - 1 : 1;
             }
         });
 
         // mark duplicates
         int duplicateTag = 1;
         int duplicates = 0;
-        long prev = resources.get(0).fileSize;
+        Resource prev = resources.get(0);
         for (int i=1; i<resources.size(); i++) {
             Resource r = resources.get(i);
-            if (r.fileSize == prev) {
+            if (r.isFileContentEqual(prev)) {
                 if (r.temp != -1) {
                     r.temp = duplicateTag;
                     duplicates = duplicateTag;
                 }
-                if (resources.get(i-1).temp != -1) {
-                    resources.get(i-1).temp = duplicateTag;
+                if (prev.temp != -1) {
+                    prev.temp = duplicateTag;
                     duplicates = duplicateTag;
                 }
             }
-            if (prev != r.fileSize && resources.get(i-1).temp > 0) {
+            if (prev.fileSize != r.fileSize && prev.temp > 0) {
                 duplicateTag++;
             }
-            prev = r.fileSize;
+            prev = r;
         }
 
         // test dump
