@@ -432,6 +432,7 @@ public class ResourceList {
         int duplicates = 0;
         Resource prev = resources.get(0);
         for (int i=1; i<resources.size(); i++) {
+            Log.log("Find duplicate process : %d / %d", i, resources.size());
             Resource r = resources.get(i);
             if (r.isFileContentEqual(prev)) {
                 if (r.temp != -1) {
