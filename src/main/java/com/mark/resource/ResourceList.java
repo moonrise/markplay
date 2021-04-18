@@ -262,6 +262,15 @@ public class ResourceList {
         return false;
     }
 
+    private Resource isDuplicateFileContent(Resource other) {
+        for (Resource r : resources) {
+            if (r.isFileContentEqual(other)) {
+                return r;
+            }
+        }
+        return null;
+    }
+
     public void removeResource(int modelIndex) {
         setCurrentIndex(-1);        // remove the current index before delete
         resources.remove(modelIndex);
@@ -281,16 +290,16 @@ public class ResourceList {
         int merged = 0;
         ArrayList<Resource> additions = new ArrayList<>();
         for (Resource sourceResource : source.resources) {
-            int index = resources.indexOf(sourceResource);
-            if (index >= 0) {
-                resources.get(index).mergeWith(sourceResource);
+            Resource myResource = isDuplicateFileContent(sourceResource);
+            if (myResource != null) {
+                myResource.mergeWith(sourceResource);
                 merged++;
-                Log.log("merged (%d): %s", merged, sourceResource.getName());
+                Log.log("merged (%d): %s->%s", merged, sourceResource.getName(), myResource.getName());
             }
             else {
                 sourceResource.setParentList(this);
                 additions.add(sourceResource);
-                Log.log("added  (%d): %s", additions.size(), sourceResource.getName());
+                Log.log("added (%d): %s", additions.size(), sourceResource.getName());
             }
         }
 
