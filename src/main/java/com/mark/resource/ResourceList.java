@@ -8,10 +8,13 @@ import com.mark.io.LegacyFilerReader;
 import com.mark.main.IMain;
 import org.apache.commons.io.FilenameUtils;
 
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
+import java.util.List;
 
 public class ResourceList {
     public static final String FileExtension = ".mrk";
@@ -407,7 +410,13 @@ public class ResourceList {
     }
 
     // returns duplicate set number
-    public int findDuplicates() {
+    public void findDuplicates() {
+        // no duplicates by definition
+        if (resources.size() < 2) {
+            main.displayInfoMessage("No duplicates by definition (only one resource)");
+            return;
+        }
+
         // reset the work variable
         for (Resource r : this.resources) {
             File file = new File((r.getPath()));
@@ -420,11 +429,6 @@ public class ResourceList {
             }
         }
 
-        // no duplicates by definition
-        if (resources.size() < 2) {
-            return 0;
-        }
-
         // clone the resources and sort them
         ArrayList<Resource> resources = (ArrayList<Resource>)this.resources.clone();
         Collections.sort(resources, new Comparator<Resource>() {
@@ -434,38 +438,138 @@ public class ResourceList {
             }
         });
 
-        // mark duplicates
-        int duplicateTag = 1;
-        int duplicates = 0;
-        Resource prev = resources.get(0);
-        for (int i=1; i<resources.size(); i++) {
-            Log.log("Find duplicate process : %d / %d", i, resources.size());
-            Resource r = resources.get(i);
-            if (r.isFileContentEqual(prev)) {
-                if (r.temp != -1) {
-                    r.temp = duplicateTag;
-                    duplicates = duplicateTag;
-                }
-                if (prev.temp != -1) {
-                    prev.temp = duplicateTag;
-                    duplicates = duplicateTag;
-                }
-            }
-            if (prev.fileSize != r.fileSize && prev.temp > 0) {
-                duplicateTag++;
-            }
-            prev = r;
-        }
+        final JDialog dialog = new JDialog(main.getAppFrame(), "Find Duplicates", true);
+        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
-        // test dump
-        /*
-        for (Resource r : this.resources) {
-            Log.log("duplicates?: %s, %,d [%d]", r.getName(), r.fileSize, r.temp);o
-        }
-        */
+        JProgressBar progressBar = new JProgressBar(0, resources.size());
+        JLabel statusText = new JLabel("...");
+        statusText.setPreferredSize(new Dimension(420, 20));
+        statusText.setBorder(new EmptyBorder(0, 0, 10, 0));
 
-        notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
-        return duplicates;
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.add(statusText);
+        centerPanel.add(progressBar);
+        centerPanel.setBorder(new EmptyBorder(20, 50, 20, 50));
+        dialog.add(BorderLayout.CENTER, centerPanel);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
+        JButton cancelCloseButton = new JButton("Cancel");
+        buttonPanel.add(cancelCloseButton);
+        dialog.add(BorderLayout.SOUTH, buttonPanel);
+
+        dialog.pack();
+        dialog.setLocationRelativeTo(main.getAppFrame());
+
+        long startTime = new Date().getTime();
+        SwingWorker longWork = new SwingWorker<Integer, Integer>() {
+            // mark duplicates
+            int duplicateTag = 1;
+            int duplicates = 0;
+            Resource prev = resources.get(0);
+
+            @Override
+            protected Integer doInBackground() throws Exception {
+                publish(1);
+
+                for (int i=1; i<resources.size(); i++) {
+                    if (isCancelled()) {
+                        return -1;
+                    }
+
+                    //Log.log("Find duplicate process : %d/%d", i, resources.size());
+                    /*
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    */
+
+                    Resource r = resources.get(i);
+                    if (r.isFileContentEqual(prev)) {
+                        if (r.temp != -1) {
+                            r.temp = duplicateTag;
+                            duplicates = duplicateTag;
+                        }
+                        if (prev.temp != -1) {
+                            prev.temp = duplicateTag;
+                            duplicates = duplicateTag;
+                        }
+                    }
+                    if (prev.fileSize != r.fileSize && prev.temp > 0) {
+                        duplicateTag++;
+                    }
+                    prev = r;
+
+                    publish(i+1);
+                }
+
+                return duplicates;
+            }
+
+            @Override
+            protected void process(List<Integer> chunks) {
+                // show the progress status in UI
+                int count = chunks.get(chunks.size()-1);
+                String statusMessage = String.format("Processing %d/%d...", count, resources.size());
+                Log.log(statusMessage);
+                //main.getAppFrame().getStatusBar().setStatusText(statusMessage);
+                statusText.setText(statusMessage);
+                progressBar.setValue(count);
+
+                /*
+                if (count == resources.size()) {
+                    String doneMessage = String.format("%d duplicate content found based on file sizes and hashes (see duplicate column).", duplicates);
+                    Log.log(doneMessage);
+                    statusText.setText(doneMessage);
+                }
+                 */
+            }
+
+            @Override
+            protected void done() {
+                /*
+                long minTime = 9000;
+                long endTime = new Date().getTime();
+                if (endTime - startTime < minTime) {
+                    try {
+                        Thread.sleep(minTime - endTime + startTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                 */
+
+                //dialog.setVisible(false);
+                String doneMessage = String.format("%d duplicate content found based on file sizes and hashes (see duplicate column).", duplicates);
+                Log.log(doneMessage);
+                statusText.setText(doneMessage);
+
+                notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
+                dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+                cancelCloseButton.setText("Close");
+
+                // test dump
+                /*
+                for (Resource r : this.resources) {
+                    Log.log("duplicates?: %s, %,d [%d]", r.getName(), r.fileSize, r.temp);o
+                }
+                */
+            }
+        };
+
+        longWork.execute();
+        cancelCloseButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                longWork.cancel(false);     // OK even when done (Close button)
+                dialog.setVisible(false);
+            }
+        });
+
+        dialog.setVisible(true);
     }
 
     public void clearAllFileSizesAndHashes() {
