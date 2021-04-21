@@ -431,7 +431,7 @@ public class ResourceList {
 
         // clone the resources and sort them
         ArrayList<Resource> clonedResources = (ArrayList<Resource>)this.resources.clone();
-        Collections.sort(resources, new Comparator<Resource>() {
+        Collections.sort(clonedResources, new Comparator<Resource>() {
             @Override
             public int compare(Resource o1, Resource o2) {
                 return o1.fileSize == o2.fileSize ? 0 : o1.fileSize > o2.fileSize ? - 1 : 1;
