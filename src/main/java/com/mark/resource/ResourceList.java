@@ -288,37 +288,90 @@ public class ResourceList {
             return;
         }
 
-        int merged = 0;
-        ArrayList<Resource> additions = new ArrayList<>();
-        for (Resource sourceResource : source.resources) {
-            Resource myResource = isDuplicateFileContent(sourceResource);
-            if (myResource != null) {
-                myResource.mergeWith(sourceResource);
-                merged++;
-                Log.log("merged (%d): %s->%s", merged, sourceResource.getName(), myResource.getName());
-            }
-            else {
-                sourceResource.setParentList(this);
-                additions.add(sourceResource);
-                Log.log("added (%d): %s", additions.size(), sourceResource.getName());
-            }
-        }
+        ProgressDialog progressDialog = new ProgressDialog(main.getAppFrame(), "Merge Resources", source.resources.size());
+        ResourceList parentList = this;
 
-        if (merged > 0) {
-            modified = true;
-            notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
-        }
+        SwingWorker longWork = new SwingWorker<Integer, Integer>() {
+            int merged = 0;
+            ArrayList<Resource> additions = new ArrayList<>();
 
-        if (additions.size() > 0) {
-            for (Resource r : additions) {
-                resources.add(r);
+            @Override
+            protected Integer doInBackground() throws Exception {
+                for (int i=0; i<source.resources.size(); i++) {
+                    if (isCancelled()) {
+                        return -1;
+                    }
+
+                    publish(i+1);
+
+                    Resource sourceResource = source.resources.get(i);
+                    Resource myResource = isDuplicateFileContent(sourceResource);
+                    if (myResource != null) {
+                        myResource.mergeWith(sourceResource);
+                        merged++;
+                        //Log.log("merged (%d): %s->%s", merged, sourceResource.getName(), myResource.getName());
+                    }
+                    else {
+                        additions.add(sourceResource);
+                        //Log.log("added (%d): %s", additions.size(), sourceResource.getName());
+                    }
+
+                    /**
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    */
+                }
+
+                return merged;
             }
 
-            modified = true;
-            int rowIndex = resources.size() - additions.size();
-            notifyResourceListChange(ResourceListUpdate.RowsAdded(rowIndex, resources.size()-1));
-            setCurrentIndex(rowIndex);
-        }
+            @Override
+            protected void process(List<Integer> chunks) {
+                // show the progress status in UI
+                int count = chunks.get(chunks.size()-1);
+                String statusMessage = String.format("Processing %d/%d...", count, source.resources.size());
+                //Log.log(statusMessage);
+                progressDialog.setStatusText(statusMessage);
+                progressDialog.setProgressValue(count);
+            }
+
+            @Override
+            protected void done() {
+                String doneMessage = String.format("%d merged with %d additions", merged, additions.size());
+                //Log.log(doneMessage);
+                progressDialog.setStatusText(doneMessage);
+                progressDialog.cancelToCloseButton();
+
+                if (merged > 0) {
+                    modified = true;
+                    notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
+                }
+
+                if (additions.size() > 0) {
+                    for (Resource r : additions) {
+                        r.setParentList(parentList);
+                        resources.add(r);
+                    }
+
+                    modified = true;
+                    int rowIndex = resources.size() - additions.size();
+                    notifyResourceListChange(ResourceListUpdate.RowsAdded(rowIndex, resources.size()-1));
+                    setCurrentIndex(rowIndex);
+                }
+            }
+        };
+
+        longWork.execute();
+        progressDialog.setCancelListener(new ProgressDialog.ProgressCancelListener() {
+            @Override
+            public void onProgressCancel() {
+                longWork.cancel(false);     // OK even when done (Close button)
+            }
+        });
+        progressDialog.setVisible(true);
     }
 
     public void addLegacyResource(Resource resource) {
@@ -489,7 +542,7 @@ public class ResourceList {
                 // show the progress status in UI
                 int count = chunks.get(chunks.size()-1);
                 String statusMessage = String.format("Processing %d/%d...", count, clonedResources.size());
-                Log.log(statusMessage);
+                //Log.log(statusMessage);
                 //main.getAppFrame().getStatusBar().setStatusText(statusMessage);
                 progressDialog.setStatusText(statusMessage);
                 progressDialog.setProgressValue(count);
@@ -498,7 +551,7 @@ public class ResourceList {
             @Override
             protected void done() {
                 String doneMessage = String.format("%d duplicate content found based on file sizes and hashes (see duplicate column).", duplicates);
-                Log.log(doneMessage);
+                //Log.log(doneMessage);
                 progressDialog.setStatusText(doneMessage);
                 progressDialog.cancelToCloseButton();
 
@@ -520,7 +573,6 @@ public class ResourceList {
                 longWork.cancel(false);     // OK even when done (Close button)
             }
         });
-
         progressDialog.setVisible(true);
     }
 
