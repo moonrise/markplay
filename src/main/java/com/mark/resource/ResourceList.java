@@ -6,12 +6,10 @@ import com.mark.Utils;
 import com.mark.io.GsonHandler;
 import com.mark.io.LegacyFilerReader;
 import com.mark.main.IMain;
+import com.mark.utils.ProgressDialog;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -438,29 +436,7 @@ public class ResourceList {
             }
         });
 
-        final JDialog dialog = new JDialog(main.getAppFrame(), "Find Duplicates", true);
-        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-
-        JProgressBar progressBar = new JProgressBar(0, clonedResources.size());
-        JLabel statusText = new JLabel("...");
-        statusText.setPreferredSize(new Dimension(420, 20));
-        statusText.setBorder(new EmptyBorder(0, 0, 10, 0));
-
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.add(statusText);
-        centerPanel.add(progressBar);
-        centerPanel.setBorder(new EmptyBorder(20, 50, 20, 50));
-        dialog.add(BorderLayout.CENTER, centerPanel);
-
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
-        JButton cancelCloseButton = new JButton("Cancel");
-        buttonPanel.add(cancelCloseButton);
-        dialog.add(BorderLayout.SOUTH, buttonPanel);
-
-        dialog.pack();
-        dialog.setLocationRelativeTo(main.getAppFrame());
+        ProgressDialog progressDialog = new ProgressDialog(main.getAppFrame(), "Find Duplicates", clonedResources.size());
 
         SwingWorker longWork = new SwingWorker<Integer, Integer>() {
             // mark duplicates
@@ -515,19 +491,18 @@ public class ResourceList {
                 String statusMessage = String.format("Processing %d/%d...", count, clonedResources.size());
                 Log.log(statusMessage);
                 //main.getAppFrame().getStatusBar().setStatusText(statusMessage);
-                statusText.setText(statusMessage);
-                progressBar.setValue(count);
+                progressDialog.setStatusText(statusMessage);
+                progressDialog.setProgressValue(count);
             }
 
             @Override
             protected void done() {
                 String doneMessage = String.format("%d duplicate content found based on file sizes and hashes (see duplicate column).", duplicates);
                 Log.log(doneMessage);
-                statusText.setText(doneMessage);
+                progressDialog.setStatusText(doneMessage);
+                progressDialog.cancelToCloseButton();
 
                 notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
-                dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-                cancelCloseButton.setText("Close");
 
                 // test dump
                 /*
@@ -539,15 +514,14 @@ public class ResourceList {
         };
 
         longWork.execute();
-        cancelCloseButton.addActionListener(new AbstractAction() {
+        progressDialog.setCancelListener(new ProgressDialog.ProgressCancelListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void onProgressCancel() {
                 longWork.cancel(false);     // OK even when done (Close button)
-                dialog.setVisible(false);
             }
         });
 
-        dialog.setVisible(true);
+        progressDialog.setVisible(true);
     }
 
     public void clearAllFileSizesAndHashes() {
