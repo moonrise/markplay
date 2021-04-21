@@ -430,7 +430,7 @@ public class ResourceList {
         }
 
         // clone the resources and sort them
-        ArrayList<Resource> resources = (ArrayList<Resource>)this.resources.clone();
+        ArrayList<Resource> clonedResources = (ArrayList<Resource>)this.resources.clone();
         Collections.sort(resources, new Comparator<Resource>() {
             @Override
             public int compare(Resource o1, Resource o2) {
@@ -441,7 +441,7 @@ public class ResourceList {
         final JDialog dialog = new JDialog(main.getAppFrame(), "Find Duplicates", true);
         dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
-        JProgressBar progressBar = new JProgressBar(0, resources.size());
+        JProgressBar progressBar = new JProgressBar(0, clonedResources.size());
         JLabel statusText = new JLabel("...");
         statusText.setPreferredSize(new Dimension(420, 20));
         statusText.setBorder(new EmptyBorder(0, 0, 10, 0));
@@ -462,18 +462,17 @@ public class ResourceList {
         dialog.pack();
         dialog.setLocationRelativeTo(main.getAppFrame());
 
-        long startTime = new Date().getTime();
         SwingWorker longWork = new SwingWorker<Integer, Integer>() {
             // mark duplicates
             int duplicateTag = 1;
             int duplicates = 0;
-            Resource prev = resources.get(0);
+            Resource prev = clonedResources.get(0);
 
             @Override
             protected Integer doInBackground() throws Exception {
                 publish(1);
 
-                for (int i=1; i<resources.size(); i++) {
+                for (int i=1; i<clonedResources.size(); i++) {
                     if (isCancelled()) {
                         return -1;
                     }
@@ -487,7 +486,7 @@ public class ResourceList {
                     }
                     */
 
-                    Resource r = resources.get(i);
+                    Resource r = clonedResources.get(i);
                     if (r.isFileContentEqual(prev)) {
                         if (r.temp != -1) {
                             r.temp = duplicateTag;
@@ -513,36 +512,15 @@ public class ResourceList {
             protected void process(List<Integer> chunks) {
                 // show the progress status in UI
                 int count = chunks.get(chunks.size()-1);
-                String statusMessage = String.format("Processing %d/%d...", count, resources.size());
+                String statusMessage = String.format("Processing %d/%d...", count, clonedResources.size());
                 Log.log(statusMessage);
                 //main.getAppFrame().getStatusBar().setStatusText(statusMessage);
                 statusText.setText(statusMessage);
                 progressBar.setValue(count);
-
-                /*
-                if (count == resources.size()) {
-                    String doneMessage = String.format("%d duplicate content found based on file sizes and hashes (see duplicate column).", duplicates);
-                    Log.log(doneMessage);
-                    statusText.setText(doneMessage);
-                }
-                 */
             }
 
             @Override
             protected void done() {
-                /*
-                long minTime = 9000;
-                long endTime = new Date().getTime();
-                if (endTime - startTime < minTime) {
-                    try {
-                        Thread.sleep(minTime - endTime + startTime);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                 */
-
-                //dialog.setVisible(false);
                 String doneMessage = String.format("%d duplicate content found based on file sizes and hashes (see duplicate column).", duplicates);
                 Log.log(doneMessage);
                 statusText.setText(doneMessage);
