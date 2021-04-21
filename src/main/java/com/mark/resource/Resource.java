@@ -323,13 +323,11 @@ public class Resource {
         return false;
     }
 
-    public void mergeWith(Resource from) {
-        if (from.checked) {     // checked-true has the precedence
-            checked = true;
-        }
+    public int mergeWith(Resource from) {
+        int markersAdded = 0;
 
         if (from.markers.size() < 1) {
-            return;     // nothing to merge
+            return 0;     // nothing to merge
         }
 
         // append from-markers temporarily
@@ -357,10 +355,12 @@ public class Resource {
             if ((m.time - prevTime) >= MinMarkerMergeGap && (nextTime == -1 || (nextTime - m.time) >= MinMarkerMergeGap)) {
                 //Log.log(" - OK to merge -");
                 this.markers.add(m);
+                markersAdded++;
             }
         }
 
         // final sort with the merged ones
         Collections.sort(this.markers);
+        return markersAdded;
     }
 }

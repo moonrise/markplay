@@ -293,6 +293,7 @@ public class ResourceList {
 
         SwingWorker longWork = new SwingWorker<Integer, Integer>() {
             int merged = 0;
+            int newMarkers = 0;
             ArrayList<Resource> additions = new ArrayList<>();
 
             @Override
@@ -307,13 +308,24 @@ public class ResourceList {
                     Resource sourceResource = source.resources.get(i);
                     Resource myResource = isDuplicateFileContent(sourceResource);
                     if (myResource != null) {
-                        myResource.mergeWith(sourceResource);
-                        merged++;
-                        //Log.log("merged (%d): %s->%s", merged, sourceResource.getName(), myResource.getName());
+                        boolean mergeChange = false;
+                        int markers = myResource.mergeWith(sourceResource);
+                        if (markers > 0) {
+                            mergeChange = true;
+                            newMarkers += markers;
+                        }
+                        if (sourceResource.checked && !myResource.checked) {     // checked-true has the precedence
+                            myResource.checked = true;
+                            mergeChange = true;
+                        }
+                        if (mergeChange) {
+                            merged++;
+                            Log.log("merged (%d), markers (%d): %s->%s", merged, newMarkers, sourceResource.getName(), myResource.getName());
+                        }
                     }
                     else {
                         additions.add(sourceResource);
-                        //Log.log("added (%d): %s", additions.size(), sourceResource.getName());
+                        Log.log("added (%d): %s", additions.size(), sourceResource.getName());
                     }
 
                     /**
@@ -332,7 +344,8 @@ public class ResourceList {
             protected void process(List<Integer> chunks) {
                 // show the progress status in UI
                 int count = chunks.get(chunks.size()-1);
-                String statusMessage = String.format("Processing %d/%d...", count, source.resources.size());
+                String statusMessage = String.format("Processing %d/%d (merge/markers/additions: %d/%d/%d)...",
+                        count, source.resources.size(), merged, newMarkers, additions.size());
                 //Log.log(statusMessage);
                 progressDialog.setStatusText(statusMessage);
                 progressDialog.setProgressValue(count);
@@ -340,7 +353,7 @@ public class ResourceList {
 
             @Override
             protected void done() {
-                String doneMessage = String.format("%d merged with %d additions", merged, additions.size());
+                String doneMessage = String.format("Merged: %d (New Markers: %d), Additions: %d", merged, newMarkers, additions.size());
                 //Log.log(doneMessage);
                 progressDialog.setStatusText(doneMessage);
                 progressDialog.cancelToCloseButton();
