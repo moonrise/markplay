@@ -332,7 +332,20 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             return;     // SaveAs canceled by user
         }
 
-        resourceList.saveAs(filePath);
+        boolean sorted = false;
+        ArrayList<Integer> rowOrder = new ArrayList<Integer>();
+        for (int i=0; i<table.getRowCount(); i++) {
+            int row = (Integer) table.getValueAt(i, 0) - 1;
+            rowOrder.add(row);
+            //Log.log("table row; view:%d, model:%d, %s", i, row, sorted ? "sorted" : "");
+
+            if (!sorted && i != row) {
+                sorted = true;
+            }
+        }
+        table.getRowSorter().setSortKeys(null);
+
+        resourceList.saveAs(filePath, sorted ? rowOrder.toArray(Integer[]::new) : null);
     }
 
     @Override

@@ -189,13 +189,39 @@ public class ResourceList {
         return writer.toString();
     }
 
-    public void saveAs(String filePath) {
+    public void saveAs(String filePath, Integer sortedOrder[]) {
         if (!isFileExtensionMatch(filePath)) {
             filePath += FileExtension;
         }
 
-        File file = new File(filePath);
+        if (sortedOrder != null) {
+            for (int i=0; i<sortedOrder.length; i++) {
+                resources.get(sortedOrder[i]).temp = i;
+            }
 
+            /**
+            Log.log("\n-----------");
+            for (Resource r : resources) {
+                Log.log("pre sort: %d, %d, %s", r.temp, r.markers.size()-1, r.getName());
+            }
+            */
+
+            Collections.sort(resources, new Comparator<Resource>() {
+                @Override
+                public int compare(Resource o1, Resource o2) {
+                    return o1.temp == o2.temp ? 0 : o1.temp > o2.temp ? 1 : -1;
+                }
+            });
+
+            /**
+            Log.log("~~~~~~~~~~~");
+            for (Resource r : resources) {
+                Log.log("post sort: %d, %d, %s", r.temp, r.markers.size()-1, r.getName());
+            }
+            */
+        }
+
+        File file = new File(filePath);
         try {
             FileWriter writer = new FileWriter(file);
             writer.write(writeToString());
