@@ -133,6 +133,13 @@ public class ResourceList {
         this.modified = modified;
     }
 
+    public void onListSorted() {
+        this.modified = true;
+
+        // we can get by without this notification except to update the dirty state
+        notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
+    }
+
     public void clearModified() {
         setDirty(false);
     }

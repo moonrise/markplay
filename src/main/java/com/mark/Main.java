@@ -15,6 +15,8 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.RowSorterEvent;
+import javax.swing.event.RowSorterListener;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -74,6 +76,13 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         resourceList = new ResourceList(this);
 
         table = new ResourceListTable(this, resourceList);
+        table.getRowSorter().addRowSorterListener(new RowSorterListener() {
+            @Override
+            public void sorterChanged(RowSorterEvent e) {
+                resourceList.onListSorted();
+            }
+        });
+
         splitPane = new MainSplitPane(new JScrollPane(table), playerContainer);
 
         myPlayer = new MyPlayer(this, playerContainer);
