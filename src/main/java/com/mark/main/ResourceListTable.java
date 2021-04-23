@@ -71,7 +71,7 @@ public class ResourceListTable extends JTable implements KeyListener {
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         // the last row (the empty row for new addition) should not be deletable
-        return columnIndex == 1 || columnIndex == 8;
+        return columnIndex == 1 || columnIndex == 11;
     }
 
     public void init() {
@@ -80,13 +80,13 @@ public class ResourceListTable extends JTable implements KeyListener {
     }
 
     public void setRenderers() {
-        columnModel.getColumn(4).setCellRenderer(new DurationRenderer());
-        columnModel.getColumn(5).setCellRenderer(new LongRenderer());
-        columnModel.getColumn(7).setCellRenderer(new ZeroSpaceRenderer());
+        columnModel.getColumn(7).setCellRenderer(new DurationRenderer());
+        columnModel.getColumn(8).setCellRenderer(new LongRenderer());
+        columnModel.getColumn(10).setCellRenderer(new ZeroSpaceRenderer());
 
         ImageIcon deleteIcon = new ImageIcon(Utils.getResourcePath("/icons/cross.png"));
-        columnModel.getColumn(8).setCellRenderer(new TableCellButton(deleteIcon, null));
-        columnModel.getColumn(8).setCellEditor(new TableCellButton(deleteIcon, new ITableCellButtonClickListener() {
+        columnModel.getColumn(11).setCellRenderer(new TableCellButton(deleteIcon, null));
+        columnModel.getColumn(11).setCellEditor(new TableCellButton(deleteIcon, new ITableCellButtonClickListener() {
             @Override
             public void onTableCellButtonClick(int rowIndex) {
                 main.getResourceList().removeResource(rowIndex);

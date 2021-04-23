@@ -303,7 +303,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             File file = files.next();
             if (file.isFile()) {
                 paths.add(file.getPath());
-                Log.log(String.format("Scanning %d: %s", paths.size(), file.getPath()));
+                //Log.log(String.format("Scanning %d: %s", paths.size(), file.getPath()));
             }
         }
 

@@ -7,8 +7,8 @@ import javax.swing.table.AbstractTableModel;
 
 public class ResourceListTableModel extends AbstractTableModel implements IResourceListChangeListener {
     private ResourceList resourceList;
-    private String[] columnNames = {"Row", "Favorite", "Makers", "Path", "Duration", "File Size", "File Hash", "Duplicate", "Delete"};
-    private int[] columnWidths = {10, 10, 10, 250, 20, 65, 30, 10, 10};
+    private String[] columnNames = {"Row", "Select", "Rating", "Tag", "Makers", "Path", "Name", "Duration", "File Size", "File Hash", "Duplicate", "Delete"};
+    private int[] columnWidths = {10, 10, 10, 30, 10, 50, 250, 20, 65, 30, 10, 10};
 
     public ResourceListTableModel(ResourceList resourceList) {
         this.resourceList = resourceList;
@@ -48,13 +48,13 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
             case 0:
-            case 2:
-            case 7:
+            case 4:
+            case 10:
                 return Integer.class;
             case 1:
                 return Boolean.class;
-            case 4:
-            case 5:
+            case 7:
+            case 8:
                 return Long.class;
         }
 
@@ -69,19 +69,19 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
                 return rowIndex + 1;
             case 1:
                 return resource.checked;
-            case 2:
-                return resource.markers.size()-1;
-            case 3:
-                return resource.getPathWithNoRoot();
             case 4:
-                return resource.duration;
+                return resource.markers.size()-1;
             case 5:
-                return resource.fileSize;
-            case 6:
-                return resource.fileHash;
+                return resource.getPathWithNoRoot();
             case 7:
-                return resource.temp;
+                return resource.duration;
             case 8:
+                return resource.fileSize;
+            case 9:
+                return resource.fileHash;
+            case 10:
+                return resource.temp;
+            case 11:
                 return rowIndex;
         }
 
