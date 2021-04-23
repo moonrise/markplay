@@ -24,6 +24,17 @@ public class ResourceListTable extends JTable implements KeyListener {
         }
     }
 
+    static class FloatRenderer extends DefaultTableCellRenderer {
+        public FloatRenderer() {
+            setHorizontalAlignment(SwingConstants.RIGHT);
+        }
+
+        @Override
+        protected void setValue(Object value) {
+            super.setValue(0 == ((float)value) ? "" : String.format("%.1f", (float)value));
+        }
+    }
+
     static class ZeroSpaceRenderer extends DefaultTableCellRenderer {
         public ZeroSpaceRenderer() {
             setHorizontalAlignment(SwingConstants.RIGHT);
@@ -71,7 +82,7 @@ public class ResourceListTable extends JTable implements KeyListener {
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         // the last row (the empty row for new addition) should not be deletable
-        return columnIndex == 1 || columnIndex == 11;
+        return columnIndex == 1 || columnIndex == 2 || columnIndex == 11;
     }
 
     public void init() {
@@ -80,6 +91,7 @@ public class ResourceListTable extends JTable implements KeyListener {
     }
 
     public void setRenderers() {
+        columnModel.getColumn(2).setCellRenderer(new FloatRenderer());
         columnModel.getColumn(7).setCellRenderer(new DurationRenderer());
         columnModel.getColumn(8).setCellRenderer(new LongRenderer());
         columnModel.getColumn(10).setCellRenderer(new ZeroSpaceRenderer());

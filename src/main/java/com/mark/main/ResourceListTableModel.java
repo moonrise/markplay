@@ -51,6 +51,8 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
             case 4:
             case 10:
                 return Integer.class;
+            case 2:
+                return Float.class;
             case 1:
                 return Boolean.class;
             case 7:
@@ -69,6 +71,8 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
                 return rowIndex + 1;
             case 1:
                 return resource.checked;
+            case 2:
+                return resource.rating;
             case 4:
                 return resource.markers.size()-1;
             case 5:
@@ -94,6 +98,9 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
     public void setValueAt(Object value, int rowIndex, int columnIndex) {
         if (columnIndex == 1) {
             resourceList.getResources().get(rowIndex).checked = (boolean)value;
+        }
+        else if (columnIndex == 2) {
+            resourceList.getResources().get(rowIndex).rating = (float)value;
         }
         super.setValueAt(value, rowIndex, columnIndex);
     }

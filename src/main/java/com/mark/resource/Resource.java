@@ -15,7 +15,7 @@ public class Resource {
     private static final long MinMarkerMergeGap = 500;      // milli seconds
 
     private String path;
-    public int rating;
+    public float rating;
     public boolean checked;
     public long duration;
     public long fileSize = 0;
