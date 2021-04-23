@@ -14,9 +14,10 @@ public class Resource {
     private static final long MinForwardDelta = 50;         // milli seconds
     private static final long MinMarkerMergeGap = 500;      // milli seconds
 
-    private String path;
-    public float rating;
     public boolean checked;
+    public float rating;
+    public String tag = "";
+    private String path;
     public long duration;
     public long fileSize = 0;
     public String fileHash = "";

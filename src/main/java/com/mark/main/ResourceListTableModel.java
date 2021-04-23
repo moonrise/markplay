@@ -73,6 +73,8 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
                 return resource.checked;
             case 2:
                 return resource.rating;
+            case 3:
+                return resource.tag;
             case 4:
                 return resource.markers.size()-1;
             case 5:
@@ -101,6 +103,9 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
         }
         else if (columnIndex == 2) {
             resourceList.getResources().get(rowIndex).rating = (float)value;
+        }
+        else if (columnIndex == 3) {
+            resourceList.getResources().get(rowIndex).tag = ((String)value).trim();
         }
         super.setValueAt(value, rowIndex, columnIndex);
     }
