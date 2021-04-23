@@ -72,7 +72,9 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
             case 4:
                 return resource.markers.size()-1;
             case 5:
-                return resource.getPathWithNoRoot();
+                return resource.getMidPath();
+            case 6:
+                return resource.getName();
             case 7:
                 return resource.duration;
             case 8:

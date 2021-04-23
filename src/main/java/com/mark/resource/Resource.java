@@ -71,8 +71,8 @@ public class Resource {
         return getParentList().getRoot() + path;
     }
 
-    public String getPathWithNoRoot() {
-        return path;
+    public String getMidPath() {
+        return FilenameUtils.getPath(new File(path).getPath());
     }
 
     public void setDuration(long duration) {
