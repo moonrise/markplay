@@ -627,6 +627,18 @@ public class ResourceList {
         for (Resource r : resources) {
             r.clearFileSizeAndHash();
         }
+
+        modified = true;
+        notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
+    }
+
+    public void updateMidPaths(String currentMidPath, String newMidPath) {
+        for (Resource r : resources) {
+            if (Utils.normPathIsEqual(currentMidPath, r.getMidPath())) {
+                r.updateMidPath(newMidPath);
+            }
+        }
+
         modified = true;
         notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
     }

@@ -390,4 +390,8 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
 
         return false;
     }
+
+    public boolean renameMidPath(String fromValue, String toValue) {
+        return true;
+    }
 }

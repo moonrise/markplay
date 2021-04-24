@@ -76,6 +76,18 @@ public class Resource {
         return FilenameUtils.getPath(new File(path).getPath());
     }
 
+    public void updateMidPath(String newMidPath) {
+        String path = FilenameUtils.getFullPath(getPath());
+        int index = Utils.normPathIndexOf(path, getMidPath());
+        if (index >= 0) {
+            //Log.log("updating the midPath: %s -> %s (this.path: %s)", getMidPath(), newMidPath, this.path);
+            String pathWithNoMidPath = path.substring(0, index);
+            String newPath = Utils.normPath(pathWithNoMidPath + newMidPath + getName());
+            this.path = normalizePath(newPath);
+            //Log.log("updated the midPath: %s (this.path: %s)", getPath(), this.path);
+        }
+    }
+
     public void setDuration(long duration) {
         if (duration > 0 && this.duration != duration) {
             this.duration = duration;
@@ -122,6 +134,16 @@ public class Resource {
             if (parentList.getMain().renameMediaFile(currentPath, newPath)) {
                 this.path = normalizePath(newPath);
                 parentList.getMain().saveCurrentResourceList(false); // save is required to sync with the file system
+            }
+        }
+    }
+
+    public void setMidPath(String newMidPath) {
+        String oldMidPath = getMidPath();
+        if (!Utils.normPathIsEqual(newMidPath, oldMidPath)) {
+            if (parentList.getMain().renameMidPath(oldMidPath, newMidPath)) {
+                parentList.updateMidPaths(oldMidPath, newMidPath);
+                //parentList.getMain().saveCurrentResourceList(false); // save is required to sync with the file system
             }
         }
     }

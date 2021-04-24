@@ -4,6 +4,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import java.awt.*;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -75,5 +76,22 @@ public class Utils {
             e.printStackTrace();
         }
         return checksum;
+    }
+
+    // normalize the path (i.e. between Linux and Windows, etc...)
+    public static String normPath(String path) {
+        return new File(path).getPath();
+    }
+
+    public static boolean normPathIsEqual(String path1, String path2) {
+        return normPath(path1).equals(normPath(path2));
+    }
+
+    public static int normPathIndexOf(String pathIn, String pathOf) {
+        return normPath(pathIn).indexOf(normPath(pathOf));
+    }
+
+    public static boolean normPathStartsWith(String pathIn, String pathOf) {
+        return normPath(pathIn).startsWith(normPath(pathOf));
     }
 }
