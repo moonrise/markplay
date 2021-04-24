@@ -69,11 +69,11 @@ public class Resource {
     }
 
     public String getPath() {
-        return getParentList().getRoot() + path;
+        return Utils.normPath(getParentList().getRoot() + path);
     }
 
     public String getMidPath() {
-        return FilenameUtils.getPath(new File(path).getPath());
+        return FilenameUtils.getPath(Utils.normPath(path));
     }
 
     public void updateMidPath(String newMidPath) {
@@ -130,7 +130,7 @@ public class Resource {
         String newBaseName = FilenameUtils.getBaseName(name);
         if (!newBaseName.equals(currentBaseName)) {
             String currentPath = getPath();
-            String newPath = new File(FilenameUtils.getFullPath(currentPath) + newBaseName + "." + FilenameUtils.getExtension(getName())).getPath();
+            String newPath = Utils.normPath(FilenameUtils.getFullPath(currentPath) + newBaseName + "." + FilenameUtils.getExtension(getName()));
             if (parentList.getMain().renameMediaFile(currentPath, newPath)) {
                 this.path = normalizePath(newPath);
                 parentList.getMain().saveCurrentResourceList(false); // save is required to sync with the file system
