@@ -107,6 +107,9 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
         else if (columnIndex == 3) {
             resourceList.getResources().get(rowIndex).tag = ((String)value).trim();
         }
+        else if (columnIndex == 6) {
+            resourceList.getResources().get(rowIndex).setName(((String)value).trim());
+        }
         super.setValueAt(value, rowIndex, columnIndex);
     }
 

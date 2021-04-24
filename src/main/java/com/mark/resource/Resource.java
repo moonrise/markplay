@@ -112,6 +112,19 @@ public class Resource {
         return FilenameUtils.getName(path);
     }
 
+    /* rename really */
+    public void setName(String name) {
+        String currentBaseName = FilenameUtils.getBaseName(getName());
+        String newBaseName = FilenameUtils.getBaseName(name);
+        if (!newBaseName.equals(currentBaseName)) {
+            String currentPath = getPath();
+            String newPath = new File(FilenameUtils.getFullPath(currentPath) + newBaseName + "." + FilenameUtils.getExtension(getName())).getPath();
+            if (parentList.getMain().renameMediaFile(currentPath, newPath)) {
+                this.path = normalizePath(newPath);
+            }
+        }
+    }
+
     public void registerChangeListener(IResourceChangeListener listener) {
         if (resourceChangeListeners == null) {
             resourceChangeListeners = new ArrayList<>();

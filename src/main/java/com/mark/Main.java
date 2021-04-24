@@ -20,6 +20,7 @@ import javax.swing.event.RowSorterListener;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -374,5 +375,20 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         if (resourceList.size() > modelIndex) {
             resourceList.setCurrentIndex(modelIndex);
         }
+    }
+
+    public boolean renameMediaFile(String fromPath, String toPath) {
+        //Log.log("rename media file '%s' -> '%s'", fromPath, toPath);
+        try {
+            myPlayer.clearMedia();      // rename fails if it loaded
+            FileUtils.moveFile(new File(fromPath), new File(toPath));
+            saveCurrentResourceList(false); // save is required to sync with the file system
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            displayErrorMessage(e.toString());
+        }
+
+        return false;
     }
 }

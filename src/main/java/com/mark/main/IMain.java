@@ -19,6 +19,7 @@ public interface IMain {
     void processFile(String filePath);
     void processPaths(String[] paths, boolean dndAlternate);
     void processDirectory(String directoryPath);
+    boolean renameMediaFile(String fromPath, String toPath);
     void saveCurrentResourceList(boolean saveAs);
     void navigateResourceList(boolean forward, boolean favorite);
     ResourceList getResourceList();

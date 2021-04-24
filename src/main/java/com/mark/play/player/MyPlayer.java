@@ -191,7 +191,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         startMedia(resource.getPath());
     }
 
-    private void clearMedia() {
+    public void clearMedia() {
         if (mediaPlayer.media().isValid()) {
             mediaPlayer.controls().stop();
 
