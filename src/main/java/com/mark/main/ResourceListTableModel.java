@@ -1,6 +1,7 @@
 package com.mark.main;
 
 import com.mark.Log;
+import com.mark.Utils;
 import com.mark.resource.*;
 
 import javax.swing.table.AbstractTableModel;
@@ -108,7 +109,11 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
             resourceList.getResources().get(rowIndex).tag = ((String)value).trim();
         }
         else if (columnIndex == 5) {
-            resourceList.getResources().get(rowIndex).setMidPath(((String)value).trim());
+            String oldMidPath = resourceList.getResources().get(rowIndex).getMidPath();
+            String newMidPath = ((String)value).trim();
+            if (!Utils.normPathIsEqual(newMidPath, oldMidPath)) {
+                resourceList.updateMidPaths(oldMidPath, newMidPath);
+            }
         }
         else if (columnIndex == 6) {
             resourceList.getResources().get(rowIndex).setName(((String)value).trim());

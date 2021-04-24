@@ -633,13 +633,17 @@ public class ResourceList {
     }
 
     public void updateMidPaths(String currentMidPath, String newMidPath) {
+        main.clearCurrentMedia();       // clear open media before file operation
+
         for (Resource r : resources) {
             if (Utils.normPathIsEqual(currentMidPath, r.getMidPath())) {
-                r.updateMidPath(newMidPath);
+                r.updateMidPath(currentMidPath, newMidPath);
             }
         }
 
         modified = true;
         notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
+
+        //parentList.getMain().saveCurrentResourceList(false); // save is required to sync with the file system
     }
 }

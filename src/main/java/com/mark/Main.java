@@ -377,10 +377,15 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         }
     }
 
+    public void clearCurrentMedia() {
+        myPlayer.clearMedia();      // rename fails if it loaded
+    }
+
+
     public boolean renameMediaFile(String fromPath, String toPath) {
         //Log.log("rename media file '%s' -> '%s'", fromPath, toPath);
         try {
-            myPlayer.clearMedia();      // rename fails if it loaded
+            clearCurrentMedia();      // rename fails if it loaded
             FileUtils.moveFile(new File(fromPath), new File(toPath));
             return true;
         } catch (IOException e) {
@@ -389,9 +394,5 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         }
 
         return false;
-    }
-
-    public boolean renameMidPath(String fromValue, String toValue) {
-        return true;
     }
 }

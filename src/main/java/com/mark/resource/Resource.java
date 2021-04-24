@@ -39,7 +39,7 @@ public class Resource {
     public Resource(String path, ResourceList parentList) {
         assignKey();
         this.parentList = parentList;       // assign parentList before setting the path
-        this.path = normalizePath(path);
+        setNormalizedPath(path);
 
         // one marker at the starting point always to support the selected span play for the first segment.
         // subsequently added markers will dictate the segment to the right.
@@ -76,16 +76,25 @@ public class Resource {
         return FilenameUtils.getPath(Utils.normPath(path));
     }
 
-    public void updateMidPath(String newMidPath) {
-        String path = FilenameUtils.getFullPath(getPath());
-        int index = Utils.normPathIndexOf(path, getMidPath());
-        if (index >= 0) {
-            //Log.log("updating the midPath: %s -> %s (this.path: %s)", getMidPath(), newMidPath, this.path);
-            String pathWithNoMidPath = path.substring(0, index);
-            String newPath = Utils.normPath(pathWithNoMidPath + newMidPath + getName());
-            this.path = normalizePath(newPath);
-            //Log.log("updated the midPath: %s (this.path: %s)", getPath(), this.path);
+    public boolean updateMidPath(String currentMidPath, String newMidPath) {
+        if (!Utils.normPathIsEqual(currentMidPath, getMidPath())) {
+            return false;
         }
+
+        String currentPath = FilenameUtils.getFullPath(getPath());
+        int index = Utils.normPathIndexOf(currentPath, getMidPath());
+        if (index < 0) {       // it should be always true, really
+            return false;
+        }
+
+        String pathWithNoMidPath = currentPath.substring(0, index);
+        String newPath = Utils.normPath(pathWithNoMidPath + newMidPath + getName());
+        Log.log("updating midPath: %s -> %s; (%s -> %s)", getMidPath(), newMidPath, getPath(), newPath);
+
+        // TODO - file operation
+
+        setNormalizedPath(newPath);
+        return true;
     }
 
     public void setDuration(long duration) {
@@ -132,18 +141,8 @@ public class Resource {
             String currentPath = getPath();
             String newPath = Utils.normPath(FilenameUtils.getFullPath(currentPath) + newBaseName + "." + FilenameUtils.getExtension(getName()));
             if (parentList.getMain().renameMediaFile(currentPath, newPath)) {
-                this.path = normalizePath(newPath);
+                setNormalizedPath(newPath);
                 parentList.getMain().saveCurrentResourceList(false); // save is required to sync with the file system
-            }
-        }
-    }
-
-    public void setMidPath(String newMidPath) {
-        String oldMidPath = getMidPath();
-        if (!Utils.normPathIsEqual(newMidPath, oldMidPath)) {
-            if (parentList.getMain().renameMidPath(oldMidPath, newMidPath)) {
-                parentList.updateMidPaths(oldMidPath, newMidPath);
-                //parentList.getMain().saveCurrentResourceList(false); // save is required to sync with the file system
             }
         }
     }
@@ -348,8 +347,8 @@ public class Resource {
         return getPath().startsWith(root);
     }
 
-    public String normalizePath(String path) {
-        return path.substring(parentList.getRoot().length());
+    public void setNormalizedPath(String path) {
+        this.path = path.substring(parentList.getRoot().length());
     }
 
     public boolean normalizePathToRoot(String root) {
