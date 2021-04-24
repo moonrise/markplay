@@ -110,7 +110,16 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
         }
         else if (columnIndex == 5) {
             String oldMidPath = resourceList.getResources().get(rowIndex).getMidPath();
+
+            // quick validation check
             String newMidPath = ((String)value).trim();
+            if (newMidPath.startsWith("/") || newMidPath.startsWith("\\")) {
+                newMidPath = newMidPath.substring(1);
+            }
+            if (!newMidPath.endsWith("/") && !newMidPath.endsWith("\\")) {
+                newMidPath += "/";
+            }
+
             if (!Utils.normPathIsEqual(newMidPath, oldMidPath)) {
                 resourceList.updateMidPaths(oldMidPath, newMidPath);
             }

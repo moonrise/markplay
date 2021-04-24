@@ -7,6 +7,7 @@ import com.mark.io.GsonHandler;
 import com.mark.io.LegacyFilerReader;
 import com.mark.main.IMain;
 import com.mark.utils.ProgressDialog;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
@@ -633,17 +634,32 @@ public class ResourceList {
     }
 
     public void updateMidPaths(String currentMidPath, String newMidPath) {
-        main.clearCurrentMedia();       // clear open media before file operation
+        // first, ensure the target director exists
+        File targetDir = new File(newMidPath);
+        try {
+            FileUtils.forceMkdir(targetDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+            main.displayInfoMessage(String.format("Mid path rename failed. %d.", e.toString()));
+            return;
+        }
 
+        // clear open media before file operation
+        main.clearCurrentMedia();
+
+        int updateCount = 0;
         for (Resource r : resources) {
-            if (Utils.normPathIsEqual(currentMidPath, r.getMidPath())) {
-                r.updateMidPath(currentMidPath, newMidPath);
+            if (r.updateMidPath(currentMidPath, newMidPath)) {
+                updateCount++;
             }
         }
 
-        modified = true;
-        notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
+        if (updateCount > 0) {
+            modified = true;
+            notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
+            main.saveCurrentResourceList(false);        // save is required to sync with the file system
+        }
 
-        //parentList.getMain().saveCurrentResourceList(false); // save is required to sync with the file system
+        main.displayInfoMessage(String.format("Mid path updated to '%s' with %d files relocated.", targetDir.getPath(), updateCount));
     }
 }

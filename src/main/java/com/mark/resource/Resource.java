@@ -3,6 +3,7 @@ package com.mark.resource;
 import com.mark.Log;
 import com.mark.Prefs;
 import com.mark.Utils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -91,7 +92,13 @@ public class Resource {
         String newPath = Utils.normPath(pathWithNoMidPath + newMidPath + getName());
         Log.log("updating midPath: %s -> %s; (%s -> %s)", getMidPath(), newMidPath, getPath(), newPath);
 
-        // TODO - file operation
+        try {
+            FileUtils.moveFile(new File(getPath()), new File(newPath));
+        } catch (Exception e) {
+            e.printStackTrace();
+            parentList.getMain().displayErrorMessage(e.toString());
+            return false;
+        }
 
         setNormalizedPath(newPath);
         return true;
