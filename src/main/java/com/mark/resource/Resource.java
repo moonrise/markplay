@@ -121,6 +121,7 @@ public class Resource {
             String newPath = new File(FilenameUtils.getFullPath(currentPath) + newBaseName + "." + FilenameUtils.getExtension(getName())).getPath();
             if (parentList.getMain().renameMediaFile(currentPath, newPath)) {
                 this.path = normalizePath(newPath);
+                parentList.getMain().saveCurrentResourceList(false); // save is required to sync with the file system
             }
         }
     }

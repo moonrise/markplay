@@ -193,7 +193,8 @@ public class ResourceList {
         StringWriter writer = new StringWriter();
         //writer.write(GsonHandler.getHandler().toJson(resources));
         writer.write(GsonHandler.getHandler().toJson(this));
-        return writer.toString();
+        String stringValue = writer.toString();
+        return stringValue;
     }
 
     public void saveAs(String filePath, Integer sortedOrder[]) {

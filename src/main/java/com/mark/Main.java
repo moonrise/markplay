@@ -382,7 +382,6 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         try {
             myPlayer.clearMedia();      // rename fails if it loaded
             FileUtils.moveFile(new File(fromPath), new File(toPath));
-            saveCurrentResourceList(false); // save is required to sync with the file system
             return true;
         } catch (IOException e) {
             e.printStackTrace();
