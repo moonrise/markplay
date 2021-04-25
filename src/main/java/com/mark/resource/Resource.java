@@ -82,25 +82,42 @@ public class Resource {
             return false;
         }
 
+        // compute the current/source path and the target path
         String currentPath = FilenameUtils.getFullPath(getPath());
-        int index = Utils.normPathIndexOf(currentPath, getMidPath());
-        if (index < 0) {       // it should be always true, really
-            return false;
+        String pathWithNoMidPath = currentPath.substring(0, currentPath.length() - getMidPath().length());
+        String targetPath = Utils.normPath(pathWithNoMidPath + newMidPath + getName());
+        //Log.log("updating midPath: %s -> %s; (%s -> %s)", getMidPath(), newMidPath, getPath(), targetPath);
+
+        // source already in target?
+        // Also possible when there are multiple entries with the same file paths (one is moved and others won't need move)
+        if (new File(targetPath).exists()) {
+            String sourceFileHash = (fileHash == null || fileHash.isEmpty()) ? Utils.computeFileHash(getPath()) : fileHash;
+            String targetFileHash = Utils.computeFileHash(targetPath);
+            boolean hashMatch = targetFileHash.equals(sourceFileHash);
+            if (hashMatch) {
+                //Log.log("updating midPath: file '%s' already in the target directory with matching hash.", getName());
+            }
+            else {
+                //Log.log("updating midPath: source file hash -> %s", sourceFileHash);
+                //Log.log("updating midPath: target file hash -> %s", targetFileHash);
+                String message = String.format("updating midPath: file '%s' already in the target directory with not matching hash.", getName());
+                Log.log(message);
+                parentList.getMain().displayInfoMessage(message);
+            }
+
+            setNormalizedPath(targetPath);
+            return true;
         }
 
-        String pathWithNoMidPath = currentPath.substring(0, index);
-        String newPath = Utils.normPath(pathWithNoMidPath + newMidPath + getName());
-        Log.log("updating midPath: %s -> %s; (%s -> %s)", getMidPath(), newMidPath, getPath(), newPath);
-
         try {
-            FileUtils.moveFile(new File(getPath()), new File(newPath));
+            FileUtils.moveFile(new File(getPath()), new File(targetPath));
         } catch (Exception e) {
             e.printStackTrace();
             parentList.getMain().displayErrorMessage(e.toString());
             return false;
         }
 
-        setNormalizedPath(newPath);
+        setNormalizedPath(targetPath);
         return true;
     }
 
