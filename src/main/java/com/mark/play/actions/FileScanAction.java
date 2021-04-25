@@ -5,11 +5,11 @@ import com.mark.main.IMain;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class FindDuplicateActions extends AbstractAction {
+public class FileScanAction extends AbstractAction {
     private IMain main;
 
-    public FindDuplicateActions(IMain main) {
-        super("Find Duplicates...");
+    public FileScanAction(IMain main) {
+        super("Scan Files...");
         this.main = main;
     }
 

@@ -79,7 +79,7 @@ public class AppMenuBar extends JMenuBar {
         menu.add(checkBoxMenuItem);
 
         menu.add(new ClearFileSizesAndHashesAction(main));
-        menu.add(new FindDuplicateActions(main));
+        menu.add(new FileScanAction(main));
 
         return menu;
     }

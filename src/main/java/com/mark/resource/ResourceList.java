@@ -537,7 +537,7 @@ public class ResourceList {
             }
         });
 
-        ProgressDialog progressDialog = new ProgressDialog(main.getAppFrame(), "Find Duplicates", clonedResources.size());
+        ProgressDialog progressDialog = new ProgressDialog(main.getAppFrame(), "Scan Files", clonedResources.size());
 
         SwingWorker longWork = new SwingWorker<Integer, Integer>() {
             // mark duplicates
@@ -554,7 +554,7 @@ public class ResourceList {
                         return -1;
                     }
 
-                    //Log.log("Find duplicate process : %d/%d", i, resources.size());
+                    //Log.log("File scan process : %d/%d", i, resources.size());
                     /*
                     try {
                         Thread.sleep(1000);
