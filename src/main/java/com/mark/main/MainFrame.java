@@ -68,9 +68,30 @@ public class MainFrame extends JFrame implements ComponentListener, DropTargetLi
 
     public void setBounds() {
         // set the location and size from the preference store
-        Rectangle geo = Prefs.getMainFrameGeometry();
-        //Log.log("geo: %d, %d, %d, %d", geo.x, geo.y, geo.width, geo.height);
-        setBounds(geo.x, geo.y, geo.width, geo.height);
+        Rectangle pref = Prefs.getMainFrameGeometry();
+        Rectangle visible = computeVisibleBounds(pref);
+        //Log.log("preference: %d, %d, %d, %d", pref.x, pref.y, pref.width, pref.height);
+        //Log.log("visible: %d, %d, %d, %d", visible.x, visible.y, visible.width, visible.height);
+        setBounds(visible);
+    }
+
+    private Rectangle computeVisibleBounds(Rectangle preferred) {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] screens = ge.getScreenDevices();
+
+        Rectangle main = new Rectangle(0, 0, 600, 400);
+        for (GraphicsDevice gd : screens) {
+            Rectangle screenBounds = gd.getDefaultConfiguration().getBounds();
+            //Log.log("Device/Monitor ID: %s, Bounds: %s", gd.getIDstring(), screenBounds);
+            if (screenBounds.contains(preferred)) {
+                return preferred;
+            }
+            if (screenBounds.x == 0 && screenBounds.y == 0) {
+                main = screenBounds;
+            }
+        }
+
+        return new Rectangle(0, 0, Math.min(main.width, preferred.width), Math.min(main.height, preferred.height));
     }
 
     private void dumpGraphicsDevices() {
