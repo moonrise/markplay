@@ -4,6 +4,8 @@ public enum EResourceChangeType {
     MarkerAdded,
     MarkerRemoved,
     MarkerSelectionToggled,
-    FavoriteToggled,
+    SelectUpdated,
+    RatingUpdated,
+    TagUpdated,
     AttributesUpdated
 }

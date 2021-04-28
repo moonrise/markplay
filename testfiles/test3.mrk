@@ -1,11 +1,12 @@
 {
   "resources": [
     {
-      "path": "media/WhatIsMyth.wmv",
-      "rating": 0,
       "checked": false,
+      "rating": 0.0,
+      "path": "media/WhatIsMyth.wmv",
       "duration": 1842457,
       "fileSize": 307004934,
+      "userDataModifiedTime": 0,
       "markers": [
         {
           "time": 0,
@@ -62,11 +63,13 @@
       ]
     },
     {
+      "checked": false,
+      "rating": 0.0,
       "path": "media\\cloud.wmv",
-      "rating": 0,
-      "checked": true,
       "duration": 52213,
       "fileSize": 14177345,
+      "fileHash": "f41efd6f3b49067de20c73a1b66cdd65",
+      "userDataModifiedTime": 1619647563151,
       "markers": [
         {
           "time": 0,
@@ -87,11 +90,13 @@
       ]
     },
     {
+      "checked": true,
+      "rating": 0.0,
       "path": "media\\rabbit.mpg",
-      "rating": 0,
-      "checked": false,
       "duration": 125936,
       "fileSize": 5918720,
+      "fileHash": "6f9dad8f467c579269d96fdb4f7c95cd",
+      "userDataModifiedTime": 1619647563267,
       "markers": [
         {
           "time": 0,
@@ -104,11 +109,13 @@
       ]
     },
     {
-      "path": "media\\rabbit.mpg",
-      "rating": 0,
       "checked": false,
-      "duration": 0,
+      "rating": 0.0,
+      "path": "media\\rabbit.mpg",
+      "duration": 125936,
       "fileSize": 5918720,
+      "fileHash": "6f9dad8f467c579269d96fdb4f7c95cd",
+      "userDataModifiedTime": 0,
       "markers": [
         {
           "time": 0,

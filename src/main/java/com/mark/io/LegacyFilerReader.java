@@ -86,12 +86,6 @@ public class LegacyFilerReader extends DefaultHandler {
         else if (qName.equals("FileSize")) {
             resource.fileSize = Long.parseLong(data.toString());
         }
-        else if (qName.equals("ModifiedTime")) {
-            resource.modifiedTime = new Date(data.toString());
-        }
-        else if (qName.equals("AccessedTime")) {
-            resource.accessedTime = new Date(data.toString());
-        }
         else if (qName.equals("CResourceItem")) {
             //Log.log("resource: %s", resource.toString());
             resourceList.addLegacyResource(resource);

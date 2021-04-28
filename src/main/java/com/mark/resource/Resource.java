@@ -3,6 +3,7 @@ package com.mark.resource;
 import com.mark.Log;
 import com.mark.Prefs;
 import com.mark.Utils;
+import com.mark.utils.HashStore;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -18,12 +19,15 @@ public class Resource {
     public boolean checked;
     public float rating;
     public String tag = "";
-    private String path;
+    private String path = "";
     public long duration;
-    public long fileSize = 0;
+    public long fileSize;
     public String fileHash = "";
-    public Date modifiedTime;
-    public Date accessedTime;
+
+    // user data modification time; path, duration, fileSize or fileHash do not count as they are computed values.
+    // notice 'path' does not count because it is derived from the file name.
+    // this time primarily used to know the age of the stored data (see HashStore)
+    public long userDataModifiedTime;
 
     public ArrayList<Marker> markers = new ArrayList<>();
 
@@ -191,6 +195,9 @@ public class Resource {
         }
 
         // change notification to the parent is direct
+        if (changeType != EResourceChangeType.AttributesUpdated) {
+            onUserDataModified();       // set the timestamp
+        }
         parentList.onChildResourceChange(this, changeType);
 
         // notify all others who are registered
@@ -250,8 +257,22 @@ public class Resource {
     }
 
     public void toggleFavorite() {
+        setFavorite(!this.checked);
+    }
+
+    public void setFavorite(boolean checked) {
         this.checked = !this.checked;
-        notifyChangeListeners(EResourceChangeType.FavoriteToggled);
+        notifyChangeListeners(EResourceChangeType.SelectUpdated);
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+        notifyChangeListeners(EResourceChangeType.RatingUpdated);
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+        notifyChangeListeners(EResourceChangeType.TagUpdated);
     }
 
     public String toString() {
@@ -260,8 +281,43 @@ public class Resource {
             builder.append(String.format("marker: %d, %b\n", marker.time, marker.select));
         }
 
-        return String.format("path: %s, rating: %d, checked: %b, duration %d, fileSize: %d, modified: %s, accessed: %s\n%s\n",
-                             path, rating, checked, duration, fileSize, modifiedTime, accessedTime, builder.toString());
+        return String.format("path: %s, rating: %d, checked: %b, duration %d, fileSize: %d, modified: %d\n%s\n",
+                             path, rating, checked, duration, fileSize, userDataModifiedTime, builder.toString());
+    }
+
+    public String toStore() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(String.format("%d,%d,%.3f,%s,", userDataModifiedTime, checked ? 1 : 0, rating, tag == null ? "" : tag));
+        builder.append(markers.get(0).toStore());
+        for (int i=1; i<markers.size(); i++) {
+            builder.append(";");        // ":" is used within the marker as a delimiter
+            builder.append(markers.get(i).toStore());
+        }
+        return builder.toString();
+    }
+
+    public boolean updateToStore() {
+        // ensure we have the hash value of this resource (likely will have it)
+        initFileSizeAndHash();
+
+        // store it
+        String stored = HashStore.Instance.get(fileHash);
+        if (stored == null || amIModifiedSince(stored)) {
+            HashStore.Instance.put(fileHash, toStore());
+            Log.log("--- user data updated to hash store (%s) ---\n%s", fileHash, toStore());
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean amIModifiedSince(String stored) {
+        long storedModifiedTime = Long.parseLong(stored.substring(0, stored.indexOf(",")));
+        return userDataModifiedTime > storedModifiedTime;
+    }
+
+    private void onUserDataModified() {
+        userDataModifiedTime = new Date().getTime();
     }
 
     public boolean isSilentMode() {

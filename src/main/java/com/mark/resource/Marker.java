@@ -14,4 +14,8 @@ public class Marker implements Comparable<Marker> {
     public int compareTo(Marker o) {
         return time == o.time ? 0 : time < o.time ? - 1 : 1;
     }
+
+    public String toStore() {
+        return String.format("%d:%d", select ? 0 : 1, time);
+    }
 }

@@ -30,6 +30,9 @@ VLCJ
 * https://github.com/caprica/vlcj/tree/vlcj-4.x
 * https://capricasoftware.co.uk/projects/vlcj-4/tutorials
 
+MapDB
+* https://jankotek.gitbooks.io/mapdb/content/
+
 For all platforms, at least Java version 1.6 is required.
 For Linux and Windows platforms, Java versions 1.7+ are also fully supported.
 On macOS, there are potentially critical limitations if you use any version of Java after the 1.6 version.

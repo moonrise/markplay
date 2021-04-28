@@ -29,6 +29,9 @@ public class ResourceList {
     // silence change notifications (like when deserializing or batch processing)
     private transient boolean silentMode;
 
+    // updated user data triggers sets the HashStore dirty flag
+    private transient ArrayList<Resource> resourcesToStore = new ArrayList<>();
+
 
     public static void main(String[] args) {
         if (args.length > 0) {
@@ -242,9 +245,26 @@ public class ResourceList {
             return;
         }
 
+        updateHashStore();
+
         modified = false;
         this.filePath = filePath;
         notifyResourceListChange(ResourceListUpdate.Saved);
+    }
+
+    private void updateHashStoreAll() {
+        for (Resource r : resources) {
+            r.updateToStore();
+        }
+    }
+
+    private void updateHashStore() {
+        for (Resource r : resourcesToStore) {
+            r.updateToStore();
+        }
+
+        // reset for the next save
+        resourcesToStore = new ArrayList<>();
     }
 
     public void addResources(String[] filePaths) {
@@ -501,6 +521,13 @@ public class ResourceList {
     // Resource change is notified by listener notification from Resource, but the parent does not listen to it.
     public void onChildResourceChange(Resource resource, EResourceChangeType changeType) {
         modified = true;
+
+        // user data store update
+        if (changeType != EResourceChangeType.AttributesUpdated) {
+            if (resourcesToStore.indexOf(resource) < 0) {
+                resourcesToStore.add(resource);
+            }
+        }
 
         int index = resources.indexOf(resource);
         if (index >= 0) {

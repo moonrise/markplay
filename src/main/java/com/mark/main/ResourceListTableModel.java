@@ -100,13 +100,13 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
     @Override
     public void setValueAt(Object value, int rowIndex, int columnIndex) {
         if (columnIndex == 1) {
-            resourceList.getResources().get(rowIndex).checked = (boolean)value;
+            resourceList.getResources().get(rowIndex).setFavorite((boolean)value);
         }
         else if (columnIndex == 2) {
-            resourceList.getResources().get(rowIndex).rating = (float)value;
+            resourceList.getResources().get(rowIndex).setRating((float)value);
         }
         else if (columnIndex == 3) {
-            resourceList.getResources().get(rowIndex).tag = ((String)value).trim();
+            resourceList.getResources().get(rowIndex).setTag(((String)value).trim());
         }
         else if (columnIndex == 5) {
             String oldMidPath = resourceList.getResources().get(rowIndex).getMidPath();
