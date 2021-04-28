@@ -76,7 +76,7 @@ public class Prefs {
     }
 
     public static boolean isFocusOnPlayer() {
-        return false; //userPrefs.getBoolean("focusOnPlayer", false);
+        return userPrefs.getBoolean("focusOnPlayer", true);
     }
 
     public static void setMute(boolean x) {
