@@ -9,7 +9,7 @@ import javax.swing.table.AbstractTableModel;
 public class ResourceListTableModel extends AbstractTableModel implements IResourceListChangeListener {
     private ResourceList resourceList;
     private String[] columnNames = {"Row", "Select", "Rating", "Tag", "Makers", "Path", "Name", "Duration", "File Size", "File Hash", "Duplicate", "Delete"};
-    private int[] columnWidths = {10, 10, 10, 30, 10, 50, 250, 20, 65, 30, 10, 10};
+    private int[] columnWidths = {20, 16, 24, 32, 20, 70, 140, 40, 80, 100, 16, 16};
 
     public ResourceListTableModel(ResourceList resourceList) {
         this.resourceList = resourceList;
