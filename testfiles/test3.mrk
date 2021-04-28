@@ -6,6 +6,7 @@
       "path": "media/WhatIsMyth.wmv",
       "duration": 1842457,
       "fileSize": 307004934,
+      "fileHash": "c1a7174d0bf581eba107b9a5424bbdac",
       "userDataModifiedTime": 0,
       "markers": [
         {
@@ -63,13 +64,13 @@
       ]
     },
     {
-      "checked": false,
+      "checked": true,
       "rating": 0.0,
       "path": "media\\cloud.wmv",
       "duration": 52213,
       "fileSize": 14177345,
       "fileHash": "f41efd6f3b49067de20c73a1b66cdd65",
-      "userDataModifiedTime": 1619647563151,
+      "userDataModifiedTime": 1619649209786,
       "markers": [
         {
           "time": 0,
@@ -77,6 +78,22 @@
         },
         {
           "time": 6714,
+          "select": false
+        },
+        {
+          "time": 7658,
+          "select": false
+        },
+        {
+          "time": 12734,
+          "select": false
+        },
+        {
+          "time": 14062,
+          "select": true
+        },
+        {
+          "time": 16037,
           "select": false
         },
         {
@@ -90,13 +107,13 @@
       ]
     },
     {
-      "checked": true,
+      "checked": false,
       "rating": 0.0,
       "path": "media\\rabbit.mpg",
       "duration": 125936,
       "fileSize": 5918720,
       "fileHash": "6f9dad8f467c579269d96fdb4f7c95cd",
-      "userDataModifiedTime": 1619647563267,
+      "userDataModifiedTime": 1619649134189,
       "markers": [
         {
           "time": 0,
@@ -109,13 +126,13 @@
       ]
     },
     {
-      "checked": false,
+      "checked": true,
       "rating": 0.0,
       "path": "media\\rabbit.mpg",
       "duration": 125936,
       "fileSize": 5918720,
       "fileHash": "6f9dad8f467c579269d96fdb4f7c95cd",
-      "userDataModifiedTime": 0,
+      "userDataModifiedTime": 1619649173425,
       "markers": [
         {
           "time": 0,
@@ -125,5 +142,5 @@
     }
   ],
   "root": "C:\\Users\\bjeon\\IdeaProjects\\markplay\\",
-  "currentIndex": 2
+  "currentIndex": 1
 }

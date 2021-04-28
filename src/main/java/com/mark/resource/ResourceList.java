@@ -252,10 +252,18 @@ public class ResourceList {
         notifyResourceListChange(ResourceListUpdate.Saved);
     }
 
-    private void updateHashStoreAll() {
+    public int updateToHashStoreAll() {
+        int updateCount = 0;
         for (Resource r : resources) {
-            r.updateToStore();
+            if (r.updateToStore()) {
+                updateCount++;
+            };
         }
+
+        // clear up  the on-demand backup
+        resourcesToStore = new ArrayList<>();
+
+        return updateCount;
     }
 
     private void updateHashStore() {
