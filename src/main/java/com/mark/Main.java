@@ -7,6 +7,7 @@ import com.mark.main.IMain;
 import com.mark.main.MainFrame;
 import com.mark.main.MainSplitPane;
 import com.mark.play.player.MyPlayer;
+import com.mark.utils.HashStore;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.AbstractFileFilter;
@@ -69,6 +70,9 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     }
 
     public Main() {
+        // DB Init
+        HashStore.Instance.init();
+
         frame = new MainFrame(this);
 
         JPanel playerContainer = new JPanel();
@@ -142,6 +146,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         if (processCurrentContent()) {
             //myPlayer.release() causes JVM error on exit
             //myPlayer.release();
+            HashStore.Instance.close();
             System.exit(0);
         }
     }

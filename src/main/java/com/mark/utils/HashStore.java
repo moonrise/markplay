@@ -30,6 +30,11 @@ public class HashStore {
         this.map = db.hashMap("map", Serializer.STRING, Serializer.STRING).createOrOpen();
     }
 
+    // just to get the singleton to come to live
+    public void init() {
+        Log.log("HashStore (%s)", db.isClosed() ? "closed" : "open");
+    }
+
     public void close() {
         db.close();
     }
