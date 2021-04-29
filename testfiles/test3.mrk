@@ -65,13 +65,13 @@
     },
     {
       "checked": true,
-      "rating": 0.0,
+      "rating": 1.1,
       "tag": "rain",
       "path": "media\\cloud.wmv",
       "duration": 52213,
       "fileSize": 14177345,
       "fileHash": "f41efd6f3b49067de20c73a1b66cdd65",
-      "userDataModifiedTime": 1619666397177,
+      "userDataModifiedTime": 1619667513873,
       "markers": [
         {
           "time": 0,
@@ -143,5 +143,5 @@
     }
   ],
   "root": "C:\\Users\\bjeon\\IdeaProjects\\markplay\\",
-  "currentIndex": 1
+  "currentIndex": 2
 }

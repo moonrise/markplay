@@ -6,6 +6,7 @@ import com.mark.Utils;
 import com.mark.io.GsonHandler;
 import com.mark.io.LegacyFilerReader;
 import com.mark.main.IMain;
+import com.mark.utils.HashStore;
 import com.mark.utils.ProgressDialog;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -254,11 +255,14 @@ public class ResourceList {
 
     public int updateAllToHashStore() {
         int updateCount = 0;
+        HashStore hashStore = new HashStore();
         for (Resource r : resources) {
-            if (r.updateToStore()) {
+            if (r.updateToStore(hashStore)) {
                 updateCount++;
             };
         }
+        hashStore.commit();
+        hashStore.close();
 
         // clear up  the on-demand backup
         resourcesToStore = new ArrayList<>();
@@ -267,21 +271,26 @@ public class ResourceList {
     }
 
     private void updateHashStore() {
+        HashStore hashStore = new HashStore();
         for (Resource r : resourcesToStore) {
-            r.updateToStore();
+            r.updateToStore(hashStore);
         }
+        hashStore.commit();
+        hashStore.close();
 
         // reset for the next save
         resourcesToStore = new ArrayList<>();
     }
 
     public int restoreAllFromHashStore() {
+        HashStore hashStore = new HashStore();
         int updateCount = 0;
         for (Resource r : resources) {
-            if (r.restoreFromStore()) {
+            if (r.restoreFromStore(hashStore)) {
                 updateCount++;
             };
         }
+        hashStore.close();
 
         if (updateCount > 0) {
             modified = true;

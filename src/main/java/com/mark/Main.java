@@ -70,9 +70,6 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
     }
 
     public Main() {
-        // DB Init
-        HashStore.Instance.init();
-
         frame = new MainFrame(this);
 
         JPanel playerContainer = new JPanel();
@@ -146,7 +143,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         if (processCurrentContent()) {
             //myPlayer.release() causes JVM error on exit
             //myPlayer.release();
-            HashStore.Instance.close();
+            //HashStore.Instance.close();
             System.exit(0);
         }
     }

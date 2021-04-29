@@ -309,27 +309,27 @@ public class Resource {
         return builder.toString();
     }
 
-    public boolean updateToStore() {
+    public boolean updateToStore(HashStore hashStore) {
         // ensure we have the hash value of this resource (likely will have it)
         initFileSizeAndHash();
 
         // store it
-        String stored = HashStore.Instance.get(fileHash);
+        String stored = hashStore.get(fileHash);
         if (stored == null || amIModifiedSince(stored)) {
-            HashStore.Instance.put(fileHash, toStore());
-            Log.log("--- user data updated to hash store (%s) ---\n%s", fileHash, toStore());
+            hashStore.put(fileHash, toStore(), false);
+            //Log.log("--- user data updated to hash store (%s) ---\n%s", fileHash, toStore());
             return true;
         }
 
         return false;
     }
 
-    public boolean restoreFromStore() {
+    public boolean restoreFromStore(HashStore hashStore) {
         // ensure we have the hash value of this resource (likely will have it, or should have it)
         initFileSizeAndHash();
 
         // restore from the hash store db
-        String stored = HashStore.Instance.get(fileHash);
+        String stored = hashStore.get(fileHash);
         if (stored == null) {
             return false;
         }
