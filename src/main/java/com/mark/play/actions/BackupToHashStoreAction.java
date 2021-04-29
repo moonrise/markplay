@@ -15,6 +15,12 @@ public class BackupToHashStoreAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
+        int notHashed = main.getResourceList().areAllFilesHashed();
+        if (notHashed > 0) {
+            main.displayInfoMessage(String.format("%d files are not hashed. All files should be hashed for backup operation.", notHashed));
+            return;
+        }
+
         String promptMessage = "Backup user data to Hash Store (Only more recent data will be backed up)?";
         if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(main.getAppFrame(), promptMessage, "Confirm", JOptionPane.YES_NO_OPTION)) {
             return;

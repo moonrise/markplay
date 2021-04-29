@@ -253,6 +253,19 @@ public class ResourceList {
         notifyResourceListChange(ResourceListUpdate.Saved);
     }
 
+    // returns the count of non hashed entries (i.e. zero means all hashed)
+    public int areAllFilesHashed() {
+        int notHashed = 0;
+
+        for (Resource resource : resources) {
+            if (resource.fileHash == null || resource.fileHash.isEmpty()) {
+                notHashed++;
+            }
+        }
+
+        return notHashed;
+    }
+
     public int updateAllToHashStore() {
         int updateCount = 0;
         HashStore hashStore = new HashStore();

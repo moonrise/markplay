@@ -9,7 +9,7 @@ public class FileScanAction extends AbstractAction {
     private IMain main;
 
     public FileScanAction(IMain main) {
-        super("Scan Files...");
+        super("Hash Files...");
         this.main = main;
     }
 
