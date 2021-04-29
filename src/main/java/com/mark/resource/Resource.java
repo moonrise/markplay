@@ -51,6 +51,19 @@ public class Resource {
         markers.add(new Marker(0));
     }
 
+    // this version creates a temporary working instance for deserialization from the hash table
+    // input should have the right count of values in the right sequence.
+    private Resource(String[] splits) {
+        this.checked = splits[1].equals("1");
+        this.rating = Float.parseFloat(splits[2]);
+        this.tag = splits[3];
+
+        String[] markers = splits[4].split(";");
+        for (String marker : markers) {
+            this.markers.add(new Marker(marker));
+        }
+    }
+
     public void assignKey() {
         if (this.key == 0) {
             this.key = ++keyBase;
@@ -311,6 +324,47 @@ public class Resource {
         return false;
     }
 
+    public boolean restoreFromStore() {
+        // ensure we have the hash value of this resource (likely will have it, or should have it)
+        initFileSizeAndHash();
+
+        // restore from the hash store db
+        String stored = HashStore.Instance.get(fileHash);
+        if (stored == null) {
+            return false;
+        }
+
+        String[] splits = stored.split(",");
+        if (splits.length < 5) {
+            return false;
+        }
+
+        boolean isRestored = false;
+        Resource restored = new Resource(splits);
+        if (restored.checked && !this.checked) {
+            this.checked = true;
+            isRestored = true;
+        }
+
+        if (restored.rating > 0 && this.rating <= 0) {
+            this.rating = restored.rating;
+            isRestored = true;
+        }
+
+        if (!restored.tag.isEmpty() && this.tag.isEmpty()) {
+            this.tag = restored.tag;
+            isRestored = true;
+        }
+
+        // markers are merged rather than copied
+        int markersAdded = mergeMarkersWith(restored);
+        if (markersAdded > 0) {
+            isRestored = true;
+        }
+
+        return isRestored;
+    }
+
     private boolean amIModifiedSince(String stored) {
         long storedModifiedTime = Long.parseLong(stored.substring(0, stored.indexOf(",")));
         return userDataModifiedTime > storedModifiedTime;
@@ -439,7 +493,7 @@ public class Resource {
         return false;
     }
 
-    public int mergeWith(Resource from) {
+    public int mergeMarkersWith(Resource from) {
         int markersAdded = 0;
 
         if (from.markers.size() < 1) {

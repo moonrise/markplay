@@ -1,0 +1,34 @@
+{
+  "resources": [
+    {
+      "checked": false,
+      "rating": 0.0,
+      "tag": "",
+      "path": "media\\WhatIsMyth.wmv",
+      "duration": 1842457,
+      "fileSize": 307004934,
+      "fileHash": "c1a7174d0bf581eba107b9a5424bbdac",
+      "userDataModifiedTime": 1619664071016,
+      "markers": [
+        {
+          "time": 0,
+          "select": false
+        },
+        {
+          "time": 61689,
+          "select": true
+        },
+        {
+          "time": 68731,
+          "select": false
+        },
+        {
+          "time": 94622,
+          "select": false
+        }
+      ]
+    }
+  ],
+  "root": "C:\\Users\\bjeon\\IdeaProjects\\markplay\\",
+  "currentIndex": 0
+}

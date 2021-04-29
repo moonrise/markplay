@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="test2" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.mark.Main" />
+    <module name="markplay" />
+    <option name="PROGRAM_PARAMETERS" value="./testfiles/test2.mrk" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.mark.main.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

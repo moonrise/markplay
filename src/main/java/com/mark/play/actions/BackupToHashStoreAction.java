@@ -15,12 +15,12 @@ public class BackupToHashStoreAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        String promptMessage = "Backup all modified user data to HashStore?";
+        String promptMessage = "Backup user data to Hash Store (Only more recent data will be backed up)?";
         if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(main.getAppFrame(), promptMessage, "Confirm", JOptionPane.YES_NO_OPTION)) {
             return;
         }
 
-        int updateCount = main.getResourceList().updateToHashStoreAll();
+        int updateCount = main.getResourceList().updateAllToHashStore();
         main.displayInfoMessage(String.format("%d out of %d resources backed up.", updateCount, main.getResourceList().getResources().size()));
     }
 }

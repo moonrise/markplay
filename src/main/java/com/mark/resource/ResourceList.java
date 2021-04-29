@@ -252,7 +252,7 @@ public class ResourceList {
         notifyResourceListChange(ResourceListUpdate.Saved);
     }
 
-    public int updateToHashStoreAll() {
+    public int updateAllToHashStore() {
         int updateCount = 0;
         for (Resource r : resources) {
             if (r.updateToStore()) {
@@ -273,6 +273,22 @@ public class ResourceList {
 
         // reset for the next save
         resourcesToStore = new ArrayList<>();
+    }
+
+    public int restoreAllFromHashStore() {
+        int updateCount = 0;
+        for (Resource r : resources) {
+            if (r.restoreFromStore()) {
+                updateCount++;
+            };
+        }
+
+        if (updateCount > 0) {
+            modified = true;
+            notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
+        }
+
+        return updateCount;
     }
 
     public void addResources(String[] filePaths) {
@@ -372,7 +388,7 @@ public class ResourceList {
                     Resource myResource = isDuplicateFileContent(sourceResource);
                     if (myResource != null) {
                         boolean mergeChange = false;
-                        int markers = myResource.mergeWith(sourceResource);
+                        int markers = myResource.mergeMarkersWith(sourceResource);
                         if (markers > 0) {
                             mergeChange = true;
                             newMarkers += markers;

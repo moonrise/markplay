@@ -2,12 +2,12 @@
   "resources": [
     {
       "checked": false,
-      "rating": 0.0,
+      "rating": 9.0,
       "path": "media/WhatIsMyth.wmv",
       "duration": 1842457,
       "fileSize": 307004934,
       "fileHash": "c1a7174d0bf581eba107b9a5424bbdac",
-      "userDataModifiedTime": 0,
+      "userDataModifiedTime": 1619666373782,
       "markers": [
         {
           "time": 0,
@@ -66,11 +66,12 @@
     {
       "checked": true,
       "rating": 0.0,
+      "tag": "rain",
       "path": "media\\cloud.wmv",
       "duration": 52213,
       "fileSize": 14177345,
       "fileHash": "f41efd6f3b49067de20c73a1b66cdd65",
-      "userDataModifiedTime": 1619649209786,
+      "userDataModifiedTime": 1619666397177,
       "markers": [
         {
           "time": 0,
