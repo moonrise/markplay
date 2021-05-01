@@ -104,6 +104,7 @@ public class AppMenuBar extends JMenuBar {
         checkBoxMenuItem3.setState(Prefs.isAllowDuplicateResourcePath());
         menu.add(checkBoxMenuItem3);
 
+        menu.addSeparator();
         menu.add(new SettingsAction(main));
 
         return menu;

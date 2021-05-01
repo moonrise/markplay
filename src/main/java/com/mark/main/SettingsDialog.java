@@ -162,12 +162,24 @@ public class SettingsDialog extends JDialog {
         topPanel.setBorder(new EmptyBorder(15, 30, 10, 30));
         topPanel.setLayout(new BorderLayout());
 
-        topPanel.add(buildPathRootTitle(), BorderLayout.NORTH);
-        topPanel.add(new JScrollPane(buildRootTable()));
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.add("Root Path", buildPathRootPanel());
 
+        topPanel.add(tabbedPane);
         topPanel.add(buildDialogButtonPanel(), BorderLayout.SOUTH);
+
         getContentPane().add(topPanel);
         pack();
+    }
+
+    private JPanel buildPathRootPanel() {
+        JPanel panel = new JPanel();
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panel.setLayout(new BorderLayout());
+        panel.add(buildPathRootTitle(), BorderLayout.NORTH);
+        panel.add(new JScrollPane(buildRootTable()));
+
+        return panel;
     }
 
     private JPanel buildPathRootTitle() {
