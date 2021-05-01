@@ -313,6 +313,20 @@ public class ResourceList {
         return updateCount;
     }
 
+    public int checkHashStore() {
+        HashStore hashStore = new HashStore();
+        int inHashStoreCount = 0;
+        for (Resource r : resources) {
+            if (r.isInHashStore(hashStore) == 1) {
+                inHashStoreCount++;
+            };
+        }
+        hashStore.close();
+
+        notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
+        return inHashStoreCount;
+    }
+
     public void addResources(String[] filePaths) {
         if (filePaths.length < 1) {
             return;
@@ -671,7 +685,7 @@ public class ResourceList {
 
             @Override
             protected void done() {
-                String doneMessage = String.format("%d duplicate content found based on file sizes and hashes (see duplicate column).", duplicates);
+                String doneMessage = String.format("%d duplicate content found based on file sizes and hashes (see temp column).", duplicates);
                 //Log.log(doneMessage);
                 progressDialog.setStatusText(doneMessage);
                 progressDialog.cancelToCloseButton();

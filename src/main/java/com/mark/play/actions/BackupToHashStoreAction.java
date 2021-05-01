@@ -9,7 +9,7 @@ public class BackupToHashStoreAction extends AbstractAction {
     private IMain main;
 
     public BackupToHashStoreAction(IMain main) {
-        super("Backup...");
+        super("Hash Store...");
         this.main = main;
     }
 

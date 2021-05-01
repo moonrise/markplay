@@ -146,7 +146,7 @@ public class Resource {
     }
 
     public boolean isFileHashed() {
-        return this.fileHash != null && this.fileHash.isEmpty();
+        return this.fileHash != null && !this.fileHash.isEmpty();
     }
 
     public void initFileSizeAndHash() {
@@ -371,6 +371,21 @@ public class Resource {
         }
 
         return isRestored;
+    }
+
+    public int isInHashStore(HashStore hashStore) {
+        temp = 0;
+
+        if (!isFileHashed()) {
+            return -1;
+        }
+
+        if (hashStore.get(fileHash) == null) {
+            return 0;
+        }
+
+        temp = 1;
+        return 1;
     }
 
     private boolean amIModifiedSince(String stored) {
