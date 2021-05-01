@@ -145,8 +145,12 @@ public class Resource {
         }
     }
 
+    public boolean isFileHashed() {
+        return this.fileHash != null && this.fileHash.isEmpty();
+    }
+
     public void initFileSizeAndHash() {
-        if (this.fileSize == 0 || this.fileHash == null || this.fileHash.isEmpty()) {
+        if (!isFileHashed()) {
             setFileSizeAndHash();
             notifyChangeListeners(EResourceChangeType.AttributesUpdated);
         }
@@ -310,8 +314,10 @@ public class Resource {
     }
 
     public boolean updateToStore(HashStore hashStore) {
-        // ensure we have the hash value of this resource (likely will have it)
-        initFileSizeAndHash();
+        // ensure we have the hash value of this resource
+        if (!isFileHashed()) {
+            return false;
+        }
 
         // store it
         String stored = hashStore.get(fileHash);
@@ -325,8 +331,10 @@ public class Resource {
     }
 
     public boolean restoreFromStore(HashStore hashStore) {
-        // ensure we have the hash value of this resource (likely will have it, or should have it)
-        initFileSizeAndHash();
+        // ensure we have the hash value of this resource
+        if (!isFileHashed()) {
+            return false;
+        }
 
         // restore from the hash store db
         String stored = hashStore.get(fileHash);

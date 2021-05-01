@@ -7,7 +7,6 @@ import com.mark.main.IMain;
 import com.mark.main.MainFrame;
 import com.mark.main.MainSplitPane;
 import com.mark.play.player.MyPlayer;
-import com.mark.utils.HashStore;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.AbstractFileFilter;

@@ -186,7 +186,9 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         }
 
         this.resource = resource;
-        this.resource.initFileSizeAndHash();
+        //let's not hash files on start playing as it can delay (having a lockup effect) for large files, especially
+        //when a file is loaded in an app launch. Users can choose to hash files with the menu explicitly.
+        //this.resource.initFileSizeAndHash();
         playerState.setResource(resource);
         startMedia(resource.getPath());
     }
