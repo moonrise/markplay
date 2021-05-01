@@ -1,7 +1,8 @@
-package com.mark.main;
+package com.mark.settings;
 
 import com.mark.Prefs;
 import com.mark.Utils;
+import com.mark.main.IMain;
 import com.mark.resource.ResourceList;
 import com.mark.utils.ITableCellButtonClickListener;
 import com.mark.utils.TableCellButton;

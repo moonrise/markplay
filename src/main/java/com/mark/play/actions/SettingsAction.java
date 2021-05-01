@@ -1,7 +1,7 @@
 package com.mark.play.actions;
 
 import com.mark.main.IMain;
-import com.mark.main.SettingsDialog;
+import com.mark.settings.SettingsDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
