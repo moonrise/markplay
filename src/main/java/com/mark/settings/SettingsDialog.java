@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 
 public class SettingsDialog extends JDialog {
     private IMain main;
-    private RootPathSetting rootPathSetting;
 
     public SettingsDialog(IMain main) {
         super(main.getAppFrame(), "Settings", true, main.getAppFrame().getGraphicsConfiguration());
@@ -25,7 +24,8 @@ public class SettingsDialog extends JDialog {
         topPanel.setLayout(new BorderLayout());
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.add("Root Path", (this.rootPathSetting = new RootPathSetting(main)));
+        tabbedPane.add("Root Path", new RootPathSetting(main));
+        tabbedPane.add("Hash Store", new HashStoreSetting(main));
 
         topPanel.add(tabbedPane);
         topPanel.add(buildDialogButtonPanel(), BorderLayout.SOUTH);

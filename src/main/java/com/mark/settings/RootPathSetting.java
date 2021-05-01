@@ -165,7 +165,7 @@ public class RootPathSetting extends JPanel {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panel.setBorder(new EmptyBorder(8, 0, 0, 0));
 
-        JButton setRootButton = new JButton("Set Path Root");
+        JButton setRootButton = new JButton("Set New Root");
         setRootButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
