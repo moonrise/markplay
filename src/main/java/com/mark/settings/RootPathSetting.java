@@ -12,9 +12,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class RootPathSetting extends JPanel implements ISettingsDialogOKHandler {
+public class RootPathSetting extends JPanel {
     static class RootPref {
         // Separator should not be ":" to support Windows path like 'C:\'
         // Separator should not be ";" as it is used for multiple value delimiters in preferences
@@ -152,18 +154,29 @@ public class RootPathSetting extends JPanel implements ISettingsDialogOKHandler 
     public RootPathSetting(IMain main) {
         this.main = main;
 
-        setBorder(new EmptyBorder(10, 10, 10, 10));
+        setBorder(new EmptyBorder(8, 10, 8, 10));
         setLayout(new BorderLayout());
         add(buildPathRootTitle(), BorderLayout.NORTH);
         add(new JScrollPane(buildRootTable()));
+        add(buildButtonPanel(), BorderLayout.SOUTH);
     }
 
-    public boolean onSettingsDialogOKButtonPressed() {
-        // save the list to pref (in case edited)
-        tableModel.save();
+    private JPanel buildButtonPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.setBorder(new EmptyBorder(8, 0, 0, 0));
 
-        // save new root value
-        return checkNewRootAndSave();
+        JButton setRootButton = new JButton("Set Path Root");
+        setRootButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ((JButton)e.getSource()).requestFocus();    // if the cell is still in edit mode
+                tableModel.save(); // save the list to pref (in case edited)
+                checkNewRootAndSave(); // save new root value
+            }
+        });
+        panel.add(setRootButton);
+
+        return panel;
     }
 
     private JPanel buildPathRootTitle() {

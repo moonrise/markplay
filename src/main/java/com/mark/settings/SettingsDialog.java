@@ -24,9 +24,8 @@ public class SettingsDialog extends JDialog {
         topPanel.setBorder(new EmptyBorder(15, 30, 10, 30));
         topPanel.setLayout(new BorderLayout());
 
-        this.rootPathSetting = new RootPathSetting(main);
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.add("Root Path", this.rootPathSetting);
+        tabbedPane.add("Root Path", (this.rootPathSetting = new RootPathSetting(main)));
 
         topPanel.add(tabbedPane);
         topPanel.add(buildDialogButtonPanel(), BorderLayout.SOUTH);
@@ -38,8 +37,8 @@ public class SettingsDialog extends JDialog {
     private JPanel buildDialogButtonPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panel.setBorder(new EmptyBorder(10, 0, 0, 0));
-        panel.add(buildDialogOKButton());
-        panel.add(buildDialogCancelButton());
+        //panel.add(buildDialogOKButton()); // each tab has its own handler now
+        panel.add(buildDialogCloseButton());
         return panel;
     }
 
@@ -49,14 +48,13 @@ public class SettingsDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ((JButton)e.getSource()).requestFocus();    // if the cell is still in edit mode
-                setVisible(!rootPathSetting.onSettingsDialogOKButtonPressed());
             }
         });
         return button;
     }
 
-    private JButton buildDialogCancelButton() {
-        JButton button = new JButton("Cancel");
+    private JButton buildDialogCloseButton() {
+        JButton button = new JButton("Close");
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
