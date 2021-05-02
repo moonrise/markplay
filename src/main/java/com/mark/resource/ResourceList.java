@@ -266,7 +266,20 @@ public class ResourceList {
         return notHashed;
     }
 
+    private boolean isHashStoreReady() {
+        String isHashStoreOK = HashStore.checkHashStoreDB();
+        if (isHashStoreOK != null) {
+            main.displayErrorMessage(isHashStoreOK);
+            return false;
+        }
+        return true;
+    }
+
     public int updateAllToHashStore() {
+        if (!isHashStoreReady()) {
+            return -1;
+        }
+
         int updateCount = 0;
         HashStore hashStore = new HashStore();
         for (Resource r : resources) {
@@ -284,6 +297,10 @@ public class ResourceList {
     }
 
     private void updateHashStore() {
+        if (!isHashStoreReady()) {
+            return;
+        }
+
         HashStore hashStore = new HashStore();
         for (Resource r : resourcesToStore) {
             r.updateToStore(hashStore);
@@ -296,6 +313,10 @@ public class ResourceList {
     }
 
     public int restoreAllFromHashStore() {
+        if (!isHashStoreReady()) {
+            return 0;
+        }
+
         HashStore hashStore = new HashStore();
         int updateCount = 0;
         for (Resource r : resources) {
@@ -314,6 +335,10 @@ public class ResourceList {
     }
 
     public int checkHashStore() {
+        if (!isHashStoreReady()) {
+            return -1;
+        }
+
         HashStore hashStore = new HashStore();
         int inHashStoreCount = 0;
         for (Resource r : resources) {

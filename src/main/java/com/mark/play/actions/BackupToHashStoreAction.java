@@ -27,6 +27,8 @@ public class BackupToHashStoreAction extends AbstractAction {
         }
 
         int updateCount = main.getResourceList().updateAllToHashStore();
-        main.displayInfoMessage(String.format("%d out of %d resources backed up.", updateCount, main.getResourceList().getResources().size()));
+        if (updateCount >= 0) {
+            main.displayInfoMessage(String.format("%d out of %d resources backed up.", updateCount, main.getResourceList().getResources().size()));
+        }
     }
 }

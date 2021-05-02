@@ -25,6 +25,8 @@ public class CheckHashStore extends AbstractAction {
         }
 
         int yesCount = main.getResourceList().checkHashStore();
-        main.displayInfoMessage(String.format("Total: %d, Hashed: %d, In Hash Store: %d (see temp column).", total, total-notHashed, yesCount));
+        if (yesCount >= 0) {
+            main.displayInfoMessage(String.format("Total: %d, Hashed: %d, In Hash Store: %d (see temp column).", total, total-notHashed, yesCount));
+        }
     }
 }

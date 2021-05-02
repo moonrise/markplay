@@ -248,4 +248,12 @@ public class Prefs {
         }
         userPrefs.put("roots", writer.toString());
     }
+
+    public static String getHashStoreDBPath() {
+        return userPrefs.get("hashDB", "");
+    }
+
+    public static void setHashStoreDBPath(String dbPath) {
+        userPrefs.put("hashDB", dbPath);
+    }
 }

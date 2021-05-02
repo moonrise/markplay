@@ -27,6 +27,8 @@ public class RestoreFromHashStoreAction extends AbstractAction {
         }
 
         int updateCount = main.getResourceList().restoreAllFromHashStore();
-        main.displayInfoMessage(String.format("%d out of %d resources restore-merged.", updateCount, main.getResourceList().getResources().size()));
+        if (updateCount >= 0) {
+            main.displayInfoMessage(String.format("%d out of %d resources restore-merged.", updateCount, main.getResourceList().getResources().size()));
+        }
     }
 }
