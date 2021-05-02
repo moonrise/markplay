@@ -15,6 +15,7 @@ import java.io.File;
 public class HashStoreSetting extends JPanel {
     private IMain main;
     private JTextField pathEditor;
+    private JTextArea contentArea;
 
     public HashStoreSetting(IMain main) {
         this.main = main;
@@ -38,6 +39,13 @@ public class HashStoreSetting extends JPanel {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panel.setBorder(new EmptyBorder(8, 0, 0, 0));
 
+        panel.add(buildSetFilePathAction());
+        panel.add(buildLoadAllFromHashDB());
+
+        return panel;
+    }
+
+    private JButton buildSetFilePathAction() {
         JButton setFilePathButton = new JButton("Set File Path");
         setFilePathButton.addActionListener(new ActionListener() {
             @Override
@@ -46,9 +54,19 @@ public class HashStoreSetting extends JPanel {
                 setHashStoreDBPath();
             }
         });
-        panel.add(setFilePathButton);
+        return setFilePathButton;
+    }
 
-        return panel;
+    private JButton buildLoadAllFromHashDB() {
+        JButton setFilePathButton = new JButton("Load All");
+        setFilePathButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ((JButton) e.getSource()).requestFocus();    // if the cell is still in edit mode
+                loadAllFromHashStore();
+            }
+        });
+        return setFilePathButton;
     }
 
     private void setHashStoreDBPath() {
@@ -101,6 +119,12 @@ public class HashStoreSetting extends JPanel {
         }
     }
 
+    private void loadAllFromHashStore() {
+        HashStore hashStore = new HashStore();
+        contentArea.setText(hashStore.getAllHashEntriesAsString());
+        hashStore.close();
+    }
+
     private JPanel buildHashDBHeaderPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -112,7 +136,7 @@ public class HashStoreSetting extends JPanel {
         panel.add(pathEditor, gbcFill(1, 0));
 
         panel.add(labelWithFG("Current Entry Count:", Color.DARK_GRAY), gbcSimple(0, 1));
-        panel.add(labelWithFG("123", Color.BLUE), gbcFill(1, 1));
+        panel.add(labelWithFG("" + HashStore.getCurrentHashStoreSize(), Color.BLUE), gbcFill(1, 1));
 
         return panel;
     }
@@ -143,8 +167,9 @@ public class HashStoreSetting extends JPanel {
     }
 
     private JScrollPane hashDBContentPanel() {
-        JTextArea textArea = new JTextArea("Text...");
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        contentArea = new JTextArea("");
+        contentArea.setFont(new Font("courier", Font.PLAIN, 12));
+        JScrollPane scrollPane = new JScrollPane(contentArea);
         scrollPane.setPreferredSize(new Dimension(300, 100));
         return scrollPane;
     }

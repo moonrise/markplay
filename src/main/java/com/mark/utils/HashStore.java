@@ -7,6 +7,7 @@ import org.mapdb.DBMaker;
 import org.mapdb.Serializer;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentMap;
 
 public class HashStore {
@@ -50,9 +51,39 @@ public class HashStore {
         return null;        // OK
     }
 
+    public static int getCurrentHashStoreSize() {
+        int currentSize = 0;
+
+        HashStore hashStore = new HashStore();
+        currentSize = hashStore.map.size();
+        hashStore.close();
+
+        return currentSize;
+    }
+
     public HashStore() {
         this.db = DBMaker.fileDB(Prefs.getHashStoreDBPath()).fileMmapEnable().transactionEnable().make();
         this.map = db.hashMap("map", Serializer.STRING, Serializer.STRING).createOrOpen();
+    }
+
+    public String[] getAllHashEntries() {
+        ArrayList<String> allEntries = new ArrayList<>();
+
+        map.forEach((key, value) -> {
+            allEntries.add(key + ":" + value);
+        });
+
+        return allEntries.toArray(new String[] {});
+    }
+
+    public String getAllHashEntriesAsString() {
+        StringBuilder builder = new StringBuilder();
+
+        map.forEach((key, value) -> {
+            builder.append(String.format("%s : %s\n", key, value));
+        });
+
+        return builder.toString();
     }
 
     // just to get the singleton to come to live
