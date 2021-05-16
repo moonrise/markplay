@@ -330,47 +330,57 @@ public class Resource {
         return false;
     }
 
-    public boolean restoreFromStore(HashStore hashStore) {
+    /**
+     * @param hashStore
+     * @return 1 : restore merged, 0: nothing to merge, -1: not in the hash table, -2: error
+     */
+    public int restoreFromStore(HashStore hashStore) {
+        this.temp = 1;      // assume restore as a starter
+
         // ensure we have the hash value of this resource
         if (!isFileHashed()) {
-            return false;
+            this.temp = -2;
+            return -2;      //
         }
 
         // restore from the hash store db
         String stored = hashStore.get(fileHash);
         if (stored == null) {
-            return false;
+            this.temp = -1;
+            return -1;
         }
 
         String[] splits = stored.split(",");
         if (splits.length < 5) {
-            return false;
+            this.temp = -2;
+            return -2;
         }
 
         boolean isRestored = false;
         Resource restored = new Resource(splits);
         if (restored.checked && !this.checked) {
             this.checked = true;
-            isRestored = true;
+            return 1;
         }
 
         if (restored.rating > 0 && this.rating <= 0) {
             this.rating = restored.rating;
-            isRestored = true;
+            return 1;
         }
 
         if (!restored.tag.isEmpty() && this.tag.isEmpty()) {
             this.tag = restored.tag;
-            isRestored = true;
+            return 1;
         }
 
         // markers are merged rather than copied
         int markersAdded = mergeMarkersWith(restored);
         if (markersAdded > 0) {
-            isRestored = true;
+            return 1;
         }
 
-        return isRestored;
+        this.temp = 0;
+        return 0;
     }
 
     public int isInHashStore(HashStore hashStore) {

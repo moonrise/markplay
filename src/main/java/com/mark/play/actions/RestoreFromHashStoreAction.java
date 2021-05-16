@@ -1,6 +1,7 @@
 package com.mark.play.actions;
 
 import com.mark.main.IMain;
+import com.mark.resource.ResourceList;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -26,9 +27,8 @@ public class RestoreFromHashStoreAction extends AbstractAction {
             return;
         }
 
-        int updateCount = main.getResourceList().restoreAllFromHashStore();
-        if (updateCount >= 0) {
-            main.displayInfoMessage(String.format("%d out of %d resources restore-merged.", updateCount, main.getResourceList().getResources().size()));
-        }
+        ResourceList.RestoreHashResult result = main.getResourceList().restoreAllFromHashStore();
+        main.displayInfoMessage(String.format("Total: %d, Merged[1]: %d, Not in hash store[-1]: %d, Error[-2]: %d (refer to Temp column for [N]).",
+                main.getResourceList().getResources().size(), result.merged, result.notInHashStore, result.error));
     }
 }

@@ -17,6 +17,18 @@ import java.util.*;
 import java.util.List;
 
 public class ResourceList {
+    public static class RestoreHashResult {
+        public int merged;
+        public int notInHashStore;
+        public int error;
+
+        public RestoreHashResult(int merged, int notInHashStore, int error) {
+            this.merged = merged;
+            this.notInHashStore = notInHashStore;
+            this.error = error;
+        }
+    }
+
     public static final String FileExtension = ".mrk";
 
     private ArrayList<Resource> resources = new ArrayList<>();
@@ -312,26 +324,35 @@ public class ResourceList {
         resourcesToStore = new ArrayList<>();
     }
 
-    public int restoreAllFromHashStore() {
+    public RestoreHashResult restoreAllFromHashStore() {
         if (!isHashStoreReady()) {
-            return 0;
+            return new RestoreHashResult(0, 0, 0);
         }
 
         HashStore hashStore = new HashStore();
-        int updateCount = 0;
+        int merged = 0;
+        int notInHashStore = 0;
+        int error = 0;
         for (Resource r : resources) {
-            if (r.restoreFromStore(hashStore)) {
-                updateCount++;
-            };
+            int result = r.restoreFromStore(hashStore);
+            if (result == 1) {
+                merged++;
+            }
+            else if (result == -1) {
+                notInHashStore++;
+            }
+            else if (result == -2) {
+                error++;
+            }
         }
         hashStore.close();
 
-        if (updateCount > 0) {
+        if (merged > 0 || notInHashStore > 0 || error > 0) {
             modified = true;
             notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
         }
 
-        return updateCount;
+        return new RestoreHashResult(merged, notInHashStore, error);
     }
 
     public int checkHashStore() {
