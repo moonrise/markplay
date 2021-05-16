@@ -459,6 +459,12 @@ public class ResourceList {
 
             @Override
             protected Integer doInBackground() throws Exception {
+                // reset the temp flag
+                for (int i=0; i<source.resources.size(); i++) {
+                    source.resources.get(i).temp = 0;
+                }
+
+                // now the potentially long running loop
                 for (int i=0; i<source.resources.size(); i++) {
                     if (isCancelled()) {
                         return -1;
@@ -480,6 +486,7 @@ public class ResourceList {
                             mergeChange = true;
                         }
                         if (mergeChange) {
+                            myResource.temp = 1;
                             merged++;
                             Log.log("merged (%d), markers (%d): %s->%s", merged, newMarkers, sourceResource.getName(), myResource.getName());
                         }
@@ -514,7 +521,7 @@ public class ResourceList {
 
             @Override
             protected void done() {
-                String doneMessage = String.format("Merged: %d (New Markers: %d), Additions: %d", merged, newMarkers, additions.size());
+                String doneMessage = String.format("Merged[1]: %d (New Markers: %d), Additions[2]: %d (see temp column for [N])", merged, newMarkers, additions.size());
                 //Log.log(doneMessage);
                 progressDialog.setStatusText(doneMessage);
                 progressDialog.cancelToCloseButton();
@@ -527,6 +534,7 @@ public class ResourceList {
                 if (additions.size() > 0) {
                     for (Resource r : additions) {
                         r.setParentList(parentList);
+                        r.temp = 2;
                         resources.add(r);
                     }
 
