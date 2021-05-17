@@ -159,7 +159,9 @@ public class Resource {
     public void setFileSizeAndHash() {
         this.fileSize = new File(getPath()).length();
         //Log.log(String.format("Hashing %s...", this.getPath()));
-        this.fileHash = Utils.computeFileHash(this.getPath());
+        if (this.fileSize > 0) {
+            this.fileHash = Utils.computeFileHash(this.getPath());
+        }
         notifyChangeListeners(EResourceChangeType.AttributesUpdated);
     }
 
@@ -171,7 +173,7 @@ public class Resource {
     public boolean isFileContentEqual(Resource other) {
         initFileSizeAndHash();      // ensure we have the file size known and hash computed
         other.initFileSizeAndHash();
-        return fileSize == other.fileSize && fileHash.equals(other.fileHash);
+        return fileSize > 0 && fileSize == other.fileSize && fileHash.equals(other.fileHash);
     }
 
     public String getName() {

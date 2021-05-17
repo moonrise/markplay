@@ -16,9 +16,9 @@ public class RestoreFromHashStoreAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        int notHashed = main.getResourceList().areAllFilesHashed();
-        if (notHashed > 0) {
-            main.displayInfoMessage(String.format("%d files are not hashed. All files should be hashed for restore operation.", notHashed));
+        ResourceList.HashStat hashStat = main.getResourceList().areAllFilesHashed();
+        if (hashStat.notHashed > 0) {
+            main.displayInfoMessage(String.format("%d files are not hashed. All files should be hashed for restore operation.", hashStat.notHashed));
             return;
         }
 

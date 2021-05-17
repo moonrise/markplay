@@ -29,6 +29,16 @@ public class ResourceList {
         }
     }
 
+    public static class HashStat {
+        public int notHashed;
+        public int zeroSize;
+
+        public HashStat(int notHashed, int zeroSize) {
+            this.notHashed = notHashed;
+            this.zeroSize = zeroSize;
+        }
+    }
+
     public static final String FileExtension = ".mrk";
 
     private ArrayList<Resource> resources = new ArrayList<>();
@@ -266,16 +276,20 @@ public class ResourceList {
     }
 
     // returns the count of non hashed entries (i.e. zero means all hashed)
-    public int areAllFilesHashed() {
+    public HashStat areAllFilesHashed() {
+        int zeroSize = 0;
         int notHashed = 0;
 
         for (Resource resource : resources) {
-            if (resource.fileHash == null || resource.fileHash.isEmpty()) {
+            if (resource.fileSize == 0) {
+                zeroSize++;
+            }
+            else if (resource.fileHash == null || resource.fileHash.isEmpty()) {
                 notHashed++;
             }
         }
 
-        return notHashed;
+        return new HashStat(notHashed, zeroSize);
     }
 
     private boolean isHashStoreReady() {
@@ -650,7 +664,7 @@ public class ResourceList {
     }
 
     private int markIfNotHashed(Resource r) {
-        if (!r.isFileHashed()) {
+        if (r.fileSize > 0 && !r.isFileHashed()) {
             r.temp = -1;
             return 1;
         }
