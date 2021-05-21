@@ -118,10 +118,11 @@ public class MyKeyListener extends KeyAdapter  {
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT:
-                myPlayer.skipTime(-Prefs.getSkipTimeMed());
+                //myPlayer.skipTime(-(Math.max(1500, Prefs.getSkipTimeTiny())));      // 1.5 sec as the min going back
+                myPlayer.skipTime(-Prefs.getSkipTimeTiny());
                 return;
             case KeyEvent.VK_RIGHT:
-                myPlayer.skipTime(Prefs.getSkipTimeMed());
+                myPlayer.skipTime(Prefs.getSkipTimeTiny());
                 return;
             case KeyEvent.VK_UP:
                 myPlayer.setVolume(Math.min(200, mediaPlayer.audio().volume() + 2)); // 0-200

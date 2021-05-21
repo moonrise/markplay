@@ -182,7 +182,7 @@ public class Prefs {
     }
 
     public static int getSkipTimeTiny() {
-        return userPrefs.getInt("skipTimeTiny", 1000);
+        return userPrefs.getInt("skipTimeTiny", 2000);
     }
 
     public static void setSkipTimeTiny(int x) {
