@@ -6,6 +6,7 @@ import com.mark.Utils;
 import com.mark.io.GsonHandler;
 import com.mark.io.LegacyFilerReader;
 import com.mark.main.IMain;
+import com.mark.main.ResourceListTableModel;
 import com.mark.utils.HashStore;
 import com.mark.utils.ProgressDialog;
 import org.apache.commons.io.FileUtils;
@@ -349,13 +350,13 @@ public class ResourceList {
         int error = 0;
         for (Resource r : resources) {
             int result = r.restoreFromStore(hashStore);
-            if (result == 1) {
+            if (result == ResourceListTableModel.TEMP_RESTORE_MERGED) {
                 merged++;
             }
-            else if (result == -1) {
+            else if (result == ResourceListTableModel.TEMP_RESTORE_NO_HASH) {
                 notInHashStore++;
             }
-            else if (result == -2) {
+            else if (result == ResourceListTableModel.TEMP_ERROR) {
                 error++;
             }
         }

@@ -7,11 +7,18 @@ import com.mark.resource.*;
 import javax.swing.table.AbstractTableModel;
 
 public class ResourceListTableModel extends AbstractTableModel implements IResourceListChangeListener {
+    // table column ordinals via enum
     public static enum COL { Row, Select, Rating, Tag, Markers, Path, Name, Duration, FileSize, FileHash, Temp, Delete  };
+
+    // TEMP column negative number usages. 0 is rendered as empty, 1 and above as they are.
+    public static final int TEMP_ERROR = -1;
+    public static final int TEMP_RESTORE_MERGED = -2;
+    public static final int TEMP_RESTORE_NO_HASH = -3;
+
 
     private ResourceList resourceList;
     private String[] columnNames = {"Row", "Select", "Rating", "Tag", "Makers", "Path", "Name", "Duration", "File Size", "File Hash", "Temp", "Delete"};
-    private int[] columnWidths = {20, 16, 24, 32, 20, 70, 140, 40, 80, 100, 16, 16};
+    private int[] columnWidths = {20, 16, 24, 32, 20, 70, 140, 40, 80, 100, 40, 16};
 
     public ResourceListTableModel(ResourceList resourceList) {
         this.resourceList = resourceList;
@@ -49,18 +56,17 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        switch (columnIndex) {
-            case 0:
-            case 4:
-            case 10:
-                return Integer.class;
-            case 2:
-                return Float.class;
-            case 1:
-                return Boolean.class;
-            case 7:
-            case 8:
-                return Long.class;
+        if (columnIndex == COL.Row.ordinal() || columnIndex == COL.Markers.ordinal()) {
+            return Integer.class;
+        }
+        else if (columnIndex == COL.Select.ordinal()) {
+            return Boolean.class;
+        }
+        else if (columnIndex == COL.Rating.ordinal()) {
+            return Float.class;
+        }
+        else if (columnIndex == COL.Duration.ordinal() || columnIndex == COL.FileSize.ordinal()) {
+            return Long.class;
         }
 
         return super.getColumnClass(columnIndex);
@@ -69,31 +75,42 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Resource resource = resourceList.getResources().get(rowIndex);
-        switch (columnIndex) {
-            case 0:
-                return rowIndex + 1;
-            case 1:
-                return resource.checked;
-            case 2:
-                return resource.rating;
-            case 3:
-                return resource.tag;
-            case 4:
-                return resource.markers.size()-1;
-            case 5:
-                return resource.getMidPath();
-            case 6:
-                return resource.getName();
-            case 7:
-                return resource.duration;
-            case 8:
-                return resource.fileSize;
-            case 9:
-                return resource.fileHash;
-            case 10:
-                return resource.temp;
-            case 11:
-                return rowIndex;
+
+        if (columnIndex == COL.Row.ordinal()) {
+            return rowIndex + 1;
+        }
+        else if (columnIndex == COL.Select.ordinal()) {
+            return resource.checked;
+        }
+        else if (columnIndex == COL.Rating.ordinal()) {
+            return resource.rating;
+        }
+        else if (columnIndex == COL.Tag.ordinal()) {
+            return resource.tag;
+        }
+        else if (columnIndex == COL.Markers.ordinal()) {
+            return resource.markers.size()-1;
+        }
+        else if (columnIndex == COL.Path.ordinal()) {
+            return resource.getMidPath();
+        }
+        else if (columnIndex == COL.Name.ordinal()) {
+            return resource.getName();
+        }
+        else if (columnIndex == COL.Duration.ordinal()) {
+            return resource.duration;
+        }
+        else if (columnIndex == COL.FileSize.ordinal()) {
+            return resource.fileSize;
+        }
+        else if (columnIndex == COL.FileHash.ordinal()) {
+            return resource.fileHash;
+        }
+        else if (columnIndex == COL.Temp.ordinal()) {
+            return resource.temp;
+        }
+        else if (columnIndex == COL.Delete.ordinal()) {
+            return rowIndex;
         }
 
         return "<na>";

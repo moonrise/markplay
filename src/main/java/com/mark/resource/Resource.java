@@ -3,6 +3,7 @@ package com.mark.resource;
 import com.mark.Log;
 import com.mark.Prefs;
 import com.mark.Utils;
+import com.mark.main.ResourceListTableModel;
 import com.mark.utils.HashStore;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -339,21 +340,21 @@ public class Resource {
     public int restoreFromStore(HashStore hashStore) {
         // ensure we have the hash value of this resource
         if (!isFileHashed()) {
-            this.temp = -2;
-            return -2;      //
+            this.temp = ResourceListTableModel.TEMP_ERROR;
+            return ResourceListTableModel.TEMP_ERROR;
         }
 
         // restore from the hash store db
         String stored = hashStore.get(fileHash);
         if (stored == null) {
-            this.temp = -1;
-            return -1;
+            this.temp = ResourceListTableModel.TEMP_RESTORE_NO_HASH;
+            return ResourceListTableModel.TEMP_RESTORE_NO_HASH;
         }
 
         String[] splits = stored.split(",");
         if (splits.length < 5) {
-            this.temp = -2;
-            return -2;
+            this.temp = ResourceListTableModel.TEMP_ERROR;
+            return ResourceListTableModel.TEMP_ERROR;
         }
 
         boolean isRestored = false;
@@ -379,7 +380,7 @@ public class Resource {
             isRestored = true;
         }
 
-        this.temp = isRestored ? 1 : 0;
+        this.temp = isRestored ? ResourceListTableModel.TEMP_RESTORE_MERGED : 0;
         return this.temp;
     }
 

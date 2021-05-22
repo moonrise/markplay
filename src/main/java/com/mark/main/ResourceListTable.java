@@ -58,6 +58,32 @@ public class ResourceListTable extends JTable implements KeyListener {
         }
     }
 
+    static class TempValueRenderer extends ZeroSpaceRenderer {
+        public TempValueRenderer() {
+            setHorizontalAlignment(SwingConstants.RIGHT);
+        }
+
+        @Override
+        protected void setValue(Object value) {
+            int n = (int)value;
+
+            switch (n) {
+                case ResourceListTableModel.TEMP_ERROR:
+                    setText("Error");
+                    break;
+                case ResourceListTableModel.TEMP_RESTORE_NO_HASH:
+                    setText("Not in hash");
+                    break;
+                case ResourceListTableModel.TEMP_RESTORE_MERGED:
+                    setText("Merged");
+                    break;
+                default:
+                    super.setValue(n);
+                    break;
+            }
+        }
+    }
+
     static class MyTextEditor extends DefaultCellEditor {
         public MyTextEditor() {
             super(new JTextField());
@@ -146,7 +172,7 @@ public class ResourceListTable extends JTable implements KeyListener {
         columnModel.getColumn(2).setCellRenderer(new FloatRenderer());
         columnModel.getColumn(7).setCellRenderer(new DurationRenderer());
         columnModel.getColumn(8).setCellRenderer(new LongRenderer());
-        columnModel.getColumn(10).setCellRenderer(new ZeroSpaceRenderer());
+        columnModel.getColumn(ResourceListTableModel.COL.Temp.ordinal()).setCellRenderer(new TempValueRenderer());
 
         ImageIcon deleteIcon = new ImageIcon(Utils.getResourcePath("/icons/cross.png"));
         columnModel.getColumn(11).setCellRenderer(new TableCellButton(deleteIcon, null));
