@@ -88,6 +88,18 @@ public class ResourceListTable extends JTable implements KeyListener {
     public void init() {
         setTableColumnWidths();
         setRenderers();
+
+        // double clicks to initiate editing; otherwise keyboard commands tend to activate the editor after row selection
+        setDoubleClicksForEdit(ResourceListTableModel.COL.Rating);
+        setDoubleClicksForEdit(ResourceListTableModel.COL.Tag);
+        setDoubleClicksForEdit(ResourceListTableModel.COL.Path);
+        setDoubleClicksForEdit(ResourceListTableModel.COL.Name);
+    }
+
+    private void setDoubleClicksForEdit(ResourceListTableModel.COL columnIndex) {
+        // the default is 2 and it does not help. Click count does not care about the time span between clicks.
+        // not very useful.
+        ((DefaultCellEditor)getDefaultEditor(getColumnClass(columnIndex.ordinal()))).setClickCountToStart(2);
     }
 
     public void setRenderers() {

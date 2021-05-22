@@ -7,6 +7,8 @@ import com.mark.resource.*;
 import javax.swing.table.AbstractTableModel;
 
 public class ResourceListTableModel extends AbstractTableModel implements IResourceListChangeListener {
+    public static enum COL { Row, Select, Rating, Tag, Markers, Path, Name, Duration, FileSize, FileHash, Temp, Delete  };
+
     private ResourceList resourceList;
     private String[] columnNames = {"Row", "Select", "Rating", "Tag", "Makers", "Path", "Name", "Duration", "File Size", "File Hash", "Temp", "Delete"};
     private int[] columnWidths = {20, 16, 24, 32, 20, 70, 140, 40, 80, 100, 16, 16};
