@@ -17,6 +17,8 @@ public class SettingsAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         //Log.log("Settings action");
-        new SettingsDialog(main).display();
+        SettingsDialog settingsDialog = new SettingsDialog(main);
+        settingsDialog.setLocation(main.getAppFrame().getOffsetLocation(100, 50));
+        settingsDialog.setVisible(true);
     }
 }

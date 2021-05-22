@@ -63,11 +63,4 @@ public class SettingsDialog extends JDialog {
         });
         return button;
     }
-
-    public void display() {
-        Point parentLocation = getParent().getLocation();
-        parentLocation.translate(100, 50);
-        setLocation(parentLocation);
-        setVisible(true);
-    }
 }

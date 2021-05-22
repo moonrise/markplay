@@ -11,6 +11,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.util.EventObject;
 
 public class ResourceListTable extends JTable implements KeyListener {
     static class LongRenderer extends DefaultTableCellRenderer {
@@ -58,6 +60,23 @@ public class ResourceListTable extends JTable implements KeyListener {
         }
     }
 
+    static class MyTextEditor extends DefaultCellEditor {
+        public MyTextEditor() {
+            super(new JTextField());
+        }
+
+        @Override
+        public boolean isCellEditable(EventObject e) {
+            if (e instanceof MouseEvent) {
+                MouseEvent mouseEvent = (MouseEvent)e;
+                if (mouseEvent.isControlDown()) {
+                    return super.isCellEditable(e);
+                }
+            }
+            return false;
+        }
+    }
+
     private IMain main;
     private ResourceListTableModel tableModel;
     private TableColumnModel columnModel;
@@ -88,17 +107,11 @@ public class ResourceListTable extends JTable implements KeyListener {
     public void init() {
         setTableColumnWidths();
         setRenderers();
-
-        // double clicks to initiate editing; otherwise keyboard commands tend to activate the editor after row selection
-        setDoubleClicksForEdit(ResourceListTableModel.COL.Rating);
-        setDoubleClicksForEdit(ResourceListTableModel.COL.Tag);
-        setDoubleClicksForEdit(ResourceListTableModel.COL.Path);
-        setDoubleClicksForEdit(ResourceListTableModel.COL.Name);
+        setEditors();
     }
 
     private void setDoubleClicksForEdit(ResourceListTableModel.COL columnIndex) {
         // the default is 2 and it does not help. Click count does not care about the time span between clicks.
-        // not very useful.
         ((DefaultCellEditor)getDefaultEditor(getColumnClass(columnIndex.ordinal()))).setClickCountToStart(2);
     }
 
@@ -116,6 +129,12 @@ public class ResourceListTable extends JTable implements KeyListener {
                 main.getResourceList().removeResource(rowIndex);
             }
         }));
+    }
+
+    public void setEditors() {
+        columnModel.getColumn(ResourceListTableModel.COL.Tag.ordinal()).setCellEditor(new MyTextEditor());
+        columnModel.getColumn(ResourceListTableModel.COL.Path.ordinal()).setCellEditor(new MyTextEditor());
+        columnModel.getColumn(ResourceListTableModel.COL.Name.ordinal()).setCellEditor(new MyTextEditor());
     }
 
     private void setTableColumnWidths() {

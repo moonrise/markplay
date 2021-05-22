@@ -30,7 +30,8 @@ public class HelpAction extends AbstractAction {
     private void createWindow() {
         JFrame frame = new JFrame(String.format("%s Help", Utils.AppName));
         createUI(frame);
-        frame.setLocationRelativeTo(this.main.getAppFrame());
+
+        frame.setLocation(this.main.getAppFrame().getOffsetLocation(150, 50));
         frame.pack();
         frame.setVisible(true);
     }
@@ -59,7 +60,7 @@ public class HelpAction extends AbstractAction {
         }
 
         JScrollPane scrollPane = new JScrollPane(editorPane);
-        scrollPane.setPreferredSize(new Dimension(600,500));
+        scrollPane.setPreferredSize(new Dimension(700,600));
 
         panel.add(scrollPane);
         frame.getContentPane().add(panel, BorderLayout.CENTER);

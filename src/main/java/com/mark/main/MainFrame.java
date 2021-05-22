@@ -46,6 +46,12 @@ public class MainFrame extends JFrame implements ComponentListener, DropTargetLi
         new DropTarget(this, DnDConstants.ACTION_NONE, this);
     }
 
+    public Point getOffsetLocation(int offsetX, int offsetY) {
+        Point offsetLocation = getLocation();
+        offsetLocation.translate(150, 50);
+        return offsetLocation;
+    }
+
     public void display() {
         /*
         [TODO] See the TODO comment in componentMoved method in this class.
