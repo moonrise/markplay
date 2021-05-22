@@ -9,9 +9,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.EventObject;
 
 public class ResourceListTable extends JTable implements KeyListener {
@@ -77,6 +75,35 @@ public class ResourceListTable extends JTable implements KeyListener {
         }
     }
 
+    static class MyFloatEditor extends MyTextEditor implements ActionListener {
+        public MyFloatEditor() {
+            JTextField textField = (JTextField)getComponent();
+            textField.addActionListener(this);
+        }
+
+        public void actionPerformed(ActionEvent evt) {
+            JTextField textField = (JTextField)evt.getSource();
+            String textValue = textField.getText();
+
+            try {
+                Float.parseFloat(textValue);
+            } catch (Exception e) {
+                textField.setText(validateRateValue(textValue));
+            }
+        }
+
+        private String validateRateValue(String value) {
+            String floatValue = "";
+            int decimalCount = 0;
+            for (char c : value.toCharArray()) {
+                if (Character.isDigit(c) || (c == '.' && ++decimalCount == 1)) {
+                    floatValue += c;
+                }
+            }
+            return floatValue;
+        }
+    }
+
     private IMain main;
     private ResourceListTableModel tableModel;
     private TableColumnModel columnModel;
@@ -132,6 +159,7 @@ public class ResourceListTable extends JTable implements KeyListener {
     }
 
     public void setEditors() {
+        columnModel.getColumn(ResourceListTableModel.COL.Rating.ordinal()).setCellEditor(new MyFloatEditor());
         columnModel.getColumn(ResourceListTableModel.COL.Tag.ordinal()).setCellEditor(new MyTextEditor());
         columnModel.getColumn(ResourceListTableModel.COL.Path.ordinal()).setCellEditor(new MyTextEditor());
         columnModel.getColumn(ResourceListTableModel.COL.Name.ordinal()).setCellEditor(new MyTextEditor());

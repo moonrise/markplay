@@ -105,7 +105,7 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
             resourceList.getResources().get(rowIndex).setFavorite((boolean)value);
         }
         else if (columnIndex == 2) {
-            resourceList.getResources().get(rowIndex).setRating((float)value);
+            resourceList.getResources().get(rowIndex).setRating(Float.parseFloat(((String)value).trim()));
         }
         else if (columnIndex == 3) {
             resourceList.getResources().get(rowIndex).setTag(((String)value).trim());
