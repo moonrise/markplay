@@ -769,16 +769,13 @@ public class ResourceList {
             }
         });
 
-        ProgressDialog progressDialog = new ProgressDialog(main.getAppFrame(), "find Duplicates", clonedResources.size());
+        ProgressDialog progressDialog = new ProgressDialog(main.getAppFrame(), "Find Duplicates", clonedResources.size());
 
         SwingWorker longWork = new SwingWorker<Integer, Integer>() {
             // mark duplicates
             int duplicateTag = 1;
             int duplicates = 0;
             Resource prev = clonedResources.get(0);
-
-            // count of not-hashed (for statistics)
-            int wasNotHashed = markIfNotHashed(prev);
 
             @Override
             protected Integer doInBackground() throws Exception {
@@ -790,17 +787,9 @@ public class ResourceList {
                     }
 
                     //Log.log("File scan process : %d/%d", i, resources.size());
-                    /*
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    */
+                    //Utils.sleep(1000);
 
                     Resource r = clonedResources.get(i);
-                    wasNotHashed += markIfNotHashed(r);
-
                     if (r.isFileContentEqual(prev)) {
                         if (r.temp != -1) {
                             r.temp = duplicateTag;
@@ -835,7 +824,7 @@ public class ResourceList {
 
             @Override
             protected void done() {
-                String doneMessage = String.format("files hashed[-1]: %d, duplicates[N]: %d (see temp column for [N]).", wasNotHashed, duplicates);
+                String doneMessage = String.format("%d duplicates found (see Temp column for details).", duplicates);
                 //Log.log(doneMessage);
                 progressDialog.setStatusText(doneMessage);
                 progressDialog.cancelToCloseButton();
