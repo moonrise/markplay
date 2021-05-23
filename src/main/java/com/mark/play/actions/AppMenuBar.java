@@ -15,6 +15,7 @@ public class AppMenuBar extends JMenuBar {
         this.main = main;
         add(buildFileMenu());
         add(buildViewMenu());
+        add(buildStoreMenu());
         add(buildOptionsMenu());
         add(buildHelpMenu());
     }
@@ -30,9 +31,9 @@ public class AppMenuBar extends JMenuBar {
         menu.add(new SaveAsAction(main));
         menu.add(new CloseAction(main));
         menu.addSeparator();
-        menu.add(new CheckHashStore(main));
-        menu.add(new BackupToHashStoreAction(main));
-        menu.add(new RestoreFromHashStoreAction(main));
+        menu.add(new ClearFileSizesAndHashesAction(main));
+        menu.add(new HashFiles(main));
+        menu.add(new FindDuplicates(main));
         menu.addSeparator();
         menu.add(buildRecentFilesMenu());
         menu.add(new ClearRecentFilesAction(main));
@@ -82,9 +83,15 @@ public class AppMenuBar extends JMenuBar {
         checkBoxMenuItem.setState(Prefs.isNavigatorVisible());
         menu.add(checkBoxMenuItem);
 
-        menu.add(new ClearFileSizesAndHashesAction(main));
-        menu.add(new HashFiles(main));
-        menu.add(new FindDuplicates(main));
+        return menu;
+    }
+
+    private JMenu buildStoreMenu() {
+        JMenu menu = new JMenu("Hash Store");
+
+        menu.add(new CheckHashStore(main));
+        menu.add(new BackupToHashStoreAction(main));
+        menu.add(new RestoreFromHashStoreAction(main));
 
         return menu;
     }

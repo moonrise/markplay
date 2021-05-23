@@ -10,7 +10,7 @@ public class RestoreFromHashStoreAction extends AbstractAction {
     private IMain main;
 
     public RestoreFromHashStoreAction(IMain main) {
-        super("Hash Restore...");
+        super("Restore from Store...");
         this.main = main;
     }
 

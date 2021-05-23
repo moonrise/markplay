@@ -10,7 +10,7 @@ public class CheckHashStore extends AbstractAction {
     private IMain main;
 
     public CheckHashStore(IMain main) {
-        super("Hash Check...");
+        super("Check Store...");
         this.main = main;
     }
 
