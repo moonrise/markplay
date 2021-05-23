@@ -277,6 +277,7 @@ public class ResourceList {
     }
 
     // returns the count of non hashed entries (i.e. zero means all hashed)
+    // not existing files are not counted
     public HashStat areAllFilesHashed() {
         int zeroSize = 0;
         int notHashed = 0;
@@ -284,6 +285,9 @@ public class ResourceList {
         for (Resource resource : resources) {
             if (resource.fileSize == 0) {
                 zeroSize++;
+                if (resource.fileExists()) {
+                    notHashed++;
+                }
             }
             else if (resource.fileHash == null || resource.fileHash.isEmpty()) {
                 notHashed++;
