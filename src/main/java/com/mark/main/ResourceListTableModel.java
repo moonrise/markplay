@@ -12,10 +12,11 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
 
     // TEMP column negative number usages. 0 is rendered as empty, 1 and above as they are.
     public static final int TEMP_ERROR = -1;
-    public static final int TEMP_NO_FILE= -2;               // file does not exist
-    public static final int TEMP_NOT_HASHED= -3;            // file not hashed
-    public static final int TEMP_RESTORE_MERGED = -4;       // merged from the hash store
-    public static final int TEMP_RESTORE_NO_HASH = -5;      // no matching hash found in the hash store
+    public static final int TEMP_HASHED= -2;                // file hashed
+    public static final int TEMP_NO_FILE= -3;               // file does not exist
+    public static final int TEMP_NOT_HASHED= -4;            // file not hashed
+    public static final int TEMP_RESTORE_MERGED = -5;       // merged from the hash store
+    public static final int TEMP_RESTORE_NO_HASH = -6;      // no matching hash found in the hash store
 
 
     private ResourceList resourceList;

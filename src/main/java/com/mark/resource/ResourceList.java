@@ -672,93 +672,48 @@ public class ResourceList {
         return 0;
     }
 
-    // returns duplicate set number
     public void hashFiles() {
-        // no duplicates by definition
-        if (resources.size() < 2) {
-            main.displayInfoMessage("No duplicates by definition (only one resource)");
-            return;
-        }
-
-        // reset the work variable
-        for (Resource r : this.resources) {
-            File file = new File((r.getPath()));
-            if (file.exists()) {
-                r.fileSize = file.length();
-                r.temp = 0;
-            }
-            else {
-                r.temp = -1;
-            }
-        }
-
-        // clone the resources and sort them
-        ArrayList<Resource> clonedResources = (ArrayList<Resource>)this.resources.clone();
-        Collections.sort(clonedResources, new Comparator<Resource>() {
-            @Override
-            public int compare(Resource o1, Resource o2) {
-                return o1.fileSize == o2.fileSize ? 0 : o1.fileSize > o2.fileSize ? - 1 : 1;
-            }
-        });
-
-        ProgressDialog progressDialog = new ProgressDialog(main.getAppFrame(), "Hash Files", clonedResources.size());
+        ProgressDialog progressDialog = new ProgressDialog(main.getAppFrame(), "Hash Files", resources.size());
 
         SwingWorker longWork = new SwingWorker<Integer, Integer>() {
-            // mark duplicates
-            int duplicateTag = 1;
-            int duplicates = 0;
-            Resource prev = clonedResources.get(0);
-
-            // count of not-hashed (for statistics)
-            int wasNotHashed = markIfNotHashed(prev);
+            int hashed = 0;
 
             @Override
             protected Integer doInBackground() throws Exception {
-                publish(1);
+                publish(0);
 
-                for (int i=1; i<clonedResources.size(); i++) {
+                for (int i=0; i<resources.size(); i++) {
                     if (isCancelled()) {
                         return -1;
                     }
 
                     //Log.log("File scan process : %d/%d", i, resources.size());
-                    /*
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    */
+                    //Utils.sleep(1000);
 
-                    Resource r = clonedResources.get(i);
-                    wasNotHashed += markIfNotHashed(r);
-
-                    if (r.isFileContentEqual(prev)) {
-                        if (r.temp != -1) {
-                            r.temp = duplicateTag;
-                            duplicates = duplicateTag;
-                        }
-                        if (prev.temp != -1) {
-                            prev.temp = duplicateTag;
-                            duplicates = duplicateTag;
-                        }
+                    Resource r = resources.get(i);
+                    if (!r.fileExists()) {
+                        r.temp = ResourceListTableModel.TEMP_NO_FILE;
                     }
-                    if (prev.fileSize != r.fileSize && prev.temp > 0) {
-                        duplicateTag++;
+                    else if (!r.isFileHashed()) {
+                        r.setFileSizeAndHash();
+                        r.temp = ResourceListTableModel.TEMP_HASHED;
+                        hashed++;
                     }
-                    prev = r;
+                    else {
+                        r.temp = 0;
+                    }
 
                     publish(i+1);
                 }
 
-                return duplicates;
+                return hashed;
             }
 
             @Override
             protected void process(List<Integer> chunks) {
                 // show the progress status in UI
                 int count = chunks.get(chunks.size()-1);
-                String statusMessage = String.format("Processing %d/%d...", count, clonedResources.size());
+                String statusMessage = String.format("Processing %d/%d...", count, resources.size());
                 //Log.log(statusMessage);
                 //main.getAppFrame().getStatusBar().setStatusText(statusMessage);
                 progressDialog.setStatusText(statusMessage);
@@ -767,19 +722,11 @@ public class ResourceList {
 
             @Override
             protected void done() {
-                String doneMessage = String.format("files hashed[-1]: %d, duplicates[N]: %d (see temp column for [N]).", wasNotHashed, duplicates);
+                String doneMessage = String.format("%d files hashed out of %d (see Temp column for details).", hashed, resources.size());
                 //Log.log(doneMessage);
                 progressDialog.setStatusText(doneMessage);
                 progressDialog.cancelToCloseButton();
-
                 notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
-
-                // test dump
-                /*
-                for (Resource r : this.resources) {
-                    Log.log("duplicates?: %s, %,d [%d]", r.getName(), r.fileSize, r.temp);o
-                }
-                */
             }
         };
 

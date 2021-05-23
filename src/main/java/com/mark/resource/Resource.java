@@ -146,6 +146,10 @@ public class Resource {
         }
     }
 
+    public boolean fileExists() {
+        return new File(getPath()).exists();
+    }
+
     public boolean isFileHashed() {
         return this.fileHash != null && !this.fileHash.isEmpty();
     }
@@ -158,12 +162,19 @@ public class Resource {
     }
 
     public void setFileSizeAndHash() {
+        this.setFileSizeAndHash(true);
+    }
+
+    public void setFileSizeAndHash(boolean notify) {
         this.fileSize = new File(getPath()).length();
         //Log.log(String.format("Hashing %s...", this.getPath()));
         if (this.fileSize > 0) {
             this.fileHash = Utils.computeFileHash(this.getPath());
         }
-        notifyChangeListeners(EResourceChangeType.AttributesUpdated);
+
+        if (notify) {
+            notifyChangeListeners(EResourceChangeType.AttributesUpdated);
+        }
     }
 
     public void clearFileSizeAndHash() {

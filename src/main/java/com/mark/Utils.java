@@ -94,4 +94,12 @@ public class Utils {
     public static boolean normPathStartsWith(String pathIn, String pathOf) {
         return normPath(pathIn).startsWith(normPath(pathOf));
     }
+
+    public static void sleep(int milliSeconds) {
+        try {
+            Thread.sleep(milliSeconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
