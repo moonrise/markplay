@@ -508,24 +508,20 @@ public class ResourceList {
                             myResource.checked = true;
                             mergeChange = true;
                         }
+
                         if (mergeChange) {
-                            myResource.temp = 1;
+                            myResource.temp = ResourceListTableModel.TEMP_MERGED;
                             merged++;
-                            Log.log("merged (%d), markers (%d): %s->%s", merged, newMarkers, sourceResource.getName(), myResource.getName());
+                            //Log.log("merged (%d), markers (%d): %s->%s", merged, newMarkers, sourceResource.getName(), myResource.getName());
                         }
                     }
                     else {
                         additions.add(sourceResource);
-                        Log.log("added (%d): %s", additions.size(), sourceResource.getName());
+                        sourceResource.temp = ResourceListTableModel.TEMP_ADDED;
+                        //Log.log("added (%d): %s", additions.size(), sourceResource.getName());
                     }
 
-                    /**
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    */
+                    //Utils.sleep(2000);
                 }
 
                 return merged;
@@ -544,7 +540,7 @@ public class ResourceList {
 
             @Override
             protected void done() {
-                String doneMessage = String.format("Merged[1]: %d (New Markers: %d), Additions[2]: %d (see temp column for [N])", merged, newMarkers, additions.size());
+                String doneMessage = String.format("Merged: %d with %d new markers: %d; Additions: %d (see Temp column for details)", merged, newMarkers, additions.size());
                 //Log.log(doneMessage);
                 progressDialog.setStatusText(doneMessage);
                 progressDialog.cancelToCloseButton();
@@ -557,7 +553,6 @@ public class ResourceList {
                 if (additions.size() > 0) {
                     for (Resource r : additions) {
                         r.setParentList(parentList);
-                        r.temp = 2;
                         resources.add(r);
                     }
 

@@ -18,6 +18,8 @@ public class ResourceListTableModel extends AbstractTableModel implements IResou
     public static final int TEMP_IN_HASHSTORE= -5;          // in hash store
     public static final int TEMP_NOT_IN_HASHSTORE = -6;     // no matching hash found in the hash store
     public static final int TEMP_RESTORE_MERGED = -7;       // merged from the hash store
+    public static final int TEMP_MERGED = -8;               // merged from user file operations
+    public static final int TEMP_ADDED = -9;                // new addition from the user file operations
 
 
     private ResourceList resourceList;

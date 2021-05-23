@@ -28,7 +28,7 @@ public class RestoreFromHashStoreAction extends AbstractAction {
         }
 
         ResourceList.RestoreHashResult result = main.getResourceList().restoreAllFromHashStore();
-        main.displayInfoMessage(String.format("Total: %d, Merged: %d, Not in hash store: %d, Error: %d (see Temp column).",
+        main.displayInfoMessage(String.format("Total: %d, Merged: %d, Not in hash store: %d, Error: %d (see Temp column for details).",
                 main.getResourceList().getResources().size(), result.merged, result.notInHashStore, result.error));
     }
 }

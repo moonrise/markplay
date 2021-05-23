@@ -89,6 +89,12 @@ public class ResourceListTable extends JTable implements KeyListener {
                 case ResourceListTableModel.TEMP_RESTORE_MERGED:
                     setText("Merged");
                     break;
+                case ResourceListTableModel.TEMP_MERGED:
+                    setText("Merged");
+                    break;
+                case ResourceListTableModel.TEMP_ADDED:
+                    setText("Added");
+                    break;
                 default:
                     super.setValue(n);
                     break;
