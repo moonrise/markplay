@@ -71,6 +71,12 @@ public class ResourceListTable extends JTable implements KeyListener {
                 case ResourceListTableModel.TEMP_ERROR:
                     setText("Error");
                     break;
+                case ResourceListTableModel.TEMP_NO_FILE:
+                    setText("No file");
+                    break;
+                case ResourceListTableModel.TEMP_NOT_HASHED:
+                    setText("Not hashed");
+                    break;
                 case ResourceListTableModel.TEMP_RESTORE_NO_HASH:
                     setText("Not in hash");
                     break;

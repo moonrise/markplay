@@ -673,7 +673,7 @@ public class ResourceList {
     }
 
     // returns duplicate set number
-    public void findDuplicates() {
+    public void hashFiles() {
         // no duplicates by definition
         if (resources.size() < 2) {
             main.displayInfoMessage("No duplicates by definition (only one resource)");
@@ -702,6 +702,127 @@ public class ResourceList {
         });
 
         ProgressDialog progressDialog = new ProgressDialog(main.getAppFrame(), "Hash Files", clonedResources.size());
+
+        SwingWorker longWork = new SwingWorker<Integer, Integer>() {
+            // mark duplicates
+            int duplicateTag = 1;
+            int duplicates = 0;
+            Resource prev = clonedResources.get(0);
+
+            // count of not-hashed (for statistics)
+            int wasNotHashed = markIfNotHashed(prev);
+
+            @Override
+            protected Integer doInBackground() throws Exception {
+                publish(1);
+
+                for (int i=1; i<clonedResources.size(); i++) {
+                    if (isCancelled()) {
+                        return -1;
+                    }
+
+                    //Log.log("File scan process : %d/%d", i, resources.size());
+                    /*
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    */
+
+                    Resource r = clonedResources.get(i);
+                    wasNotHashed += markIfNotHashed(r);
+
+                    if (r.isFileContentEqual(prev)) {
+                        if (r.temp != -1) {
+                            r.temp = duplicateTag;
+                            duplicates = duplicateTag;
+                        }
+                        if (prev.temp != -1) {
+                            prev.temp = duplicateTag;
+                            duplicates = duplicateTag;
+                        }
+                    }
+                    if (prev.fileSize != r.fileSize && prev.temp > 0) {
+                        duplicateTag++;
+                    }
+                    prev = r;
+
+                    publish(i+1);
+                }
+
+                return duplicates;
+            }
+
+            @Override
+            protected void process(List<Integer> chunks) {
+                // show the progress status in UI
+                int count = chunks.get(chunks.size()-1);
+                String statusMessage = String.format("Processing %d/%d...", count, clonedResources.size());
+                //Log.log(statusMessage);
+                //main.getAppFrame().getStatusBar().setStatusText(statusMessage);
+                progressDialog.setStatusText(statusMessage);
+                progressDialog.setProgressValue(count);
+            }
+
+            @Override
+            protected void done() {
+                String doneMessage = String.format("files hashed[-1]: %d, duplicates[N]: %d (see temp column for [N]).", wasNotHashed, duplicates);
+                //Log.log(doneMessage);
+                progressDialog.setStatusText(doneMessage);
+                progressDialog.cancelToCloseButton();
+
+                notifyResourceListChange(ResourceListUpdate.AllRowsUpdated);
+
+                // test dump
+                /*
+                for (Resource r : this.resources) {
+                    Log.log("duplicates?: %s, %,d [%d]", r.getName(), r.fileSize, r.temp);o
+                }
+                */
+            }
+        };
+
+        longWork.execute();
+        progressDialog.setCancelListener(new ProgressDialog.ProgressCancelListener() {
+            @Override
+            public void onProgressCancel() {
+                longWork.cancel(false);     // OK even when done (Close button)
+            }
+        });
+        progressDialog.setVisible(true);
+    }
+
+    // returns duplicate set number
+    public void findDuplicates() {
+        // no duplicates by definition
+        if (resources.size() < 2) {
+            main.displayInfoMessage("No duplicates by definition (only one resource)");
+            return;
+        }
+
+        // reset the work variable
+        for (Resource r : this.resources) {
+            File file = new File((r.getPath()));
+            if (file.exists()) {
+                r.fileSize = file.length();
+                r.temp = 0;
+            }
+            else {
+                r.temp = -1;
+            }
+        }
+
+        // clone the resources and sort them
+        ArrayList<Resource> clonedResources = (ArrayList<Resource>)this.resources.clone();
+        Collections.sort(clonedResources, new Comparator<Resource>() {
+            @Override
+            public int compare(Resource o1, Resource o2) {
+                return o1.fileSize == o2.fileSize ? 0 : o1.fileSize > o2.fileSize ? - 1 : 1;
+            }
+        });
+
+        ProgressDialog progressDialog = new ProgressDialog(main.getAppFrame(), "find Duplicates", clonedResources.size());
 
         SwingWorker longWork = new SwingWorker<Integer, Integer>() {
             // mark duplicates
