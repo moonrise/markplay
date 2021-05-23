@@ -357,7 +357,7 @@ public class ResourceList {
             if (result == ResourceListTableModel.TEMP_RESTORE_MERGED) {
                 merged++;
             }
-            else if (result == ResourceListTableModel.TEMP_RESTORE_NO_HASH) {
+            else if (result == ResourceListTableModel.TEMP_NOT_IN_HASHSTORE) {
                 notInHashStore++;
             }
             else if (result == ResourceListTableModel.TEMP_ERROR) {
@@ -383,8 +383,12 @@ public class ResourceList {
         int inHashStoreCount = 0;
         for (Resource r : resources) {
             if (r.isInHashStore(hashStore) == 1) {
+                r.temp = ResourceListTableModel.TEMP_IN_HASHSTORE;
                 inHashStoreCount++;
-            };
+            }
+            else {
+                r.temp = 0;
+            }
         }
         hashStore.close();
 

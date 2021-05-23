@@ -28,8 +28,8 @@ public class CheckHashStore extends AbstractAction {
 
         int yesCount = main.getResourceList().checkHashStore();
         if (yesCount >= 0) {
-            main.displayInfoMessage(String.format("Total: %d, Hashed: %d, Not Existing: %d, In Hash Store: %d (see temp column).",
-                    total, total-hashStat.notHashed-hashStat.zeroSize, hashStat.zeroSize, yesCount));
+            main.displayInfoMessage(String.format("In hash store: %d, out of Hashed: %d, Zero files: %d (see Temp column for details).",
+                    yesCount, total-hashStat.notHashed-hashStat.zeroSize, hashStat.zeroSize));
         }
     }
 }

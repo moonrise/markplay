@@ -358,8 +358,8 @@ public class Resource {
         // restore from the hash store db
         String stored = hashStore.get(fileHash);
         if (stored == null) {
-            this.temp = ResourceListTableModel.TEMP_RESTORE_NO_HASH;
-            return ResourceListTableModel.TEMP_RESTORE_NO_HASH;
+            this.temp = ResourceListTableModel.TEMP_NOT_IN_HASHSTORE;
+            return ResourceListTableModel.TEMP_NOT_IN_HASHSTORE;
         }
 
         String[] splits = stored.split(",");
