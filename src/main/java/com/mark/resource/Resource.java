@@ -109,19 +109,9 @@ public class Resource {
         // source already in target?
         // Also possible when there are multiple entries with the same file paths (one is moved and others won't need move)
         if (new File(targetPath).exists()) {
-            String sourceFileHash = (fileHash == null || fileHash.isEmpty()) ? Utils.computeFileHash(getPath()) : fileHash;
-            String targetFileHash = Utils.computeFileHash(targetPath);
-            boolean hashMatch = targetFileHash.equals(sourceFileHash);
-            if (hashMatch) {
-                //Log.log("updating midPath: file '%s' already in the target directory with matching hash.", getName());
-            }
-            else {
-                //Log.log("updating midPath: source file hash -> %s", sourceFileHash);
-                //Log.log("updating midPath: target file hash -> %s", targetFileHash);
-                String message = String.format("updating midPath: file '%s' already in the target directory with not matching hash.", getName());
-                Log.log(message);
-                parentList.getMain().displayInfoMessage(message);
-            }
+            String message = String.format("updated midPath: file '%s' already in the target directory. File not moved.", getName());
+            Log.log(message);
+            parentList.getMain().displayInfoMessage(message);
 
             setNormalizedPath(targetPath);
             return true;
