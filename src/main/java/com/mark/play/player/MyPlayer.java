@@ -120,10 +120,11 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         final JButton pauseButton;
         final JButton rewindButton;
         final JButton skipButton;
+        final JButton clearButton;
 
         JPanel controlPanel = new JPanel();
 
-        pauseButton = new JButton("P");
+        pauseButton = new JButton("Play/Pause");
         pauseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -132,7 +133,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         });
         controlPanel.add(pauseButton);
 
-        rewindButton = new JButton("R");
+        rewindButton = new JButton("Rewind");
         rewindButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -141,7 +142,7 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
         });
         controlPanel.add(rewindButton);
 
-        skipButton = new JButton("S");
+        skipButton = new JButton("Skip");
         skipButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -149,6 +150,15 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
             }
         });
         controlPanel.add(skipButton);
+
+        clearButton = new JButton("Clear");
+        clearButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearMedia();
+            }
+        });
+        controlPanel.add(clearButton);
 
         return controlPanel;
     }
