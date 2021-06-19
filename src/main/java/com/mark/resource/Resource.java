@@ -109,16 +109,23 @@ public class Resource {
         // source already in target?
         // Also possible when there are multiple entries with the same file paths (one is moved and others won't need move)
         if (new File(targetPath).exists()) {
-            String message = String.format("updated midPath: file '%s' already in the target directory. File not moved.", getName());
+            String message = String.format("updated midPath: file '%s' already in the target directory.", getName());
             Log.log(message);
-            parentList.getMain().displayInfoMessage(message);
+            parentList.getMain().displayStatusMessage(message);
 
             setNormalizedPath(targetPath);
             return true;
         }
 
         try {
-            FileUtils.moveFile(new File(getPath()), new File(targetPath));
+            if (new File(currentPath).exists()) {
+                FileUtils.moveFile(new File(getPath()), new File(targetPath));
+            }
+            else {
+                String message = String.format("updated midPath: file '%s' does not exist in the source directory.", getName());
+                Log.log(message);
+                parentList.getMain().displayStatusMessage(message);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             parentList.getMain().displayErrorMessage(e.toString());

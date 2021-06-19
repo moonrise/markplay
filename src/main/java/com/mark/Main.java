@@ -137,6 +137,10 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
         });
     }
 
+    public void displayStatusMessage(String message) {
+        frame.getStatusBar().setStatusText(message);
+    }
+
     @Override
     public void exitApplication() {
         if (processCurrentContent()) {

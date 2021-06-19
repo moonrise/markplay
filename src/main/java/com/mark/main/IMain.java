@@ -12,6 +12,7 @@ public interface IMain {
     void updateAppHeader();
     void displayInfoMessage(String message);
     void displayErrorMessage(String message);
+    void displayStatusMessage(String message);
     void exitApplication();
     boolean flipShowNavigator();
     void registerResourceListChangeListener(IResourceListChangeListener listener);
