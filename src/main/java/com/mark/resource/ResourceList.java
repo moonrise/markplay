@@ -540,7 +540,7 @@ public class ResourceList {
 
             @Override
             protected void done() {
-                String doneMessage = String.format("Merged: %d with %d new markers: %d; Additions: %d (see Temp column for details)", merged, newMarkers, additions.size());
+                String doneMessage = String.format("Merged: %d (new markers: %d, Additions: %d - see Temp column for details)", merged, newMarkers, additions.size());
                 //Log.log(doneMessage);
                 progressDialog.setStatusText(doneMessage);
                 progressDialog.cancelToCloseButton();
