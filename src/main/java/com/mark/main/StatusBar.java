@@ -29,11 +29,13 @@ public class StatusBar extends JPanel  implements IMyPlayerStateChangeListener {
     @Override
     public void onPlayerStateChange(MyPlayerState playerState, EPlayerStateChangeType stateChangeType) {
         if (stateChangeType == EPlayerStateChangeType.MediaParsed) {
+            /* TODO - show this to more permanent place, not the status bar as it is used for error communication
             setStatusText(String.format("%s, Length: %s, Video: %d x %d, %s (%s), Audio: %d channels, %d (sample rate), %s (%s)",
                     playerState.getResource().getPath(),
                     Utils.getTimelineFormatted(playerState.getMediaDuration(), false),
                     playerState.videoWidth, playerState.videoHeight, playerState.videoCodecName, playerState.videoCodecDesc,
                     playerState.audioChannels, playerState.audioBitRate, playerState.audioCodecName, playerState.audioCodecDesc));
+           */
         }
         else if (stateChangeType == EPlayerStateChangeType.Error) {
             setStatusText(playerState.getErrorMessage());

@@ -282,7 +282,9 @@ public class MyPlayer implements com.mark.play.player.IMyPlayer, IMyPlayerStateC
 
     @Override
     public void onError(String errorMessage) {
-        main.displayErrorMessage(errorMessage);
+        Log.log(errorMessage);
+        main.displayStatusMessage(errorMessage);
+        //main.displayErrorMessage(errorMessage);
     }
 
     @Override
