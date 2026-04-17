@@ -45,7 +45,7 @@ public class HashStore {
 
         File dbFile = new File(Prefs.getHashStoreDBPath());
         if (!dbFile.exists()) {
-            return String.format("Hash Store Database '%s' does not exist (Settings -> Hash Store).");
+            return String.format("Hash Store Database '%s' does not exist (Options -> Settings -> Hash Store).");
         }
 
         return null;        // OK

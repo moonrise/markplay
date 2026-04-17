@@ -186,7 +186,7 @@ public class RootPathSetting extends JPanel {
 
         ResourceList resourceList = main.getResourceList();
 
-        JLabel title = new JLabel(String.format("Resource Path Root (%s)", resourceList.getShortName()));
+        JLabel title = new JLabel(String.format("Resource Path Root (%s) - saved in the file", resourceList.getShortName()));
         title.setFont(new Font("helvetica", Font.PLAIN, 13));
         title.setBorder(new EmptyBorder(0, 0, 10, 0));
         panel.add(title);

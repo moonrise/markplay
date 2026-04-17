@@ -27,10 +27,25 @@
     </build>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/uk.co.caprica/vlcj -->
         <dependency>
             <groupId>uk.co.caprica</groupId>
             <artifactId>vlcj</artifactId>
             <version>4.7.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/uk.co.caprica/vlcj-natives -->
+        <dependency>
+            <groupId>uk.co.caprica</groupId>
+            <artifactId>vlcj-natives</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.2.0</version>
         </dependency>
 
         <dependency>

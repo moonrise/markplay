@@ -158,7 +158,7 @@ public class Prefs {
     }
 
     public static int getMaxRecentFiles() {
-        return userPrefs.getInt("maxRecentFiles", 12);
+        return userPrefs.getInt("maxRecentFiles", 18);
     }
 
     public static void setMaxRecentFiles(int x) {
@@ -250,7 +250,7 @@ public class Prefs {
     }
 
     public static String getHashStoreDBPath() {
-        return userPrefs.get("hashDB", "");
+        return userPrefs.get("hashDB", "c:\\tmp\\markplay.db");
     }
 
     public static void setHashStoreDBPath(String dbPath) {

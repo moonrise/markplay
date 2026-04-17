@@ -190,6 +190,25 @@ public class ResourceList {
             //resourceList.dump();
             cloneFrom(resourceList);
 
+            // check the root and adjust/correct the drive letter
+            if (resources.size() > 0) {
+                String partialPath = resources.get(0).getPathAsItIs();
+                File file = new File(this.root + partialPath);
+                if (!file.exists()) {
+                    String DRIVES = "CDE";
+                    String driveLetter = this.root.substring(0, 1);
+                    DRIVES = DRIVES.replaceAll(driveLetter, "");
+
+                    for (int i=0; i<DRIVES.length(); i++) {
+                        this.root = DRIVES.substring(i, i+1) + this.root.substring(1);
+                        file = new File(this.root + partialPath);
+                        if (file.exists()) {
+                            break;
+                        }
+                    }
+                }
+            }
+
             // cloned resources have the same keys from the de-serialised instance, but it should be OK mostly.
             /*
             for (Resource r : resources) {

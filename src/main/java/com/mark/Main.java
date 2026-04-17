@@ -167,7 +167,7 @@ public class Main implements IMain, IResourceListChangeListener, ListSelectionLi
             }
         }
 
-        frame.setTitle(String.format("%s - {%s} %s%s%s", Utils.AppName, resourceList.getRoot(), resourceListInfo, currentIndex, currentResource));
+        frame.setTitle(String.format("%s.2 - {%s} %s%s%s", Utils.AppName, resourceList.getRoot(), resourceListInfo, currentIndex, currentResource));
     }
 
     @Override

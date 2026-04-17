@@ -87,6 +87,10 @@ public class Resource {
         this.parentList = parentList;
     }
 
+    public String getPathAsItIs() {
+        return path;
+    }
+
     public String getPath() {
         return Utils.normPath(getParentList().getRoot() + path);
     }

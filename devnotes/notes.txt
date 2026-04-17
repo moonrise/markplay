@@ -1,3 +1,9 @@
+VLC player is required. Download it from:
+https://get.videolan.org/vlc/3.0.16/win64/vlc-3.0.16-win64.exe
+** Do not install 32 bit version as VLCJ won't be able to find the libs **
+** Not this one; https://get.videolan.org/vlc/3.0.16/win32/vlc-3.0.16-win32.exe
+64 bit is installed at C:\Program Files\VideoLAN\VLC while 32 bit is installed at C:\Program Files (x86)\VideoLAN\VLC
+
 Which shell in terminals (MacOS) or command window (Ubuntu in Windows)?
 * echo $SHELL
 ==> MacOS defaults to /bin/zsh
